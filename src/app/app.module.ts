@@ -8,6 +8,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {httpInterceptorProviders} from './interceptors';
 import { LobbyComponent } from './lobby/lobby.component';
 import { LiveStreamComponent } from './live-stream/live-stream.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { LiveStreamComponent } from './live-stream/live-stream.component';
   imports: [
     BrowserModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NgbModule
   ],
   providers: [
     httpInterceptorProviders,
