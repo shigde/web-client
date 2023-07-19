@@ -6,12 +6,16 @@ import {AppComponent} from './app.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {HttpClientModule} from '@angular/common/http';
 import {httpInterceptorProviders} from './interceptors';
+import { LobbyComponent } from './lobby/lobby.component';
+import { LiveStreamComponent } from './live-stream/live-stream.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
+    LobbyComponent,
+    LiveStreamComponent,
   ],
   imports: [
     BrowserModule,

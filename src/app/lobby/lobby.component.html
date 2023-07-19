@@ -1,0 +1,10 @@
+<div *ngIf="stream">
+  <h2>Live Stream: {{stream.id | uppercase}}</h2>
+
+  <div>
+    <video id="video" style="background-color: black"
+           muted autoplay></video>
+  </div>
+  <button type="button" (click)="goBack()">go back</button>
+  <button type="button" (click)="start()">start</button>
+</div>
