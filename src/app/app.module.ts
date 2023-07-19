@@ -8,7 +8,9 @@ import {HttpClientModule} from '@angular/common/http';
 import {httpInterceptorProviders} from './interceptors';
 import { LobbyComponent } from './lobby/lobby.component';
 import { LiveStreamComponent } from './live-stream/live-stream.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {NgbDropdownModule, NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { LoginComponent } from './login/login.component';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 
 @NgModule({
@@ -17,12 +19,16 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     DashboardComponent,
     LobbyComponent,
     LiveStreamComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    NgbModule
+    NgbModule,
+    NgbDropdownModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
   providers: [
     httpInterceptorProviders,

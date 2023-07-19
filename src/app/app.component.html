@@ -7,6 +7,8 @@
   />
   <span>Shig</span>
   <div class="spacer"></div>
+  <span>{{user$ | async}}</span>
+  <div class="btn btn-outline-light" style="margin-left: 20px"  (click)="logout()" *ngIf="(user$ | async) != 'anonymous'">Logout</div>
   <a aria-label="Shig on Mastodon" target="_blank" rel="noopener" href="https://mastodon.social/@shig" title="Mastodon">
     <svg id="mastodon-logo" height="24" data-name="Logo" fill="#ffffff" viewBox="0 0 24 24"
          xmlns="http://www.w3.org/2000/svg" xml:space="preserve">
