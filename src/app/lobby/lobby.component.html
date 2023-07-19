@@ -6,5 +6,9 @@
            muted autoplay></video>
   </div>
   <button type="button" (click)="goBack()">go back</button>
-  <button type="button" (click)="start()">start</button>
+  <button class="btn btn-primary" (click)="start()" type="button" disabled>
+    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    Loading...
+  </button>
+
 </div>
