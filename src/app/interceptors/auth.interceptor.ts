@@ -1,25 +1,32 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
   HttpInterceptor
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from './../../environments/environment';
+import {map, mergeMap, Observable} from 'rxjs';
+import {SessionService} from '../provider/session.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor() {}
+  constructor(private session: SessionService) {
+  }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if (!environment.production) {
-      request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${environment.jwtToken}`,
-        },
-      });
-    }
-    return next.handle(request);
+    return this.session.isActive()
+      .pipe(
+        map(isActive => {
+          if (isActive) {
+            const token = this.session.getToken()
+            request = request.clone({
+              setHeaders: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+          }
+          return request
+        }),
+        mergeMap((req) => next.handle(req)))
   }
 }
