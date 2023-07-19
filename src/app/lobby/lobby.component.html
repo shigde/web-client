@@ -2,13 +2,16 @@
   <h2>Live Stream: {{stream.id | uppercase}}</h2>
 
   <div>
-    <video id="video" style="background-color: black"
-           muted autoplay></video>
+    <video id="video" style="background-color: black" muted autoplay></video>
   </div>
   <button type="button" (click)="goBack()">go back</button>
-  <button class="btn btn-primary" (click)="start()" type="button" disabled>
-    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-    Loading...
+  <button id="btn-join" class="btn btn-primary" (click)="start()" type="button" [disabled]="!mediaStream">
+    <div *ngIf="!mediaStream"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      Loading...
+    </div>
+    <div *ngIf="!!mediaStream">
+      Join
+    </div>
   </button>
 
 </div>
