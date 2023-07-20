@@ -59,8 +59,8 @@ export class LobbyComponent implements OnInit {
   }
 
   start(): void {
-    if (this.stream) {
-      this.lobbyService.join(this.stream)
+    if (!!this.stream && !!this.mediaStream) {
+      this.lobbyService.join(this.mediaStream, '123', this.stream.id).then(() => console.log('Connected'))
     }
   }
 }
