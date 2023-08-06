@@ -5,6 +5,7 @@ import {MediaEvent} from '../entities/media.event';
 
 export class WebrtcConnection extends EventEmitter<MediaEvent>{
   private readonly pc: RTCPeerConnection;
+  private dataChannel: RTCDataChannel | undefined
 
   constructor(
     private readonly config: RTCConfiguration
@@ -17,6 +18,10 @@ export class WebrtcConnection extends EventEmitter<MediaEvent>{
     this.pc.oniceconnectionstatechange = _ => console.log('oniceconnectionstatechange');
     this.pc.onicecandidate = event => this.onicecandidate(event);
     this.pc.onnegotiationneeded = _ => console.log('onnegotiationneeded');
+  }
+
+  public createDataChannel() :void {
+    this.dataChannel = this.pc.createDataChannel("whep");
   }
 
   public createOffer(localStream: MediaStream | undefined = undefined): Promise<RTCSessionDescription> {

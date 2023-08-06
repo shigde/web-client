@@ -1,15 +1,16 @@
 import {Injectable} from '@angular/core';
-import {Stream} from '../entities/stream';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {WebrtcConnection} from './webrtc-connection';
-import {catchError, firstValueFrom, lastValueFrom, Observable, of, tap} from 'rxjs';
+import {BehaviorSubject, catchError, lastValueFrom, Observable, of, tap} from 'rxjs';
 import {MessageService} from './message.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LobbyService {
+  public stream$ = new BehaviorSubject<MediaStream | null>(null)
+
   private readonly config: RTCConfiguration = {
     iceServers: environment.iceServers
   }
@@ -28,7 +29,7 @@ export class LobbyService {
     if (stream !== undefined) {
       sending = this.createSendingConnection(stream, spaceId, streamId)
     }
-    let receiving = this.createReceivingConnection();
+    let receiving = this.createReceivingConnection(stream, spaceId, streamId);
     return Promise.all([sending, receiving]);
   }
 
@@ -39,18 +40,23 @@ export class LobbyService {
       .then((answer) => wc.setAnswer(answer))
   }
 
-  private createReceivingConnection(): Promise<unknown> {
-    // const wc = new WebrtcConnection(this.config)
-    // return wc.createOffer()
-    //   .then((offer) => sendWhep(offer))
-    //   .then((answer) => wc.setAnswer(answer))
-    return Promise.resolve()
+  private createReceivingConnection(stream: MediaStream | undefined, spaceId: string, streamId: string): Promise<unknown> {
+    const wc = new WebrtcConnection(this.config);
+    const remoteStream = new MediaStream();
+    wc.subscribe((event) => {
+      remoteStream.addTrack(event.track)
+      this.stream$.next(remoteStream);
+    });
+
+    wc.createDataChannel()
+    return wc.createOffer(stream)
+      .then((offer) => this.sendWhep(offer, spaceId, streamId))
+      .then((answer) => wc.setAnswer(answer))
   }
 
 
-  sendWhip(offer: RTCSessionDescriptionInit, spaceId: string, streamId: string,): Promise<RTCSessionDescription> {
+  sendWhip(offer: RTCSessionDescriptionInit, spaceId: string, streamId: string): Promise<RTCSessionDescription> {
     const whipUrl = `/api/space/${spaceId}/stream/${streamId}/whip`;
-    const headers = new HttpHeaders().set('Content-Type', 'text/plain; charset=utf-8');
 
     const body = offer.sdp
     // @ts-ignore
@@ -61,8 +67,16 @@ export class LobbyService {
     ).then(answer => ({type: 'answer', sdp: answer} as RTCSessionDescription));
   }
 
-  sendWhep(spaceId: string, stream: Stream) {
-    const whepUrl = `/api/space/${spaceId}/stream/${stream.id}/whep`;
+  sendWhep(offer: RTCSessionDescriptionInit, spaceId: string, streamId: string) {
+    const whepUrl = `/api/space/${spaceId}/stream/${streamId}/whep`;
+    const body = offer.sdp
+
+    // @ts-ignore
+    return lastValueFrom(this.http.post(whepUrl, body, this.httpOptions).pipe(
+        tap(a => console.log('---', a)),
+        catchError(this.handleError<string>('sendWhep', ''))
+      )
+    ).then(answer => ({type: 'answer', sdp: answer} as RTCSessionDescription));
   }
 
   /**

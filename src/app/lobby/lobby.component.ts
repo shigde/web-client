@@ -4,7 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 import {StreamService} from '../provider/stream.service';
 import {Stream} from '../entities/stream';
 import {LobbyService} from '../provider/lobby.service';
-import {tap} from 'rxjs';
+import {filter, tap} from 'rxjs';
 
 
 @Component({
@@ -15,6 +15,7 @@ import {tap} from 'rxjs';
 export class LobbyComponent implements OnInit {
   stream: Stream | undefined;
   mediaStream: MediaStream | undefined;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -60,6 +61,9 @@ export class LobbyComponent implements OnInit {
 
   start(): void {
     if (!!this.stream && !!this.mediaStream) {
+      this.lobbyService.stream$.pipe(filter(s => s !== null)).subscribe((s) => {
+        (document.getElementById('remote-video') as HTMLVideoElement).srcObject = s;
+      })
       this.lobbyService.join(this.mediaStream, '123', this.stream.id).then(() => console.log('Connected'))
     }
   }
