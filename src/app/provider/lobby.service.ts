@@ -24,13 +24,11 @@ export class LobbyService {
   }
 
 
-  public join(stream: MediaStream | undefined = undefined, spaceId: string, streamId: string): Promise<unknown> {
-    let sending = Promise.resolve<unknown>(null)
-    if (stream !== undefined) {
-      sending = this.createSendingConnection(stream, spaceId, streamId)
-    }
-    let receiving = this.createReceivingConnection(stream, spaceId, streamId);
-    return Promise.all([sending, receiving]);
+  public join(stream: MediaStream, spaceId: string, streamId: string): Promise<unknown> {
+      return this.createSendingConnection(stream, spaceId, streamId)
+        .then(() => this.createReceivingConnection(stream, spaceId, streamId))
+
+
   }
 
   private createSendingConnection(stream: MediaStream, spaceId: string, streamId: string): Promise<void> {
@@ -48,10 +46,10 @@ export class LobbyService {
       this.stream$.next(remoteStream);
     });
 
-    wc.createDataChannel()
-    return wc.createOffer(stream)
-      .then((offer) => this.sendWhep(offer, spaceId, streamId))
-      .then((answer) => wc.setAnswer(answer))
+    // wc.createDataChannel()
+    return this.sendWhepOfferReq(spaceId, streamId)
+      .then((offer) => wc.setRemoteOffer(offer))
+      .then((answer) => this.sendWhepAnswer(answer, spaceId, streamId))
   }
 
 
@@ -67,16 +65,26 @@ export class LobbyService {
     ).then(answer => ({type: 'answer', sdp: answer} as RTCSessionDescription));
   }
 
-  sendWhep(offer: RTCSessionDescriptionInit, spaceId: string, streamId: string) {
+  sendWhepOfferReq(spaceId: string, streamId: string) {
     const whepUrl = `/api/space/${spaceId}/stream/${streamId}/whep`;
-    const body = offer.sdp
 
     // @ts-ignore
-    return lastValueFrom(this.http.post(whepUrl, body, this.httpOptions).pipe(
+    return lastValueFrom(this.http.post(whepUrl, null, this.httpOptions).pipe(
         tap(a => console.log('---', a)),
-        catchError(this.handleError<string>('sendWhep', ''))
+        catchError(this.handleError<string>('sendWhepOfferReq', ''))
       )
-    ).then(answer => ({type: 'answer', sdp: answer} as RTCSessionDescription));
+    ).then(offer => ({type: 'offer', sdp: offer} as RTCSessionDescription));
+  }
+  sendWhepAnswer(answer: RTCSessionDescriptionInit, spaceId: string, streamId: string) {
+    const whepUrl = `/api/space/${spaceId}/stream/${streamId}/whep`;
+    const body = answer.sdp
+
+    // @ts-ignore
+    return lastValueFrom(this.http.patch(whepUrl, body, this.httpOptions).pipe(
+        tap(a => console.log('---', a)),
+        catchError(this.handleError<string>('sendWhepAnswer', ''))
+      )
+    );
   }
 
   /**

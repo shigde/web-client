@@ -1,4 +1,4 @@
-<ng-template *ngIf="stream">
+<div *ngIf="stream">
   <h2>Live Stream: {{stream.id | uppercase}}</h2>
 
   <div>
@@ -6,15 +6,15 @@
   </div>
   <button type="button" (click)="goBack()">go back</button>
   <button id="btn-join" class="btn btn-primary" (click)="start()" type="button" [disabled]="!mediaStream">
-    <ng-template *ngIf="!mediaStream"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    <div *ngIf="!mediaStream"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
       Loading...
-    </ng-template>
-    <ng-template *ngIf="!!mediaStream">
+    </div>
+    <div *ngIf="!!mediaStream">
       Join
-    </ng-template>
+    </div>
   </button>
 
   <div>
     <video id="remote-video" style="background-color: black" muted autoplay></video>
   </div>
-</ng-template>
+</div>

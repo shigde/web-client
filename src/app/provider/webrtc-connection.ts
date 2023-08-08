@@ -2,8 +2,7 @@ import {EventEmitter} from '@angular/core';
 import {MediaEvent} from '../entities/media.event';
 
 
-
-export class WebrtcConnection extends EventEmitter<MediaEvent>{
+export class WebrtcConnection extends EventEmitter<MediaEvent> {
   private readonly pc: RTCPeerConnection;
   private dataChannel: RTCDataChannel | undefined
 
@@ -18,10 +17,17 @@ export class WebrtcConnection extends EventEmitter<MediaEvent>{
     this.pc.oniceconnectionstatechange = _ => console.log('oniceconnectionstatechange');
     this.pc.onicecandidate = event => this.onicecandidate(event);
     this.pc.onnegotiationneeded = _ => console.log('onnegotiationneeded');
+    this.pc.ondatachannel = (event) => {
+      console.log('Receive Channel Callback');
+      this.dataChannel = event.channel;
+      this.dataChannel.onmessage = this.onReceiveChannelMessageCallback;
+      this.dataChannel.onopen = this.onReceiveChannelStateChange;
+      this.dataChannel.onclose = this.onReceiveChannelStateChange;
+    }
   }
 
-  public createDataChannel() :void {
-    this.dataChannel = this.pc.createDataChannel("whep");
+  public createDataChannel(): void {
+    this.dataChannel = this.pc.createDataChannel('whep');
   }
 
   public createOffer(localStream: MediaStream | undefined = undefined): Promise<RTCSessionDescription> {
@@ -49,6 +55,14 @@ export class WebrtcConnection extends EventEmitter<MediaEvent>{
     return this.pc.setRemoteDescription(answer)
   }
 
+  setRemoteOffer(offer: RTCSessionDescription) {
+    let aw: RTCSessionDescriptionInit
+    return this.pc.setRemoteDescription(offer)
+      .then(() => this.pc.createAnswer())
+      .then((answer) => aw = answer)
+      .then((_) => this.pc.setLocalDescription(aw))
+      .then(() => aw)
+  }
 
 
   public close(): Promise<void> {
@@ -62,5 +76,14 @@ export class WebrtcConnection extends EventEmitter<MediaEvent>{
       this.pc.close();
       resolve();
     });
+  }
+
+  private onReceiveChannelMessageCallback(me: MessageEvent<any>): void {
+    console.log('onReceiveChannelMessageCallback', me)
+  }
+
+  private onReceiveChannelStateChange(ev: Event): void {
+    console.log('onReceiveChannelStateChange', ev)
+
   }
 }
