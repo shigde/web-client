@@ -4,6 +4,8 @@ import {environment} from '../../environments/environment';
 import {WebrtcConnection} from './webrtc-connection';
 import {BehaviorSubject, catchError, lastValueFrom, Observable, of, tap} from 'rxjs';
 import {MessageService} from './message.service';
+import {ChannelMessenger} from './channel-messenger';
+import {ChannelMsg, ChannelMsgType, SdpMsgData} from '../entities/channel.msg';
 
 @Injectable({
   providedIn: 'root'
@@ -16,37 +18,49 @@ export class LobbyService {
   }
 
   httpOptions = {
-    headers: new HttpHeaders({'Content-Type': 'application/sdp', 'Accept' : 'application/sdp'}),
+    headers: new HttpHeaders({'Content-Type': 'application/sdp', 'Accept': 'application/sdp'}),
     responseType: 'text'
   };
 
   constructor(private http: HttpClient, private messageService: MessageService) {
   }
 
-
   public join(stream: MediaStream, spaceId: string, streamId: string): Promise<unknown> {
-      return this.createSendingConnection(stream, spaceId, streamId)
-        .then(() => this.createReceivingConnection(stream, spaceId, streamId))
-
-
+    return this.createSendingConnection(stream, spaceId, streamId)
+      .then((messenger) => this.createReceivingConnection(messenger, spaceId, streamId))
   }
 
-  private createSendingConnection(stream: MediaStream, spaceId: string, streamId: string): Promise<void> {
+
+  private createSendingConnection(stream: MediaStream, spaceId: string, streamId: string): Promise<ChannelMessenger> {
     const wc = new WebrtcConnection(this.config)
+    const messenger = new ChannelMessenger(wc.createDataChannel())
     return wc.createOffer(stream)
       .then((offer) => this.sendWhip(offer, spaceId, streamId))
       .then((answer) => wc.setAnswer(answer))
+      .then(() => messenger)
   }
 
-  private createReceivingConnection(stream: MediaStream | undefined, spaceId: string, streamId: string): Promise<unknown> {
+  private createReceivingConnection(messenger: ChannelMessenger, spaceId: string, streamId: string): Promise<unknown> {
     const wc = new WebrtcConnection(this.config);
     const remoteStream = new MediaStream();
+
+    messenger.subscribe((msg) => {
+      if (msg.type === ChannelMsgType.OfferMsg) {
+        wc.setRemoteOffer(msg.data.sdp)
+          .then((answer) => ({
+            type: ChannelMsgType.AnswerMsg,
+            id: msg.id,
+            data: {sdp: answer, number: msg.data.number} as SdpMsgData
+          }) as ChannelMsg)
+          .then((answer) => messenger.send(answer))
+      }
+    })
+
     wc.subscribe((event) => {
       remoteStream.addTrack(event.track)
       this.stream$.next(remoteStream);
     });
 
-    // wc.createDataChannel()
     return this.sendWhepOfferReq(spaceId, streamId)
       .then((offer) => wc.setRemoteOffer(offer))
       .then((answer) => this.sendWhepAnswer(answer, spaceId, streamId))
@@ -59,9 +73,9 @@ export class LobbyService {
     const body = offer.sdp
     // @ts-ignore
     return lastValueFrom(this.http.post(whipUrl, body, this.httpOptions).pipe(
-      tap(a => console.log('---', a)),
-      catchError(this.handleError<string>('sendWhip', ''))
-    )
+        tap(a => console.log('---', a)),
+        catchError(this.handleError<string>('sendWhip', ''))
+      )
     ).then(answer => ({type: 'answer', sdp: answer} as RTCSessionDescription));
   }
 
@@ -75,6 +89,7 @@ export class LobbyService {
       )
     ).then(offer => ({type: 'offer', sdp: offer} as RTCSessionDescription));
   }
+
   sendWhepAnswer(answer: RTCSessionDescriptionInit, spaceId: string, streamId: string) {
     const whepUrl = `/api/space/${spaceId}/stream/${streamId}/whep`;
     const body = answer.sdp

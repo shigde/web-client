@@ -1,5 +1,6 @@
 import {EventEmitter} from '@angular/core';
 import {MediaEvent} from '../entities/media.event';
+import {ChannelMsg, ChannelMsgType} from '../entities/channel.msg';
 
 
 export class WebrtcConnection extends EventEmitter<MediaEvent> {
@@ -26,8 +27,12 @@ export class WebrtcConnection extends EventEmitter<MediaEvent> {
     }
   }
 
-  public createDataChannel(): void {
+  public createDataChannel(): RTCDataChannel {
     this.dataChannel = this.pc.createDataChannel('whep');
+    this.dataChannel.onmessage = this.onReceiveChannelMessageCallback;
+    this.dataChannel.onopen = this.onReceiveChannelStateChange;
+    this.dataChannel.onclose = this.onReceiveChannelStateChange;
+    return this.dataChannel;
   }
 
   public createOffer(localStream: MediaStream | undefined = undefined): Promise<RTCSessionDescription> {
@@ -79,11 +84,13 @@ export class WebrtcConnection extends EventEmitter<MediaEvent> {
   }
 
   private onReceiveChannelMessageCallback(me: MessageEvent<any>): void {
-    console.log('onReceiveChannelMessageCallback', me)
+    const msg = JSON.parse(new TextDecoder().decode(me.data as ArrayBuffer)) as ChannelMsg
+    if (msg?.type === ChannelMsgType.OfferMsg) {
+
+    }
   }
 
   private onReceiveChannelStateChange(ev: Event): void {
     console.log('onReceiveChannelStateChange', ev)
-
   }
 }
