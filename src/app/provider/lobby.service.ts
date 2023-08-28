@@ -64,7 +64,6 @@ export class LobbyService {
           return
         }
         stream.addEventListener('removetrack', () => {
-          console.log("################# Hallo?")
           if (stream?.getTracks().length === 0) {
             this.remove$.next(stream?.id)
           }
