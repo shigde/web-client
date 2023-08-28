@@ -13,7 +13,6 @@ import {ChannelMsg, ChannelMsgType, SdpMsgData} from '../entities/channel.msg';
 export class LobbyService {
   public add$ = new BehaviorSubject<MediaStream | null>(null)
   public remove$ = new BehaviorSubject<string | null>(null);
-  private streamList = new Map<string, MediaStream>();
 
   private readonly config: RTCConfiguration = {
     iceServers: environment.iceServers
