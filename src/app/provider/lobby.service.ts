@@ -11,7 +11,9 @@ import {ChannelMsg, ChannelMsgType, SdpMsgData} from '../entities/channel.msg';
   providedIn: 'root'
 })
 export class LobbyService {
-  public stream$ = new BehaviorSubject<MediaStream | null>(null)
+  public add$ = new BehaviorSubject<MediaStream | null>(null)
+  public remove$ = new BehaviorSubject<string | null>(null);
+  private streamList = new Map<string, MediaStream>();
 
   private readonly config: RTCConfiguration = {
     iceServers: environment.iceServers
@@ -42,7 +44,6 @@ export class LobbyService {
 
   private createReceivingConnection(messenger: ChannelMessenger, spaceId: string, streamId: string): Promise<unknown> {
     const wc = new WebrtcConnection(this.config);
-    const remoteStream = new MediaStream();
 
     messenger.subscribe((msg) => {
       if (msg.type === ChannelMsgType.OfferMsg) {
@@ -57,8 +58,20 @@ export class LobbyService {
     })
 
     wc.subscribe((event) => {
-      remoteStream.addTrack(event.track)
-      this.stream$.next(remoteStream);
+      if (event.type === 'add') {
+        let stream = event.parent?.streams[0];
+        if (!stream) {
+          return
+        }
+        stream.addEventListener('removetrack', () => {
+          console.log("################# Hallo?")
+          if (stream?.getTracks().length === 0) {
+            this.remove$.next(stream?.id)
+          }
+        })
+
+        this.add$.next(stream);
+      }
     });
 
     return this.sendWhepOfferReq(spaceId, streamId)
