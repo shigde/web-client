@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
 import {ActivatedRoute} from '@angular/router';
-import {StreamService} from '../provider/stream.service';
-import {Stream} from '../entities/stream';
-import {LobbyService} from '../provider/lobby.service';
+import {Stream, StreamService, LobbyService} from '@shig/core';
 import {filter, tap} from 'rxjs';
 
 
@@ -32,9 +30,9 @@ export class LobbyComponent implements OnInit {
   getStream(): void {
     const id = this.route.snapshot.paramMap.get('streamId');
     if (id !== null) {
-      this.streamService.getStream(id)
-        .pipe(tap((stream) => this.stream = stream))
-        .subscribe((_) => this.startCamera());
+      // this.streamService.getStream(id)
+      //   .pipe(tap((stream) => this.stream = stream))
+      //   .subscribe((_) => this.startCamera());
     }
   }
 
@@ -53,8 +51,8 @@ export class LobbyComponent implements OnInit {
 
   goBack(): void {
     if (this.mediaStream) {
-      this.mediaStream.getTracks().forEach(t => t.stop())
-      this.mediaStream = undefined
+      this.mediaStream.getTracks().forEach(t => t.stop());
+      this.mediaStream = undefined;
     }
     this.location.back();
   }
@@ -63,40 +61,40 @@ export class LobbyComponent implements OnInit {
     if (!!this.stream && !!this.mediaStream) {
       this.lobbyService.add$.pipe(filter(s => s !== null)).subscribe((s) => {
         if (s !== null) {
-          this.getOrCreateVideoElement(s.id).srcObject = s
+          this.getOrCreateVideoElement(s.id).srcObject = s;
         }
       });
       this.lobbyService.remove$.pipe(filter(s => s !== null)).subscribe((s) => {
         if (s !== null && this.hasVideoElement(s)) {
-          this.removeVideoElement(s)
+          this.removeVideoElement(s);
         }
       });
-      this.lobbyService.join(this.mediaStream, '123', this.stream.id).then(() => console.log('Connected'))
+      // this.lobbyService.join(this.mediaStream, '123', `${this.stream.id}`, environment.iceServers).then(() => console.log('Connected'));
     }
   }
 
   hasVideoElement(id: string): boolean {
-    return document.getElementById(id) !== null
+    return document.getElementById(id) !== null;
   }
 
   getOrCreateVideoElement(id: string): HTMLVideoElement {
     if (this.hasVideoElement(id)) {
-      return document.getElementById(id) as HTMLVideoElement
+      return document.getElementById(id) as HTMLVideoElement;
     }
-    return this.createVideoElement(id)
+    return this.createVideoElement(id);
   }
 
   createVideoElement(id: string): HTMLVideoElement {
-    const video = document.createElement('video')
-    video.setAttribute('id', id)
-    video.setAttribute('muted', '')
-    video.setAttribute('autoplay', '')
+    const video = document.createElement('video');
+    video.setAttribute('id', id);
+    video.setAttribute('muted', '');
+    video.setAttribute('autoplay', '');
     const elem = (document.getElementById('remote-video-container') as HTMLDivElement);
-    elem.appendChild(video)
-    return video
+    elem.appendChild(video);
+    return video;
   }
 
   removeVideoElement(id: string) {
-    document.getElementById(id)?.remove()
+    document.getElementById(id)?.remove();
   }
 }

@@ -1,8 +1,8 @@
-import {Injectable, isDevMode} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {SessionService} from '../provider/session.service';
+import {SessionService} from '@shig/core';
 
 @Injectable({providedIn: 'root'})
 export class UserRouteAccessGuard implements CanActivate {
@@ -13,7 +13,7 @@ export class UserRouteAccessGuard implements CanActivate {
     return this.session.isActive().pipe(
       map(hasSession => {
         if (hasSession) {
-          return true
+          return true;
         }
         this.router.navigate(['/login']);
         return false;
