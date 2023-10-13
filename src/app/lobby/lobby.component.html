@@ -1,6 +1,8 @@
 <div *ngIf="stream">
   <h2>Live Stream: {{stream.uuid | uppercase}}</h2>
 
+  <app-device-settings></app-device-settings>
+
   <div>
     <video id="video" style="background-color: black" muted autoplay></video>
   </div>
@@ -17,4 +19,57 @@
   <div id="remote-video-container">
     <!--    <video id="remote-video" style="background-color: black" muted autoplay></video>-->
   </div>
+
+  <div id="gallery" *ngIf="!stream">
+    <div class="video-container">
+      <video
+        autoplay
+        loop
+        muted="muted"
+        src="https://dosant.github.io/video.mp4"
+      ></video>
+    </div>
+    <div class="video-container">
+      <video
+        autoplay
+        loop
+        muted="muted"
+        src="https://dosant.github.io/video.mp4"
+      ></video>
+    </div>
+    <div class="video-container">
+      <video
+        autoplay
+        loop
+        muted="muted"
+        src="https://dosant.github.io/video.mp4"
+      ></video>
+    </div>
+    <div class="video-container">
+      <video
+        autoplay
+        loop
+        muted="muted"
+        src="https://dosant.github.io/video.mp4"
+      ></video>
+    </div>
+    <div class="video-container">
+      <video
+        autoplay
+        loop
+        muted="muted"
+        src="https://dosant.github.io/video.mp4"
+      ></video>
+    </div>
+    <!-- <div class="video-container">
+      <video
+        autoplay
+        loop
+        muted
+        src="https://dosant.github.io/video.mp4"
+      ></video>
+    </div> -->
+  </div>
+
+  <script src="src/index.ts"></script>
 </div>

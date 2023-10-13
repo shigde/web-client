@@ -5,6 +5,8 @@ import {filter, tap} from 'rxjs';
 import {environment} from '../../environments/environment';
 
 import {LobbyService, Stream, StreamService, SessionService, ParameterService} from '@shig/core';
+import {MultiStreamsMixer} from '../provider/multi_streams_mixer';
+
 
 @Component({
   selector: 'shig-lobby',
@@ -25,16 +27,26 @@ export class LobbyComponent implements OnInit {
 
   @Output() loadComp = new EventEmitter();
 
-  private session: SessionService;
 
   constructor(
-    session: SessionService,
+    private session: SessionService,
     private streamService: StreamService,
     private lobbyService: LobbyService,
     private params: ParameterService,
     private location: Location
   ) {
-    this.session = session;
+
+    // this.settings$ = this.store.get()
+    //   .pipe(
+    //     map((setting): DeviceSettings => {
+    //       if (setting === undefined) {
+    //         setting = DeviceSettings.buildDefault();
+    //         this.store.save(setting);
+    //       }
+    //       return setting;
+    //     })
+    //   );
+
   }
 
   ngOnInit(): void {
@@ -44,6 +56,14 @@ export class LobbyComponent implements OnInit {
 
     this.session.setAuthenticationToken(this.getToken());
     this.getStream();
+
+    const mixer = new MultiStreamsMixer([]);
+
+    // rtcPeerConnection.addStream(mixer.getMixedStream());
+// https://github.com/fzembow/rect-scaler
+// https://codesandbox.io/s/zoom-video-gallery-600ks?file=/index.html:103-1291
+    mixer.frameInterval = 1;
+    mixer.startDrawingFrames();
 
     setTimeout(() => {
       this.loadComp.emit('Component loaded successfully!');
@@ -55,7 +75,7 @@ export class LobbyComponent implements OnInit {
     if (this.streamId !== undefined && this.spaceId !== undefined) {
       this.streamService.getStream(this.streamId, this.spaceId)
         .pipe(tap((stream) => this.stream = stream))
-        .subscribe((_) => this.startCamera());
+        .subscribe((_: any) => this.startCamera());
     }
   }
 
@@ -82,12 +102,12 @@ export class LobbyComponent implements OnInit {
 
   start(): void {
     if (!!this.stream && !!this.mediaStream && this.streamId !== undefined && this.spaceId !== undefined) {
-      this.lobbyService.add$.pipe(filter(s => s !== null)).subscribe((s) => {
+      this.lobbyService.add$.pipe(filter(s => s !== null)).subscribe((s: any) => {
         if (s !== null) {
           this.getOrCreateVideoElement(s.id).srcObject = s;
         }
       });
-      this.lobbyService.remove$.pipe(filter(s => s !== null)).subscribe((s) => {
+      this.lobbyService.remove$.pipe(filter(s => s !== null)).subscribe((s: any) => {
         if (s !== null && this.hasVideoElement(s)) {
           this.removeVideoElement(s);
         }
