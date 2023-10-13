@@ -1,38 +1,61 @@
-import {Component, OnInit} from '@angular/core';
-import {Location} from '@angular/common';
-import {ActivatedRoute} from '@angular/router';
-import {Stream, StreamService, LobbyService} from '@shig/core';
-import {filter, tap} from 'rxjs';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
+import {Location} from '@angular/common';
+import {filter, tap} from 'rxjs';
+import {environment} from '../../environments/environment';
+
+import {LobbyService, Stream, StreamService, SessionService, ParameterService} from '@shig/core';
 
 @Component({
-  selector: 'app-lobby',
+  selector: 'shig-lobby',
   templateUrl: './lobby.component.html',
   styleUrls: ['./lobby.component.scss']
 })
 export class LobbyComponent implements OnInit {
   stream: Stream | undefined;
   mediaStream: MediaStream | undefined;
+  private readonly config: RTCConfiguration = {
+    iceServers: environment.iceServers
+  };
 
+  @Input() token: string | undefined;
+  @Input('api-prefix') apiPrefix: string | undefined;
+  @Input('stream') streamId: string | undefined;
+  @Input('space') spaceId: string | undefined;
+
+  @Output() loadComp = new EventEmitter();
+
+  private session: SessionService;
 
   constructor(
-    private route: ActivatedRoute,
+    session: SessionService,
     private streamService: StreamService,
     private lobbyService: LobbyService,
+    private params: ParameterService,
     private location: Location
   ) {
+    this.session = session;
   }
 
   ngOnInit(): void {
+    if (this.apiPrefix !== undefined) {
+      this.params.API_PREFIX = this.apiPrefix;
+    }
+
+    this.session.setAuthenticationToken(this.getToken());
     this.getStream();
+
+    setTimeout(() => {
+      this.loadComp.emit('Component loaded successfully!');
+    }, 100);
+
   }
 
   getStream(): void {
-    const id = this.route.snapshot.paramMap.get('streamId');
-    if (id !== null) {
-      // this.streamService.getStream(id)
-      //   .pipe(tap((stream) => this.stream = stream))
-      //   .subscribe((_) => this.startCamera());
+    if (this.streamId !== undefined && this.spaceId !== undefined) {
+      this.streamService.getStream(this.streamId, this.spaceId)
+        .pipe(tap((stream) => this.stream = stream))
+        .subscribe((_) => this.startCamera());
     }
   }
 
@@ -58,7 +81,7 @@ export class LobbyComponent implements OnInit {
   }
 
   start(): void {
-    if (!!this.stream && !!this.mediaStream) {
+    if (!!this.stream && !!this.mediaStream && this.streamId !== undefined && this.spaceId !== undefined) {
       this.lobbyService.add$.pipe(filter(s => s !== null)).subscribe((s) => {
         if (s !== null) {
           this.getOrCreateVideoElement(s.id).srcObject = s;
@@ -69,7 +92,7 @@ export class LobbyComponent implements OnInit {
           this.removeVideoElement(s);
         }
       });
-      // this.lobbyService.join(this.mediaStream, '123', `${this.stream.id}`, environment.iceServers).then(() => console.log('Connected'));
+      this.lobbyService.join(this.mediaStream, this.spaceId, this.streamId, this.config).then(() => console.log('Connected'));
     }
   }
 
@@ -96,5 +119,12 @@ export class LobbyComponent implements OnInit {
 
   removeVideoElement(id: string) {
     document.getElementById(id)?.remove();
+  }
+
+  private getToken(): string {
+    if (typeof this.token !== 'string') {
+      console.error('Invalid token: ', this.token);
+    }
+    return (this.token === undefined) ? 'unauthorized' : this.token;
   }
 }

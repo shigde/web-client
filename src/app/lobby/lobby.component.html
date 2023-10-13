@@ -1,5 +1,5 @@
 <div *ngIf="stream">
-  <h2>Live Stream: {{"---" | uppercase}}</h2>
+  <h2>Live Stream: {{stream.uuid | uppercase}}</h2>
 
   <div>
     <video id="video" style="background-color: black" muted autoplay></video>
@@ -15,6 +15,6 @@
   </button>
 
   <div id="remote-video-container">
-<!--    <video id="remote-video" style="background-color: black" muted autoplay></video>-->
+    <!--    <video id="remote-video" style="background-color: black" muted autoplay></video>-->
   </div>
 </div>

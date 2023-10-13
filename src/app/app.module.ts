@@ -12,14 +12,16 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {LoginComponent} from './login/login.component';
 import {CommonModule} from '@angular/common';
 import {httpInterceptorProviders} from '@shig/core';
+import {LobbyEntryComponent} from './lobby-entry/lobby-entry.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
-    LobbyComponent,
     LiveStreamComponent,
     LoginComponent,
+    LobbyComponent,
+    LobbyEntryComponent
   ],
   imports: [
     CommonModule,
