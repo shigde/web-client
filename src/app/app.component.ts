@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
-import {SessionService} from './provider/session.service';
-import {Observable, tap} from 'rxjs';
 import {Router} from '@angular/router';
+import {Observable} from 'rxjs';
+import {SessionService} from '@shig/core';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +9,7 @@ import {Router} from '@angular/router';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  user$: Observable<string>
+  user$: Observable<string>;
   title = 'shig-web-client';
 
   constructor(private router: Router, private session: SessionService) {

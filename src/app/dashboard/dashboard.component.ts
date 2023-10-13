@@ -1,7 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {StreamService} from '../provider/stream.service';
-import {Stream} from '../entities/stream';
-import {SpaceService} from '../provider/space.service';
+import {Stream, StreamService, SpaceService} from '@shig/core';
 import {map} from 'rxjs';
 
 @Component({
@@ -10,8 +8,8 @@ import {map} from 'rxjs';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  streams: Stream[] = []
-  streamMap = new Map<string, Stream[]>()
+  streams: Stream[] = [];
+  streamMap = new Map<string, Stream[]>();
 
   constructor(
     private spaceService: SpaceService,
@@ -24,18 +22,19 @@ export class DashboardComponent implements OnInit {
   }
 
   getStreams(): void {
-    this.streamService.getStreams("123")
+    this.streamService.getStreams('live_stream_channel@localhost:9000')
       .subscribe(streams => this.streams = streams);
   }
+
   getSpaces(): void {
     this.spaceService.getSpaces()
       .pipe(map((spaces) => spaces.slice(1, 5)))
       .subscribe(spaces => {
         spaces.forEach(space => {
           this.streamService.getStreams(space.id).subscribe((streams) => {
-            this.streamMap.set(space.id, streams)
-          })
-        })
+            this.streamMap.set(space.id, streams);
+          });
+        });
       });
   }
 }

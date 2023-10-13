@@ -1,8 +1,7 @@
 import {Component} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {SessionService} from '../provider/session.service';
-import {User} from '../entities/user';
 import {Router} from '@angular/router';
+import {User, SessionService} from '@shig/core';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +17,7 @@ export class LoginComponent {
 
   onLogin(f: NgForm): void {
     if (!f.value.user) {
-      return
+      return;
     }
     if (this.session.setUserName(f.value.user)) {
       this.router.navigate(['']);
