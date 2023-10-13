@@ -22,10 +22,7 @@
     "lib": [
       "ES2022",
       "dom"
-    ],
-    "paths": {
-      "@shig/core": ["./../shig-js-sdk/dist/core"]
-    }
+    ]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
