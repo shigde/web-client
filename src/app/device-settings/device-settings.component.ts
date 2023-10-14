@@ -1,32 +1,35 @@
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Observable, Subscription} from 'rxjs';
+import {Observable, Subscription, tap} from 'rxjs';
 import {
     DeviceSettings,
     DeviceSettingsOptions,
-    DeviceSettingsService,
+    DeviceSettingsService, IndexStoreService,
     SelectValue
 } from '@shig/core';
+import {map} from 'rxjs/operators';
 
+export type DeviceSettingsCbk = (s: DeviceSettings) => void;
 
 @Component({
     selector: 'app-device-settings',
     templateUrl: './device-settings.component.html',
     styleUrls: ['./device-settings.component.scss']
 })
-export class DeviceSettingsComponent implements OnInit, AfterViewInit{
-    @Input() data: { settings: DeviceSettings, cbk: (s: DeviceSettings) => void } | undefined;
+export class DeviceSettingsComponent implements OnInit, AfterViewInit {
+    @Input() cbk: undefined | DeviceSettingsCbk;
+    @Input() closeCbk: undefined | (() => void);
 // tslint:disable-next-line:no-output-on-prefix
-    public onSelectChange: (settings: DeviceSettings) => void;
-    public settings: DeviceSettings;
+    public onSelectChange?: (settings: DeviceSettings) => void;
+    public settings = DeviceSettings.buildDefault();
     public readonly settingsOptions = new DeviceSettingsOptions();
     public readonly settingForm = new FormGroup({
-        camera: new FormControl(""),
-        microphone: new FormControl(""),
+        camera: new FormControl(''),
+        microphone: new FormControl(''),
         audioDevice: new FormControl(),
         quality: new FormControl(),
-        videoCodec:new FormControl(),
-        bandwidth:new FormControl(),
+        videoCodec: new FormControl(),
+        bandwidth: new FormControl(),
         audio: new FormControl(),
     });
 
@@ -36,23 +39,29 @@ export class DeviceSettingsComponent implements OnInit, AfterViewInit{
 
     constructor(
         protected media: DeviceSettingsService,
-        protected fb: FormBuilder
+        private store: IndexStoreService,
     ) {
-        if (this.data) {
-            this.settings = this.data.settings;
-            this.onSelectChange = this.data.cbk;
-        } else {
-            this.settings = DeviceSettings.buildDefault();
-            this.onSelectChange = (_: DeviceSettings) => {
-            };
-        }
-
     }
 
     ngOnInit(): void {
-        if (this.settings) {
-            this.updateForm(this.settings);
+        if(!!this.cbk) {
+            this.onSelectChange = this.cbk;
         }
+
+        this.store.get()
+            .pipe(map((setting): DeviceSettings => {
+                    if (setting === undefined) {
+
+                        setting = DeviceSettings.buildDefault();
+                        // this.store.save(setting);
+                    }
+                    this.settings = setting;
+                    this.updateForm(this.settings);
+                    return setting;
+                })
+            ).subscribe(() => {
+        });
+
     }
 
     public updateForm(settings: DeviceSettings): void {
@@ -90,14 +99,21 @@ export class DeviceSettingsComponent implements OnInit, AfterViewInit{
 
     public onChange(): void {
         if (this?.onSelectChange && this.settings) {
-            this.settings.camera = this.settingForm.value.camera
-            this.settings.microphone = this.settingForm.get('microphone')?.value
-            this.settings.audioDevice = this.settingForm.get('audioDevice')?.value
-            this.settings.quality = this.settingForm.get('quality')?.value
-            this.settings.videoCodec = this.settingForm.get('videoCodec')?.value
-            this.settings.bandwidth = this.settingForm.get('bandwidth')?.value
-            this.settings.audio = this.settingForm.get('audio')?.value
+            this.settings.camera = this.settingForm.value.camera;
+            this.settings.microphone = this.settingForm.get('microphone')?.value;
+            this.settings.audioDevice = this.settingForm.get('audioDevice')?.value;
+            this.settings.quality = this.settingForm.get('quality')?.value;
+            this.settings.videoCodec = this.settingForm.get('videoCodec')?.value;
+            this.settings.bandwidth = this.settingForm.get('bandwidth')?.value;
+            this.settings.audio = this.settingForm.get('audio')?.value;
+            this.store.update(this.settings);
             this.onSelectChange(this.settings);
+        }
+    }
+
+    public close() {
+        if(this.closeCbk) {
+            this.closeCbk();
         }
     }
 

@@ -1,4 +1,4 @@
-<div>
+<div id="device-settings">
     <form class="row-form" name="settingForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="settingForm">
 
         <div class="form-group mb-3" >
@@ -48,6 +48,10 @@
             <select class="form-select" id="bandwidth" name="bandwidth" formControlName="bandwidth" data-cy="bandwidth" (selectionchange)="onChange()">
                 <option *ngFor="let option of settingsOptions.bandwidth" [value]="option.value">{{ option.value }}</option>
             </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <button type="button" class="btn btn-secondary btn-lg" (click)="close()">Close</button>
         </div>
     </form>
 </div>

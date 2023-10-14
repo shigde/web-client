@@ -4,8 +4,10 @@ import {Location} from '@angular/common';
 import {filter, tap} from 'rxjs';
 import {environment} from '../../environments/environment';
 
-import {LobbyService, Stream, StreamService, SessionService, ParameterService} from '@shig/core';
+import {DeviceSettings, LobbyService, ParameterService, SessionService, Stream, StreamService} from '@shig/core';
 import {MultiStreamsMixer} from '../provider/multi_streams_mixer';
+import {DeviceSettingsCbk} from '../device-settings/device-settings.component';
+import {DeviceSettingsService} from '../../../../shig-js-sdk/projects/core';
 
 
 @Component({
@@ -14,8 +16,13 @@ import {MultiStreamsMixer} from '../provider/multi_streams_mixer';
   styleUrls: ['./lobby.component.scss']
 })
 export class LobbyComponent implements OnInit {
+  cbk: DeviceSettingsCbk;
+  displaySettings = false
+
   stream: Stream | undefined;
   mediaStream: MediaStream | undefined;
+  hasMediaStreamSet = false;
+
   private readonly config: RTCConfiguration = {
     iceServers: environment.iceServers
   };
@@ -30,30 +37,21 @@ export class LobbyComponent implements OnInit {
 
   constructor(
     private session: SessionService,
+    private devices: DeviceSettingsService,
     private streamService: StreamService,
     private lobbyService: LobbyService,
     private params: ParameterService,
     private location: Location
   ) {
-
-    // this.settings$ = this.store.get()
-    //   .pipe(
-    //     map((setting): DeviceSettings => {
-    //       if (setting === undefined) {
-    //         setting = DeviceSettings.buildDefault();
-    //         this.store.save(setting);
-    //       }
-    //       return setting;
-    //     })
-    //   );
-
+    this.cbk = (settings) => {
+      this.startCamera(settings)
+    }
   }
 
   ngOnInit(): void {
     if (this.apiPrefix !== undefined) {
       this.params.API_PREFIX = this.apiPrefix;
     }
-
     this.session.setAuthenticationToken(this.getToken());
     this.getStream();
 
@@ -75,18 +73,18 @@ export class LobbyComponent implements OnInit {
     if (this.streamId !== undefined && this.spaceId !== undefined) {
       this.streamService.getStream(this.streamId, this.spaceId)
         .pipe(tap((stream) => this.stream = stream))
-        .subscribe((_: any) => this.startCamera());
+        .subscribe();
     }
   }
 
-  startCamera() {
-    navigator.mediaDevices
-      .getUserMedia({audio: true, video: true})
+  startCamera(settings: DeviceSettings) {
+    this.devices.getUserMedia(settings)
       .then((stream) => this.mediaStream = stream)
       .then(() => (document.getElementById('video') as HTMLVideoElement))
       .then(element => {
           if (this.mediaStream) {
             element.srcObject = this.mediaStream;
+            this.hasMediaStreamSet = true;
           }
         }
       );
@@ -146,5 +144,10 @@ export class LobbyComponent implements OnInit {
       console.error('Invalid token: ', this.token);
     }
     return (this.token === undefined) ? 'unauthorized' : this.token;
+  }
+
+  toggleSettings() {
+
+    this.displaySettings = !this.displaySettings
   }
 }

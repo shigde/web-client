@@ -14,6 +14,7 @@ import {CommonModule} from '@angular/common';
 import {httpInterceptorProviders} from '@shig/core';
 import {LobbyEntryComponent} from './lobby-entry/lobby-entry.component';
 import {DeviceSettingsComponent} from './device-settings/device-settings.component';
+import { SettingsComponent } from './svg/settings.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import {DeviceSettingsComponent} from './device-settings/device-settings.compone
         LoginComponent,
         LobbyComponent,
         LobbyEntryComponent,
-        DeviceSettingsComponent
+        DeviceSettingsComponent,
+        SettingsComponent
     ],
     imports: [
         CommonModule,

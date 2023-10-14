@@ -1,75 +1,85 @@
 <div *ngIf="stream">
-  <h2>Live Stream: {{stream.uuid | uppercase}}</h2>
 
-  <app-device-settings></app-device-settings>
+    <div class="row_line">
+        <h2>Live Stream: {{stream.uuid | uppercase}}</h2>
+        <app-svg-settings (click)="toggleSettings()"></app-svg-settings>
+    </div>
 
-  <div>
-    <video id="video" style="background-color: black" muted autoplay></video>
-  </div>
-  <button type="button" (click)="goBack()">go back</button>
-  <button id="btn-join" class="btn btn-primary" (click)="start()" type="button" [disabled]="!mediaStream">
-    <div *ngIf="!mediaStream"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-      Loading...
-    </div>
-    <div *ngIf="!!mediaStream">
-      Join
-    </div>
-  </button>
 
-  <div id="remote-video-container">
-    <!--    <video id="remote-video" style="background-color: black" muted autoplay></video>-->
-  </div>
+    <div *ngIf="!hasMediaStreamSet || displaySettings">
+        <app-device-settings [cbk]="cbk" [closeCbk]=toggleSettings.bind(this)></app-device-settings>
+    </div>
 
-  <div id="gallery" *ngIf="!stream">
-    <div class="video-container">
-      <video
-        autoplay
-        loop
-        muted="muted"
-        src="https://dosant.github.io/video.mp4"
-      ></video>
-    </div>
-    <div class="video-container">
-      <video
-        autoplay
-        loop
-        muted="muted"
-        src="https://dosant.github.io/video.mp4"
-      ></video>
-    </div>
-    <div class="video-container">
-      <video
-        autoplay
-        loop
-        muted="muted"
-        src="https://dosant.github.io/video.mp4"
-      ></video>
-    </div>
-    <div class="video-container">
-      <video
-        autoplay
-        loop
-        muted="muted"
-        src="https://dosant.github.io/video.mp4"
-      ></video>
-    </div>
-    <div class="video-container">
-      <video
-        autoplay
-        loop
-        muted="muted"
-        src="https://dosant.github.io/video.mp4"
-      ></video>
-    </div>
-    <!-- <div class="video-container">
-      <video
-        autoplay
-        loop
-        muted
-        src="https://dosant.github.io/video.mp4"
-      ></video>
-    </div> -->
-  </div>
 
-  <script src="src/index.ts"></script>
+
+    <div>
+        <video id="video" style="background-color: black" muted autoplay></video>
+    </div>
+    <button type="button" (click)="goBack()">go back</button>
+    <button id="btn-join" class="btn btn-primary" (click)="start()" type="button" [disabled]="!mediaStream">
+        <div *ngIf="!mediaStream"><span class="spinner-border spinner-border-sm" role="status"
+                                        aria-hidden="true"></span>
+            Loading...
+        </div>
+        <div *ngIf="!!mediaStream">
+            Join
+        </div>
+    </button>
+
+    <div id="remote-video-container">
+        <!--    <video id="remote-video" style="background-color: black" muted autoplay></video>-->
+    </div>
+
+    <div id="gallery" *ngIf="!stream">
+        <div class="video-container">
+            <video
+                    autoplay
+                    loop
+                    muted="muted"
+                    src="https://dosant.github.io/video.mp4"
+            ></video>
+        </div>
+        <div class="video-container">
+            <video
+                    autoplay
+                    loop
+                    muted="muted"
+                    src="https://dosant.github.io/video.mp4"
+            ></video>
+        </div>
+        <div class="video-container">
+            <video
+                    autoplay
+                    loop
+                    muted="muted"
+                    src="https://dosant.github.io/video.mp4"
+            ></video>
+        </div>
+        <div class="video-container">
+            <video
+                    autoplay
+                    loop
+                    muted="muted"
+                    src="https://dosant.github.io/video.mp4"
+            ></video>
+        </div>
+        <div class="video-container">
+            <video
+                    autoplay
+                    loop
+                    muted="muted"
+                    src="https://dosant.github.io/video.mp4"
+            ></video>
+        </div>
+        <!-- <div class="video-container">
+          <video
+            autoplay
+            loop
+            muted
+            src="https://dosant.github.io/video.mp4"
+          ></video>
+        </div> -->
+    </div>
+
+    <script src="src/index.ts"></script>
 </div>
