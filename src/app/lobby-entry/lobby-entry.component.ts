@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {SessionService} from '@shig/core';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 
 type Param = { streamId: string, spaceId: string, userToken: string }
 
@@ -15,12 +17,14 @@ export class LobbyEntryComponent implements OnInit {
   streamId: string;
   spaceId: string;
   userToken: string;
+  role$: Observable<string>;
 
   constructor(
     private route: ActivatedRoute,
     session: SessionService,
   ) {
     this.userToken = session.getToken();
+    this.role$ = session.getUserName().pipe(map((name: string) => name === "Owner"? "owner" : "guest"));
     const streamId = this.route.snapshot.paramMap.get('streamId');
     const spaceId = this.route.snapshot.paramMap.get('spaceId');
 

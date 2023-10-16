@@ -13,7 +13,7 @@ export class StreamMixer {
         this.canvas.width = WIDTH;
         this.canvas.height = HEIGHT;
         this.context = this.canvas.getContext('2d') as CanvasRenderingContext2D;
-        this.context.imageSmoothingEnabled = true
+        this.context.imageSmoothingEnabled = true;
         this.mediaStream = new MediaStream();
     }
 
@@ -74,14 +74,14 @@ export class StreamMixer {
                 // x coordinate
                 if (xDiff >= 0) {
                     sx = xDiff / 2;
-                    sw = v.videoWidth - xDiff / 2 ;
+                    sw = v.videoWidth - xDiff / 2;
                     dx = placeX;
                     dw = partWidth;
                 } else {
                     sx = 0;
                     sw = v.videoWidth;
-                    dx = placeX
-                    dw = partWidth
+                    dx = placeX;
+                    dw = partWidth;
                 }
 
                 // y coordinate
@@ -93,8 +93,8 @@ export class StreamMixer {
                 } else {
                     sy = 0;
                     sh = v.videoHeight;
-                    dy = placeY - (cols-1)*yDiff/cols;
-                    dh = partHeight + (cols-1)*yDiff;
+                    dy = placeY - (cols - 1) * yDiff / cols;
+                    dh = partHeight + (cols - 1) * yDiff;
                 }
 
                 // this.context.drawImage(v, 0, 0, v.videoHeight, v.videoWidth, placeX, placeY, partWidth, partHeight);
@@ -112,7 +112,9 @@ export class StreamMixer {
     }
 
     getStream(): MediaStream {
-        return this.canvas.captureStream(60)
+        return this.canvas.captureStream(60);
     }
 }
 
+// https://stackoverflow.com/questions/49474980/how-do-i-split-a-video-into-blocks-using-drawimage-in-html5
+// https://antmedia.io/how-to-merge-live-stream-and-canvas-in-webrtc-easily/
