@@ -43,6 +43,7 @@ export class LobbyComponent implements OnInit {
     @Input('api-prefix') apiPrefix: string | undefined;
     @Input('stream') streamId: string | undefined;
     @Input('space') spaceId: string | undefined;
+    @Input('user') user: string | undefined;
     @Input() role: string | null = 'guest';
 
     @Output() loadComp = new EventEmitter();
@@ -97,7 +98,7 @@ export class LobbyComponent implements OnInit {
             this.streamService.getStream(this.streamId, this.spaceId)
                 .pipe(tap((stream) => this.stream = stream))
                 .subscribe(() => {
-                    if (this.role === 'owner') {
+                    if (this.user !== undefined && this.stream?.user === this.user) {
                         setTimeout(() => {
                             this.mixer = new StreamMixer('canvasOne');
                             this.mixer.start();
