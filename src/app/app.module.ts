@@ -13,30 +13,35 @@ import {LoginComponent} from './login/login.component';
 import {CommonModule} from '@angular/common';
 import {httpInterceptorProviders} from '@shig/core';
 import {LobbyEntryComponent} from './lobby-entry/lobby-entry.component';
+import {DeviceSettingsComponent} from './device-settings/device-settings.component';
+import { SettingsComponent } from './svg/settings.component';
+
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    DashboardComponent,
-    LiveStreamComponent,
-    LoginComponent,
-    LobbyComponent,
-    LobbyEntryComponent
-  ],
-  imports: [
-    CommonModule,
-    BrowserModule,
-    HttpClientModule,
-    AppRoutingModule,
-    NgbModule,
-    NgbDropdownModule,
-    ReactiveFormsModule,
-    FormsModule
-  ],
-  providers: [
-    httpInterceptorProviders,
-  ],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        DashboardComponent,
+        LiveStreamComponent,
+        LoginComponent,
+        LobbyComponent,
+        LobbyEntryComponent,
+        DeviceSettingsComponent,
+        SettingsComponent
+    ],
+    imports: [
+        CommonModule,
+        BrowserModule,
+        HttpClientModule,
+        AppRoutingModule,
+        NgbModule,
+        NgbDropdownModule,
+        ReactiveFormsModule,
+        FormsModule
+    ],
+    providers: [
+        httpInterceptorProviders,
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule {
 }

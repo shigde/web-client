@@ -1,20 +1,49 @@
 <div *ngIf="stream">
-  <h2>Live Stream: {{stream.uuid | uppercase}}</h2>
 
-  <div>
-    <video id="video" style="background-color: black" muted autoplay></video>
-  </div>
-  <button type="button" (click)="goBack()">go back</button>
-  <button id="btn-join" class="btn btn-primary" (click)="start()" type="button" [disabled]="!mediaStream">
-    <div *ngIf="!mediaStream"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-      Loading...
-    </div>
-    <div *ngIf="!!mediaStream">
-      Join
-    </div>
-  </button>
+    <div class="row_line">
+        <div class="headline">
+            <h5>Live Stream: {{stream.uuid | uppercase}}</h5>
+            <span>offline</span>
+        </div>
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-secondary" (click)="goBack()">Back</button>
 
-  <div id="remote-video-container">
-    <!--    <video id="remote-video" style="background-color: black" muted autoplay></video>-->
-  </div>
+            <button type="button" class="btn btn-secondary" *ngIf="!isInLobby" (click)="join()"
+                    [disabled]="!mediaStream">Join
+            </button>
+            <button type="button" class="btn btn-secondary" *ngIf="isInLobby" (click)="start()"
+                    [disabled]="!mediaStream">Start
+            </button>
+
+            <button type="button" class="btn btn-secondary" (click)="toggleSettings()">
+                <app-svg-settings>
+                </app-svg-settings>
+            </button>
+        </div>
+    </div>
+
+
+    <div *ngIf="!hasMediaStreamSet || displaySettings">
+        <app-device-settings [cbk]="cbk" [closeCbk]=toggleSettings.bind(this)></app-device-settings>
+    </div>
+
+    <div id="lobby-main">
+        <div id="lobby-stream-video">
+            <canvas id="canvasOne" >
+                Your browser does not support HTML5 Canvas.
+            </canvas>
+        </div>
+
+        <div id="lobby-quest-video">
+            <div class="lobby-quest-video-box">
+                <video id="video" style="background-color: black" muted autoplay></video>
+                <div class="btn-group control-bar" data-toggle="buttons">
+                    <label class="btn btn-primary active" (click)="toggleActive('video', 'local')">
+                        <input id="local" type="checkbox" disabled> active
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
