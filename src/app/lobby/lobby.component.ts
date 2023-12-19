@@ -98,12 +98,12 @@ export class LobbyComponent implements OnInit {
             this.streamService.getStream(this.streamId, this.spaceId)
                 .pipe(tap((stream) => this.stream = stream))
                 .subscribe(() => {
-                    if (this.user !== undefined && this.stream?.user === this.user) {
-                        setTimeout(() => {
-                            this.mixer = new StreamMixer('canvasOne');
-                            this.mixer.start();
-                        }, 0);
-                    }
+                    //if (this.user !== undefined && this.stream?.user === this.user) {
+                    setTimeout(() => {
+                        this.mixer = new StreamMixer('canvasOne');
+                        this.mixer.start();
+                    }, 0);
+                    //}
 
                 });
         }
@@ -117,6 +117,14 @@ export class LobbyComponent implements OnInit {
                     if (this.mediaStream) {
                         element.srcObject = this.mediaStream;
                         this.hasMediaStreamSet = true;
+                        if (this.mixer) {
+                            this.mixer.appendStream(this.mediaStream)
+                        }
+
+                        for (let i = 0; i < 2; i++) {
+                            let videoWlm = this.getOrCreateVideoElement('stream' + i) as HTMLVideoElement;
+                            videoWlm.srcObject = this.mediaStream;
+                        }
                     }
                 }
             );
@@ -135,18 +143,22 @@ export class LobbyComponent implements OnInit {
             this.lobbyService.add$.pipe(filter(s => s !== null)).subscribe((s: any) => {
                 if (s !== null) {
                     this.getOrCreateVideoElement(s.id).srcObject = s;
+                    if (this.mixer) {
+                        this.mixer.appendStream(s)
+                    }
                 }
             });
             this.lobbyService.remove$.pipe(filter(s => s !== null)).subscribe((s: any) => {
                 if (s !== null && this.hasVideoElement(s)) {
                     this.removeVideoElement(s);
+                    if (this.mixer) {
+                        this.mixer.removeStream(s)
+                    }
                 }
             });
             const streams = [this.mediaStream];
-            if (!!this.mixer) {
-                streams.push(this.mixer.getStream());
-            }
-            this.lobbyService.join(streams, this.spaceId, this.streamId, this.config).then(() => this.isInLobby = true);
+
+            // this.lobbyService.join(streams, this.spaceId, this.streamId, this.config).then(() => this.isInLobby = true);
         }
     }
 
