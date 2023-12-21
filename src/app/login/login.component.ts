@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Router} from '@angular/router';
-import {User, SessionService} from '@shig/core';
+import {User, SessionService} from '@shigde/core';
 
 @Component({
   selector: 'app-login',

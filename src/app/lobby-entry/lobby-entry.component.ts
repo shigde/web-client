@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {SessionService} from '@shig/core';
+import {SessionService} from '@shigde/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 

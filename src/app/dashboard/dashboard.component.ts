@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Stream, StreamService, SpaceService} from '@shig/core';
+import {Stream, StreamService, SpaceService} from '@shigde/core';
 import {map} from 'rxjs';
 
 @Component({

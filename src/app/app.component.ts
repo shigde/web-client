@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
-import {SessionService} from '@shig/core';
+import {SessionService} from '@shigde/core';
 
 @Component({
   selector: 'app-root',
