@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {SessionService} from '@shig/core';
+import {SessionService} from '@shigde/core';
 
 @Injectable({providedIn: 'root'})
 export class UserRouteAccessGuard implements CanActivate {

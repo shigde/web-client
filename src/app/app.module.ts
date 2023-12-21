@@ -11,7 +11,7 @@ import {NgbDropdownModule, NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {LoginComponent} from './login/login.component';
 import {CommonModule} from '@angular/common';
-import {httpInterceptorProviders, ShigModule} from '@shig/core';
+import {httpInterceptorProviders, ShigModule} from '@shigde/core';
 import {LobbyEntryComponent} from './lobby-entry/lobby-entry.component';
 import {SettingsComponent} from './svg/settings.component';
 
