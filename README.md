@@ -1,27 +1,43 @@
-# WebClient
+# Shig WebClient
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.4.
+The Shig Web Client is a standalone version for a Shig instance. Shig is intended to act as an intermediary between Fediverse instances. The client provides the possibility to directly enter a Shig Lobby. Since Shig itself is not a streaming service, unfortunately, it is not yet possible to create a new live stream via the Shig Client.
+Nevertheless, it is possible to start an existing stream live.
+The stream must have been created beforehand as an interactive live stream through PeerTube or Owncats.
 
-## Development server
+## Development
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+```shell
+npm install
+npm start
+```
 
-## Code scaffolding
+Navigate to `http://localhost:4200/`.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
+## Shig Instance as a Dependency
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+The web client essentially serves as a frontend for a Shig instance; therefore, it requires one. 
 
-## Running unit tests
+Please clone the sfu project. https://github.com/shigde/sfu
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Normally, the SFU (Shig instance) listens for data from other Fediverse instances. 
+However, to facilitate development, please start the SFU with an included SQLite database. 
+Run inside the SFU project
 
-## Running end-to-end tests
+```shell
+mv shig-dev.db shig.db
+```
+This will place a database with date in the root directory 
+After this launch the SFU (the Shig instance) using 
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```shell
+make run
+```
 
-## Further help
+Now you can lunch the Shig Web Client
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+
+
+
+
