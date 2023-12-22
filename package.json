@@ -20,7 +20,7 @@
     "@angular/router": "^17.0.8",
     "@ng-bootstrap/ng-bootstrap": "^15.1.0",
     "@popperjs/core": "^2.11.6",
-    "@shigde/core": "^0.0.1",
+    "@shigde/core": "^0.0.2",
     "bootstrap": "^5.2.3",
     "dexie": "^3.2.4",
     "multistreamsmixer": "^1.2.2",
