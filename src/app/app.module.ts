@@ -7,7 +7,6 @@ import {DashboardComponent} from './dashboard/dashboard.component';
 import {HttpClientModule} from '@angular/common/http';
 
 import {LiveStreamComponent} from './live-stream/live-stream.component';
-import {NgbDropdownModule, NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {LoginComponent} from './login/login.component';
 import {CommonModule} from '@angular/common';
@@ -30,8 +29,6 @@ import {SettingsComponent} from './svg/settings.component';
         BrowserModule,
         HttpClientModule,
         AppRoutingModule,
-        NgbModule,
-        NgbDropdownModule,
         ReactiveFormsModule,
         FormsModule,
         ShigModule

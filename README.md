@@ -22,12 +22,12 @@ Please clone the sfu project. https://github.com/shigde/sfu
 
 Normally, the SFU (Shig instance) listens for data from other Fediverse instances. 
 However, to facilitate development, please start the SFU with an included SQLite database. 
-Run inside the SFU project
+Run inside the SFU project:
 
 ```shell
 mv shig-dev.db shig.db
 ```
-This will place a database with date in the root directory 
+This will place a database with date in the root directory. 
 After this launch the SFU (the Shig instance) using 
 
 ```shell
@@ -37,7 +37,31 @@ make run
 Now you can lunch the Shig Web Client
 
 
+## Develop with shig js sdk
 
+### Setup, Build and Link the shig-js-sdk
+
+
+```shell
+git clone https://github.com/shigde/shig-js-sdk.git
+cd shig-js-sdk
+npm run watch:core
+cd dist/core
+npm link
+```
+
+### Setup project with linked shig-js-sdk
+
+The Shig WebClient is a good place to develop the SDK as well.
+To set up a develop environment for the SDK fallow the next steps.
+
+```shell
+cd web-client
+npm i @shigde/core
+npm start
+```
+
+Have Fun!
 
 
 

@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {SessionService} from '@shigde/core';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {filter} from 'rxjs';
 
 type Param = { streamId: string, spaceId: string, userToken: string }
 
@@ -17,14 +16,18 @@ export class LobbyEntryComponent implements OnInit {
   streamId: string;
   spaceId: string;
   userToken: string;
-  role$: Observable<string>;
+  user: string = "unknown";
+
 
   constructor(
     private route: ActivatedRoute,
     session: SessionService,
   ) {
     this.userToken = session.getToken();
-    this.role$ = session.getUserName().pipe(map((name: string) => name === "Owner"? "owner" : "guest"));
+    session.getUserName().subscribe((name) => {
+        this.user = name
+    });
+    //this.user$ = userName.pipe(map((name: string) => !name? "unknown" : name)) as Observable<string>;
     const streamId = this.route.snapshot.paramMap.get('streamId');
     const spaceId = this.route.snapshot.paramMap.get('spaceId');
 
@@ -37,4 +40,6 @@ export class LobbyEntryComponent implements OnInit {
     // this.streamId = this.route.snapshot.paramMap.get('streamId');
     // this.spaceId = this.route.snapshot.paramMap.get('spaceId');
   }
+
+    protected readonly filter = filter;
 }
