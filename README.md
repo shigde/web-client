@@ -45,7 +45,7 @@ Now you can lunch the Shig Web Client
 ```shell
 git clone https://github.com/shigde/shig-js-sdk.git
 cd shig-js-sdk
-npm run watch:core
+npm run watch
 cd dist/core
 npm link
 ```

@@ -17,6 +17,7 @@ export class LobbyEntryComponent implements OnInit {
   spaceId: string;
   userToken: string;
   user: string = "unknown";
+  apiPrifix: string = "/api";
 
 
   constructor(
