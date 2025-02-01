@@ -1,0 +1,28 @@
+* {
+  box-sizing: border-box;
+}
+
+:host {
+  position: absolute;
+  top: 100px;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#signupForm {
+  width: 500px;
+}
+
+#terms {
+  margin-top: 10px;
+}
+
+#signupBtn {
+  margin-top: 10px;
+}

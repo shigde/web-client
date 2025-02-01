@@ -1,78 +1,22 @@
-/* You can add global styles to this file, and also import other style files */
-:host {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-size: 14px;
-  color: #333;
-  box-sizing: border-box;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+@import 'scss/main';
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 8px 0;
-}
 
-p {
-  margin: 0;
-}
-
-.spacer {
-  flex: 1;
-}
-
-.toolbar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 60px;
+body, main{
   display: flex;
-  align-items: center;
-  background-color: #1d4970;
-  color: white;
-  font-weight: 600;
+  min-height: 80vh;
+  flex-direction: column;
 }
 
-.toolbar img {
-  margin: 0 16px;
+.loader {
+  border: 5px solid $secondary-brand-color !important;
+  border-bottom-color: $primary-brand-color !important;
 }
-
-.toolbar #mastodon-logo {
-  height: 40px;
-  margin: 0 8px;
-}
-
-.toolbar #youtube-logo {
-  height: 40px;
-  margin: 0 16px;
-}
-
-.toolbar #mastodon-logo:hover,
-.toolbar #youtube-logo:hover {
-  opacity: 0.8;
-}
-//
-//.content {
-//  display: flex;
-//  margin: 82px auto 32px;
-//  padding: 0 16px;
-//  width: 100%;
-//  flex-direction: column;
-//  align-items: center;
-//}
 
 
 svg.material-icons {
   height: 24px;
   width: auto;
 }
-
-
 
 .github-star-badge {
   color: #24292e;
@@ -105,29 +49,4 @@ svg#clouds {
   left: -230px;
   z-index: -10;
   width: 1920px;
-}
-
-
-/* Importing Bootstrap SCSS file. */
-@import 'bootstrap/scss/bootstrap';
-
-.app-content {
-  margin-bottom: 90px !important;
-}
-
-.lobby-quest-video-box {
-  position: relative;
-  flex: 1;
-  padding: 2px;
-}
-
-.lobby-quest-video-box video {
-  position: relative;
-  border-radius: 25px;
-  max-width: 100%;
-}
-.lobby-quest-video-box .control-bar {
-  position: absolute;
-  top: 10px;
-  right: 15px;
 }

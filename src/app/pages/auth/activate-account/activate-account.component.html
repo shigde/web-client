@@ -1,0 +1,20 @@
+<div class="card-app">
+  <div class="card-title">
+      <h1>Activate Account!</h1>
+  </div>
+
+  <ng-container *ngIf="!success && !fail">
+  <p class="warning">We activating your Account. Please wait a Moment!</p>
+  </ng-container>
+
+  <ng-container *ngIf="success">
+    <div>Your account is activated! Please login!</div>
+    <div>Please <a href="/login">Login</a>!</div>
+  </ng-container>
+
+  <ng-container *ngIf="fail">
+    <div>The activation of your account fails!</div>
+    <div>Please <a href="/sigin">SignIn</a>!</div>
+  </ng-container>
+
+</div>

@@ -1,0 +1,32 @@
+<div class="card-app">
+
+  <div class="card-title">
+    <h1>Login</h1>
+  </div>
+
+  <ng-container *ngIf="fail">
+    <p class="invalid">Login fails!</p>
+  </ng-container>
+
+  <form id="login-form" class="form-group has-success has-feedback" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <input id="email" name="email" type="email" formControlName="email" placeholder="Email">
+
+    <div *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)" class="invalid">
+      <p *ngIf="loginForm.get('email')?.errors?.['required']">Your email is required!</p>
+      <p *ngIf="loginForm.get('email')?.errors?.['email']">Your input is not an email!</p>
+    </div>
+
+    <input type="password" formControlName="password" placeholder="Password">
+
+    <div *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)" class="invalid">
+      <p *ngIf="loginForm.get('password')?.errors?.['required']">Your password is required!</p>
+    </div>
+
+    <button>Login</button>
+  </form>
+
+  <div class="card-terms">
+    <span style="display: block">You forget your <a href="/forgotPasswordMail" >Password</a>?</span>
+  </div>
+
+</div>

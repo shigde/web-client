@@ -1,0 +1,40 @@
+.form-group {
+  position: relative;
+}
+.form-group input[type="submit"] {
+  background-color: $primary-brand-color;
+  font-size: 16px;
+  outline: none;
+  border-radius: 5px;
+  border: none;
+  padding: 8px 15px;
+  width: 100%;
+}
+
+.form-group input {
+  margin: 5px 0;
+  width: 100%;
+  background-color: $gray-200;
+  border: none;
+  outline: none;
+  padding: 12px 20px;
+  border-radius: 4px;
+}
+
+.invalid {
+  color: $pink;
+  font-size: small;
+  margin-bottom: 10px;
+}
+
+.fail {
+  color: $pink;
+  font-size: small;
+  margin-bottom: 10px;
+}
+
+.success {
+  color: $teal;
+  font-size: small;
+  margin-bottom: 10px;
+}
