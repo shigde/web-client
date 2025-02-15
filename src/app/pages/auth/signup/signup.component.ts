@@ -44,14 +44,14 @@ export class SignupComponent {
   public onSubmit() {
     if (this.signupForm.valid) {
 
-      const user = `${this.signupForm.value.user}`;
+      const name = `${this.signupForm.value.user}`;
       const email = `${this.signupForm.value.email}`;
-      const password = `${this.signupForm.value.password}`;
-      const account = {user, email, password};
+      const pass = `${this.signupForm.value.password}`;
+      const account = {name, email, pass};
 
       this.authService.registerAccount(account).pipe(
         take(1),
-        tap(a => this.success = true),
+        tap(_ => this.success = true),
         catchError((_) => this.handleError())
       ).subscribe();
     } else {

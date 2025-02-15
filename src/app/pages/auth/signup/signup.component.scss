@@ -3,16 +3,12 @@
 }
 
 :host {
-  position: absolute;
-  top: 100px;
-  left: 0;
-  right: 0;
-  margin-inline: auto;
-  width: fit-content;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+    position: absolute;
+    top: 100px;
+    left: 0;
+    right: 0;
+    margin-inline: auto;
+    width: fit-content;
 }
 
 #signupForm {
@@ -20,9 +16,9 @@
 }
 
 #terms {
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 #signupBtn {
-  margin-top: 10px;
+  margin-top: 15px;
 }

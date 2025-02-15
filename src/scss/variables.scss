@@ -1,12 +1,49 @@
 // Customize
+$font-family-sans-serif:
+    // Cross-platform generic font family (default user interface font)
+    system-ui,
+        // Safari for macOS and iOS (San Francisco)
+    -apple-system,
+        // Windows
+    "Segoe UI",
+        // Android
+    Roboto,
+        // Basic web fallback
+    "Helvetica Neue", Arial,
+        // Linux
+    "Noto Sans",
+    "Liberation Sans",
+        // Sans serif fallback
+    sans-serif,
+        // Emoji fonts
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+
 // Shig
+//$primary: #8dcaff;
+//$secondary: #ffffff;
+//$danger: #ff4136;
+
+// Custom vars
 $primary-brand-color: #8dcaff;
-$secondary-brand-color: #220122;
+$secondary-brand-color: #fdfdfd;
 
 // Customize Bootstrap
-$body-color: $secondary-brand-color;
-$body-bg: #ffffff;
+//$body-color: $secondary-brand-color;
+//$body-bg: #ffffff;
 
 $blue: $primary-brand-color;
 $primary: $primary-brand-color;
 $secondary: $secondary-brand-color;
+
+
+// Boddy color
+$body-color:                #212529 !default;
+$body-bg: #f2f2f2 !default;
+
+$body-secondary-color:      rgba($body-color, .75) !default;
+$body-secondary-bg:         #e9ecef !default;
+
+$body-tertiary-color:       rgba($body-color, .5) !default;
+$body-tertiary-bg:          #f8f9fa !default;
+
+$body-emphasis-color:        #000 !default;
