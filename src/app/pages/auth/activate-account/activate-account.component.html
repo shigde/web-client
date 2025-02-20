@@ -1,20 +1,26 @@
-<div class="card-app">
-  <div class="card-title">
-      <h1>Activate Account!</h1>
+<div class="modal modal-sheet position-static d-block bg-body-secondary p-4 py-md-5" tabindex="-1" role="dialog" >
+  <div class="modal-dialog w-100 " role="document">
+    <div class="modal-content w-100 rounded-3 shadow">
+      <div class="modal-header p-5 pb-4 border-bottom-0">
+        <h1 class="fw-bold mb-0 fs-2">Activate Account!</h1>
+      </div>
+      <div class="modal-body p-5 pt-0 row">
+        <ng-container *ngIf="!success && !fail">
+          <div>We activating your Account. Please wait a Moment!</div>
+        </ng-container>
+
+        <ng-container *ngIf="success">
+          <div>Your account is activated! Please login!</div>
+          <div>Please <a href="/login">Login</a>!</div>
+        </ng-container>
+
+        <ng-container *ngIf="fail">
+          <div>The activation of your account fails!</div>
+          <div>Please <a href="/signup">Sign-up</a>!</div>
+        </ng-container>
+      </div>
+    </div>
   </div>
-
-  <ng-container *ngIf="!success && !fail">
-  <p class="warning">We activating your Account. Please wait a Moment!</p>
-  </ng-container>
-
-  <ng-container *ngIf="success">
-    <div>Your account is activated! Please login!</div>
-    <div>Please <a href="/login">Login</a>!</div>
-  </ng-container>
-
-  <ng-container *ngIf="fail">
-    <div>The activation of your account fails!</div>
-    <div>Please <a href="/sigin">SignIn</a>!</div>
-  </ng-container>
-
 </div>
+
+

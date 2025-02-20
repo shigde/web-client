@@ -1,36 +1,38 @@
-<div class="card-app">
+<div class="modal modal-sheet position-static d-block bg-body-secondary p-4 py-md-5" tabindex="-1" role="dialog" id="modalSignin">
+  <div class="modal-dialog w-100 " role="document">
+    <div class="modal-content w-100 rounded-3 shadow">
+      <div class="modal-header p-5 pb-4 border-bottom-0">
+        <h1 class="fw-bold mb-0 fs-2">Login</h1>
+      </div>
 
-    <div class="card-title">
-        <h1>Login</h1>
+      <div class="form-signin modal-body p-5 pt-0 row">
+        <ng-container *ngIf="fail"><p class="invalid">Login fails!</p></ng-container>
+        <form id="login-form" class="" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="form-floating mb-3 is-invalid">
+            <input type="email" class="form-control rounded-3"
+                   [ngClass]="emailValid"
+                   aria-autocomplete="inline"
+                   id="email" placeholder="" formControlName="email" aria-describedby="emailFeedback"
+                   (input)="emailClean()"
+            >
+            <label for="email">Email address</label>
+            <div id="emailFeedback" class="invalid-tooltip">Please add a valid email address.</div>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="password" [ngClass]="passValid" class="form-control rounded-3" id="floatingPassword"
+                   placeholder="" formControlName="password" aria-describedby="passwordFeedback"
+                   (input)="passClean()">
+            <label for="floatingPassword">Password</label>
+            <div id="passwordFeedback" class="invalid-tooltip">Please add a password.</div>
+          </div>
+          <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Login</button>
+
+          <small class="text-body-secondary">By clicking Login, you agree to the terms of use.</small>
+          <hr class="my-4">
+          <small class="text-body-secondary">You forget your <a href="/forgotPasswordMail">Password</a>?</small>
+        </form>
+      </div>
     </div>
-
-    <ng-container *ngIf="fail">
-        <p class="invalid">Login fails!</p>
-    </ng-container>
-
-    <form id="login-form" class="form-group has-success has-feedback" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <input id="email" name="email" type="email" formControlName="email" placeholder="Email">
-
-        <div
-            *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)"
-            class="invalid">
-            <p *ngIf="loginForm.get('email')?.errors?.['required']">Your email is required!</p>
-            <p *ngIf="loginForm.get('email')?.errors?.['email']">Your input is not an email!</p>
-        </div>
-
-        <input type="password" formControlName="password" placeholder="Password">
-
-        <div
-            *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)"
-            class="invalid">
-            <p *ngIf="loginForm.get('password')?.errors?.['required']">Your password is required!</p>
-        </div>
-
-        <button>Login</button>
-    </form>
-
-
-    <span class='info-link'>You forget your <a href="/forgotPasswordMail">Password</a>?</span>
-
-
+  </div>
 </div>
+

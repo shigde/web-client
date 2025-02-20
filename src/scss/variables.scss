@@ -35,15 +35,35 @@ $blue: $primary-brand-color;
 $primary: $primary-brand-color;
 $secondary: $secondary-brand-color;
 
+// Light theme
+//$body-bg: #f2f2f2 !default;
+////$body-tertiary-bg: #ffffff !default;
+//
+//// Dark theme
+//$body-bg-dark: #151619;
+////$body-tertiary-bg-dark: #212529 !default;
 
-// Boddy color
-$body-color:                #212529 !default;
-$body-bg: #f2f2f2 !default;
 
-$body-secondary-color:      rgba($body-color, .75) !default;
-$body-secondary-bg:         #e9ecef !default;
+//input:-internal-autofill-selected {
+//  appearance:unset;
+//  background-image: unset !important;
+//  background-color: unset !important;
+//  color: fieldtext !important;
+//}
+//.form-signin .form-floating:focus-within {
+//  z-index: 2;
+//}
+//
+//.form-signin input[type="email"] {
+//  margin-bottom: -1px;
+//  border-bottom-right-radius: 0;
+//  border-bottom-left-radius: 0;
+//}
+//
+//.form-signin input[type="password"] {
+//  margin-bottom: 10px;
+//  border-top-left-radius: 0;
+//  border-top-right-radius: 0;
+//}
+//
 
-$body-tertiary-color:       rgba($body-color, .5) !default;
-$body-tertiary-bg:          #f8f9fa !default;
-
-$body-emphasis-color:        #000 !default;

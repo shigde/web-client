@@ -2,9 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService} from '@shigde/core';
-import {NgIf} from '@angular/common';
+import {NgClass, NgIf} from '@angular/common';
 import {catchError, of, take, tap} from 'rxjs';
 import {PASSWORD_CONSTRAIN, PasswordValidator} from '../../../validators/password.validator';
+import {ValidInput} from '../../../validators/valid-types';
 
 @Component({
   selector: 'app-password-forgotten',
@@ -12,7 +13,8 @@ import {PASSWORD_CONSTRAIN, PasswordValidator} from '../../../validators/passwor
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    NgIf
+    NgIf,
+    NgClass
   ],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.scss'
@@ -22,6 +24,9 @@ export class ForgotPasswordComponent implements OnInit {
   public fail = false;
   public success = false;
   private token: string | undefined;
+
+  public newPassValid: ValidInput = '';
+  public confirmPassValid: ValidInput = '';
 
   protected passForgetForm = new FormGroup({
     newPassword: new FormControl('', [
@@ -66,5 +71,25 @@ export class ForgotPasswordComponent implements OnInit {
   private handleError() {
     this.fail = true;
     return of('');
+  }
+
+  onChangeNewPass() {
+    if (this.passForgetForm.get('newPassword')?.invalid) {
+      this.newPassValid = 'is-invalid';
+      return
+    }
+    if (this.passForgetForm.get('newPassword')?.valid) {
+      this.newPassValid = 'is-valid';
+    }
+  }
+
+  onChangeConfirmPass() {
+    if (this.passForgetForm.get('confirmPassword')?.invalid || this.passForgetForm.errors?.['confirm']) {
+      this.confirmPassValid = 'is-invalid';
+      return
+    }
+    if (this.passForgetForm.get('confirmPassword')?.valid) {
+      this.confirmPassValid = 'is-valid';
+    }
   }
 }

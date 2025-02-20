@@ -1,5 +1,4 @@
 ///* Importing Bootstrap SCSS file. */
-
 @import "bootstrap-icons/font/bootstrap-icons.min.css";
 @import "bootstrap/scss/mixins/banner";
 @include bsBanner("");
@@ -9,6 +8,13 @@
 // Configuration
 @import "bootstrap/scss/functions";
 
+.is-invalid {
+  background-image: none !important;
+}
+
+.is-valid {
+  background-image: none !important;
+}
 
 //// Customize some defaults
 //$body-color: #333;
@@ -22,7 +28,6 @@
 @import "bootstrap/scss/maps";
 @import "bootstrap/scss/mixins";
 @import "bootstrap/scss/utilities";
-
 // Layout & components
 @import "bootstrap/scss/root";
 @import "bootstrap/scss/reboot";

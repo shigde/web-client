@@ -2,9 +2,10 @@ import {Component} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService} from '@shigde/core';
-import {NgIf} from '@angular/common';
+import {NgClass, NgIf} from '@angular/common';
 import {catchError, of, take, tap} from 'rxjs';
 import {PASSWORD_CONSTRAIN, PasswordValidator} from '../../../validators/password.validator';
+import {ValidInput} from '../../../validators/valid-types';
 
 @Component({
   selector: 'app-update-password',
@@ -12,7 +13,8 @@ import {PASSWORD_CONSTRAIN, PasswordValidator} from '../../../validators/passwor
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    NgIf
+    NgIf,
+    NgClass
   ],
   templateUrl: './update-password.component.html',
   styleUrl: './update-password.component.scss'
@@ -22,6 +24,10 @@ export class UpdatePasswordComponent {
   public fail = false;
   public success = false;
   private token: string | undefined;
+
+  public orgPassValid: ValidInput = '';
+  public newPassValid: ValidInput = '';
+  public confirmPassValid: ValidInput = '';
 
   protected updateForm = new FormGroup({
     orgPassword: new FormControl('', [Validators.required]),
@@ -40,15 +46,6 @@ export class UpdatePasswordComponent {
   constructor(private router: Router, private readonly route: ActivatedRoute, private authService: AuthService) {
   }
 
-  ngOnInit(): void {
-    const token = this.route.snapshot.paramMap.get('token');
-    if (token === null) {
-      this.fail = true;
-      return;
-    }
-
-    this.token = token;
-  }
 
   onSubmit() {
     this.success = false;
@@ -70,5 +67,36 @@ export class UpdatePasswordComponent {
   private handleError() {
     this.fail = true;
     return of('');
+  }
+
+
+  onChangeOrgPass() {
+    if (this.updateForm.get('orgPassword')?.invalid) {
+      this.orgPassValid = 'is-invalid';
+      return
+    }
+    if (this.updateForm.get('orgPassword')?.valid) {
+      this.orgPassValid = 'is-valid';
+    }
+  }
+
+  onChangeNewPass() {
+    if (this.updateForm.get('newPassword')?.invalid) {
+      this.newPassValid = 'is-invalid';
+      return
+    }
+    if (this.updateForm.get('newPassword')?.valid) {
+      this.newPassValid = 'is-valid';
+    }
+  }
+
+  onChangeConfirmPass() {
+    if (this.updateForm.get('confirmPassword')?.invalid || this.updateForm.errors?.['confirm']) {
+      this.confirmPassValid = 'is-invalid';
+      return
+    }
+    if (this.updateForm.get('confirmPassword')?.valid) {
+      this.confirmPassValid = 'is-valid';
+    }
   }
 }
