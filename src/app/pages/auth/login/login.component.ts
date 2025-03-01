@@ -40,7 +40,7 @@ export class LoginComponent {
     this.passValid = this.loginForm.get('password')?.invalid ? 'is-invalid' : 'is-valid';
     if (this.loginForm.valid) {
       this.authService.login(`${this.loginForm.value.email}`, `${this.loginForm.value.password}`).pipe(
-        (take(1)),
+        take(1),
         map(_ => window.location.href = '/dashboard'),
         catchError(_ => this.handleError())
       ).subscribe();
