@@ -6,7 +6,7 @@
 
 // scss-docs-start import-stack
 // Configuration
-@import "bootstrap/scss/functions";
+@import "bootstrap/scss/functions.scss";
 
 .is-invalid {
   background-image: none !important;
@@ -20,57 +20,56 @@
 //$body-color: #333;
 //$body-bg: #fff;
 
-@import "./variables";
+@import "./variables.scss";
 
 // Default variable overrides
-@import "bootstrap/scss/variables";
-@import "bootstrap/scss/variables-dark";
-@import "bootstrap/scss/maps";
-@import "bootstrap/scss/mixins";
-@import "bootstrap/scss/utilities";
+@import "bootstrap/scss/variables.scss";
+@import "bootstrap/scss/variables-dark.scss";
+@import "bootstrap/scss/maps.scss";
+@import "bootstrap/scss/mixins.scss";
+@import "bootstrap/scss/utilities.scss";
 // Layout & components
-@import "bootstrap/scss/root";
-@import "bootstrap/scss/reboot";
-@import "bootstrap/scss/type";
-@import "bootstrap/scss/images";
-@import "bootstrap/scss/containers";
-@import "bootstrap/scss/grid";
-@import "bootstrap/scss/tables";
-@import "bootstrap/scss/forms";
-@import "bootstrap/scss/buttons";
-@import "bootstrap/scss/transitions";
-@import "bootstrap/scss/dropdown";
-@import "bootstrap/scss/button-group";
-@import "bootstrap/scss/nav";
-@import "bootstrap/scss/navbar";
-@import "bootstrap/scss/card";
-@import "bootstrap/scss/accordion";
-@import "bootstrap/scss/breadcrumb";
-@import "bootstrap/scss/pagination";
-@import "bootstrap/scss/badge";
-@import "bootstrap/scss/alert";
-@import "bootstrap/scss/progress";
-@import "bootstrap/scss/list-group";
-@import "bootstrap/scss/close";
-@import "bootstrap/scss/toasts";
-@import "bootstrap/scss/modal";
-@import "bootstrap/scss/tooltip";
-@import "bootstrap/scss/popover";
-@import "bootstrap/scss/carousel";
-@import "bootstrap/scss/spinners";
-@import "bootstrap/scss/offcanvas";
-@import "bootstrap/scss/placeholders";
+@import "bootstrap/scss/root.scss";
+@import "bootstrap/scss/reboot.scss";
+@import "bootstrap/scss/type.scss";
+@import "bootstrap/scss/images.scss";
+@import "bootstrap/scss/containers.scss";
+@import "bootstrap/scss/grid.scss";
+@import "bootstrap/scss/tables.scss";
+@import "bootstrap/scss/forms.scss";
+@import "bootstrap/scss/buttons.scss";
+@import "bootstrap/scss/transitions.scss";
+@import "bootstrap/scss/dropdown.scss";
+@import "bootstrap/scss/button-group.scss";
+@import "bootstrap/scss/nav.scss";
+@import "bootstrap/scss/navbar.scss";
+@import "bootstrap/scss/card.scss";
+@import "bootstrap/scss/accordion.scss";
+@import "bootstrap/scss/breadcrumb.scss";
+@import "bootstrap/scss/pagination.scss";
+@import "bootstrap/scss/badge.scss";
+@import "bootstrap/scss/alert.scss";
+@import "bootstrap/scss/progress.scss";
+@import "bootstrap/scss/list-group.scss";
+@import "bootstrap/scss/close.scss";
+@import "bootstrap/scss/toasts.scss";
+@import "bootstrap/scss/modal.scss";
+@import "bootstrap/scss/tooltip.scss";
+@import "bootstrap/scss/popover.scss";
+@import "bootstrap/scss/carousel.scss";
+@import "bootstrap/scss/spinners.scss";
+@import "bootstrap/scss/offcanvas.scss";
+@import "bootstrap/scss/placeholders.scss";
 
 // Helpers
-@import "bootstrap/scss/helpers";
+@import "bootstrap/scss/helpers.scss";
 
 // Utilities
-@import "bootstrap/scss/utilities/api";
+@import "bootstrap/scss/utilities/api.scss";
 // scss-docs-end import-stack
 
 
 
 // Shig Customs
-@import "./card";
-@import "./form";
+@import "./form.scss";
 
