@@ -5,6 +5,7 @@ import {Router} from '@angular/router';
 import {map} from 'rxjs/operators';
 import {AvatarComponent} from '../avatar/avatar.component';
 import {SessionService} from '@shigde/core';
+import {SidebarComponent} from '../sidebar/sidebar.component';
 
 @Component({
   selector: 'app-header',
@@ -12,7 +13,8 @@ import {SessionService} from '@shigde/core';
   imports: [
     AsyncPipe,
     NgIf,
-    AvatarComponent
+    AvatarComponent,
+    SidebarComponent
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
@@ -20,14 +22,9 @@ import {SessionService} from '@shigde/core';
 export class HeaderComponent {
   public readonly isUserLogin$: Observable<boolean>;
 
-  constructor(private session: SessionService, private router: Router) {
+  constructor(session: SessionService, private router: Router) {
     this.isUserLogin$ = session.getUserName().pipe(
       map((name) => name !== 'anonymous')
     );
-  }
-
-  public logout(): void {
-    this.session.clearData()
-    this.router.navigate(['login']);
   }
 }
