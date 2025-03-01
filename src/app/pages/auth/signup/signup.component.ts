@@ -8,15 +8,14 @@ import {PASSWORD_CONSTRAIN, PasswordValidator} from '../../../validators/passwor
 import {ValidInput} from '../../../validators/valid-types';
 
 @Component({
-  selector: 'app-signup',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    NgIf,
-    NgClass
-  ],
-  templateUrl: './signup.component.html',
-  styleUrl: './signup.component.scss'
+    selector: 'app-signup',
+    imports: [
+        ReactiveFormsModule,
+        NgIf,
+        NgClass
+    ],
+    templateUrl: './signup.component.html',
+    styleUrl: './signup.component.scss'
 })
 export class SignupComponent {
 

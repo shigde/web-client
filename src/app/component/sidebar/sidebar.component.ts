@@ -7,14 +7,13 @@ import {Observable} from 'rxjs';
 import {AsyncPipe} from '@angular/common';
 
 @Component({
-  selector: 'app-sidebar',
-  standalone: true,
-  imports: [
-    AvatarComponent,
-    AsyncPipe
-  ],
-  templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.scss'
+    selector: 'app-sidebar',
+    imports: [
+        AvatarComponent,
+        AsyncPipe
+    ],
+    templateUrl: './sidebar.component.html',
+    styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent {
   public readonly userName$: Observable<string>;

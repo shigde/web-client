@@ -8,15 +8,14 @@ import {map} from 'rxjs/operators';
 import {ValidInput} from '../../../validators/valid-types';
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  templateUrl: './login.component.html',
-  imports: [
-    ReactiveFormsModule,
-    NgClass,
-    NgIf
-  ],
-  styleUrls: ['./login.component.scss']
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    imports: [
+        ReactiveFormsModule,
+        NgClass,
+        NgIf
+    ],
+    styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
 

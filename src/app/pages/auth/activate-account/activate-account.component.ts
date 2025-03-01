@@ -5,13 +5,12 @@ import {ActivatedRoute} from '@angular/router';
 import {NgIf} from '@angular/common';
 
 @Component({
-  selector: 'app-activate-account',
-  standalone: true,
-  imports: [
-    NgIf
-  ],
-  templateUrl: './activate-account.component.html',
-  styleUrl: './activate-account.component.scss'
+    selector: 'app-activate-account',
+    imports: [
+        NgIf
+    ],
+    templateUrl: './activate-account.component.html',
+    styleUrl: './activate-account.component.scss'
 })
 export class ActivateAccountComponent implements OnInit{
   public success = false;

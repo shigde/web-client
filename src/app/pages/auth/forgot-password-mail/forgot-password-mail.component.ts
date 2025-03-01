@@ -7,16 +7,15 @@ import {catchError, of, take, tap} from 'rxjs';
 import {ValidInput} from '../../../validators/valid-types';
 
 @Component({
-  selector: 'app-password-forgotten-mail',
-  standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    NgIf,
-    NgClass
-  ],
-  templateUrl: './forgot-password-mail.component.html',
-  styleUrl: './forgot-password-mail.component.scss'
+    selector: 'app-password-forgotten-mail',
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        NgIf,
+        NgClass
+    ],
+    templateUrl: './forgot-password-mail.component.html',
+    styleUrl: './forgot-password-mail.component.scss'
 })
 export class ForgotPasswordMailComponent {
 

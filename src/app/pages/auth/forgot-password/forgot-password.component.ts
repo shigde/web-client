@@ -8,16 +8,15 @@ import {PASSWORD_CONSTRAIN, PasswordValidator} from '../../../validators/passwor
 import {ValidInput} from '../../../validators/valid-types';
 
 @Component({
-  selector: 'app-password-forgotten',
-  standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    NgIf,
-    NgClass
-  ],
-  templateUrl: './forgot-password.component.html',
-  styleUrl: './forgot-password.component.scss'
+    selector: 'app-password-forgotten',
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        NgIf,
+        NgClass
+    ],
+    templateUrl: './forgot-password.component.html',
+    styleUrl: './forgot-password.component.scss'
 })
 export class ForgotPasswordComponent implements OnInit {
 

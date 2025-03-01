@@ -8,16 +8,14 @@ import {SessionService} from '@shigde/core';
 import {SidebarComponent} from '../sidebar/sidebar.component';
 
 @Component({
-  selector: 'app-header',
-  standalone: true,
-  imports: [
-    AsyncPipe,
-    NgIf,
-    AvatarComponent,
-    SidebarComponent
-  ],
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+    selector: 'app-header',
+    imports: [
+        AsyncPipe,
+        NgIf,
+        SidebarComponent
+    ],
+    templateUrl: './header.component.html',
+    styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
   public readonly isUserLogin$: Observable<boolean>;

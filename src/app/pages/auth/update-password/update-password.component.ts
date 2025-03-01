@@ -8,16 +8,15 @@ import {PASSWORD_CONSTRAIN, PasswordValidator} from '../../../validators/passwor
 import {ValidInput} from '../../../validators/valid-types';
 
 @Component({
-  selector: 'app-update-password',
-  standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    NgIf,
-    NgClass
-  ],
-  templateUrl: './update-password.component.html',
-  styleUrl: './update-password.component.scss'
+    selector: 'app-update-password',
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        NgIf,
+        NgClass
+    ],
+    templateUrl: './update-password.component.html',
+    styleUrl: './update-password.component.scss'
 })
 export class UpdatePasswordComponent {
 

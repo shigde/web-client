@@ -6,9 +6,10 @@ import {filter} from 'rxjs';
 type Param = { streamId: string, spaceId: string, userToken: string }
 
 @Component({
-  selector: 'app-lobby-entry',
-  templateUrl: './lobby-entry.component.html',
-  styleUrls: ['./lobby-entry.component.scss']
+    selector: 'app-lobby-entry',
+    templateUrl: './lobby-entry.component.html',
+    styleUrls: ['./lobby-entry.component.scss'],
+    standalone: false
 })
 export class LobbyEntryComponent implements OnInit {
   // params: Observable<Param> = new BehaviorSubject(null)
