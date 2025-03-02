@@ -1,0 +1,62 @@
+<header class="p-3 border-bottom bg-body">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-start">
+      <a href="#" class="d-flex align-items-center  link-body-emphasis text-decoration-none">
+        <img width="40" alt="Shig Logo" src="assets/icons/logo.png"/>
+      </a>
+
+
+      <ul class="nav col-auto col-lg-auto me-auto">
+        <li class="px-2"><span>Shig</span></li>
+      </ul>
+
+
+      <!--      <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">-->
+      <!--        <input type="search" class="form-control" placeholder="Search..." aria-label="Search">-->
+      <!--      </form>-->
+
+
+      <div class="mb-0 me-3" *ngIf="(isUserLogin$ | async) == true">
+        <button type="button" class="btn btn-outline-primary me-2"><i class="bi bi-plus-circle-fill bi-border"></i> New
+          Stream
+        </button>
+      </div>
+      <a href="#" class="nav-link position-relative d-block link-body-emphasis text-decoration-none fs-4 mb-0  me-4" *ngIf="(isUserLogin$ | async) == true">
+        <i class="bi bi-bell"></i>
+        <span class="position-absolute alert-circle translate-middle p-1 bg-danger border border-light rounded-circle">
+            <span class="visually-hidden">New alerts</span>
+          </span>
+      </a>
+      <a href="#" class="nav-link position-relative d-block link-body-emphasis text-decoration-none fs-4 mb-0 me-4" *ngIf="(isUserLogin$ | async) == true">
+        <i class="bi bi-inbox"></i>
+        <span class="position-absolute alert-circle translate-middle p-1 bg-danger border border-light rounded-circle">
+            <span class="visually-hidden">New alerts</span>
+          </span>
+      </a>
+      <div class="dropdown text-end" *ngIf="(isUserLogin$ | async) == true">
+        <a href="#" class="nav-link d-block link-body-emphasis text-decoration-none dropdown-toggle"
+           data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="-50,-50">
+          <i class="bi bi-person-circle fs-2 mb-0"></i>
+        </a>
+        <app-sidebar class="dropdown-menu"  ></app-sidebar>
+<!--        <ul class="dropdown-menu text-small" style="">-->
+<!--          <li><a class="dropdown-item" href="/settings">Settings</a></li>-->
+<!--          <li>-->
+<!--            <hr class="dropdown-divider">-->
+<!--          </li>-->
+<!--          <li>-->
+<!--            <button class="dropdown-item" (click)="logout()">Sign out</button>-->
+<!--          </li>-->
+<!--        </ul>-->
+      </div>
+
+
+      <div class="col-md-3 text-end" *ngIf="(isUserLogin$ | async) == false">
+        <a type="button" class="btn btn-outline-primary me-2" href="/login">Login</a>
+        <a type="button" class="btn btn-primary" href="/signup">Sign-up</a>
+      </div>
+
+
+    </div>
+  </div>
+</header>

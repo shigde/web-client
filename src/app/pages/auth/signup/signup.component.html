@@ -1,0 +1,187 @@
+<div class="modal modal-sheet position-static d-block bg-body-secondary p-4 py-md-5" tabindex="-1" role="dialog">
+  <div class="modal-dialog w-100 " role="document">
+    <div class="modal-content w-100 rounded-3 shadow">
+      <div class="modal-header p-5 pb-4 border-bottom-0">
+        <h1 class="fw-bold mb-0 fs-2">Create Account</h1>
+      </div>
+
+      <div class="modal-body p-5 pt-0 row">
+        <div>
+          <p class="success" *ngIf="success">Your account was created! We send you an email with an activation link!</p>
+          <p class="fail" *ngIf="fail">We could not create You Account!</p>
+        </div>
+
+        <form id="signupForm" [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+
+          <div class="form-floating mb-3">
+            <input type="text"
+                   name="user"
+                   [ngClass]="userValid"
+                   class="form-control rounded-3"
+                   id="user"
+                   placeholder=""
+                   formControlName="user" qaIKI
+                   aria-describedby="userFeedback"
+                   (input)="onChangeUser()"
+            >
+
+            <label for="user">User Name</label>
+            <div id="userFeedback" class="invalid-tooltip">
+              <p *ngIf="signupForm.get('user')?.errors?.['min']">User name must be at least 4 characters long!</p>
+              <p *ngIf="signupForm.get('user')?.errors?.['required']">User name is required!</p>
+            </div>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input type="email"
+                   name="email"
+                   [ngClass]="emailValid"
+                   class="form-control rounded-3"
+                   id="email"
+                   placeholder=""
+                   formControlName="email"
+                   aria-describedby="emailFeedback"
+                   (input)="onChangeEmail()"
+            >
+
+            <label for="email">Email</label>
+            <div id="emailFeedback" class="invalid-tooltip">
+              <p *ngIf="signupForm.get('email')?.errors?.['required']">Email is required!</p>
+              <p *ngIf="signupForm.get('email')?.errors?.['email']">Provide a valid email!</p>
+            </div>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input type="password" [ngClass]="passwordValid"
+                   class="form-control rounded-3"
+                   id="password"
+                   name="password"
+                   placeholder=""
+                   formControlName="password"
+                   aria-describedby="passwordFeedback"
+                   (input)="onChangePassword()"
+            >
+            <label for="password">New Password</label>
+            <div id="passwordFeedback" class="invalid-tooltip">
+              <p *ngIf="signupForm.get('password')?.errors?.['uppercaseLetter']">At least one uppercase
+                letter!</p>
+              <p *ngIf="signupForm.get('password')?.errors?.['lowercaseLetter']">At least one lowercase
+                letter!</p>
+              <p *ngIf="signupForm.get('password')?.errors?.['digit']">At least one digit!</p>
+              <p *ngIf="signupForm.get('password')?.errors?.['specialCharacter']">At least one special
+                character!</p>
+              <p *ngIf="signupForm.get('password')?.errors?.['minLength']">At least 8 characters long!</p>
+            </div>
+          </div>
+
+          <div class="form-floating mb-3">
+            <input type="password"
+                   name="confirmPassword"
+                   [ngClass]="confirmPassValid"
+                   class="form-control rounded-3"
+                   id="confirmPassword"
+                   placeholder=""
+                   formControlName="confirmPassword"
+                   aria-describedby="confirmPasswordFeedback"
+                   (input)="onChangeConfirmPass()"
+            >
+
+            <label for="confirmPassword">Confirm Password</label>
+            <div id="confirmPasswordFeedback" class="invalid-tooltip">
+              <p *ngIf="signupForm.get('confirmPassword')?.errors?.['required']">Your original password is
+                required!</p>
+              <p *ngIf="signupForm.errors?.['confirm']">Password doesn't match!</p>
+            </div>
+          </div>
+
+          <div class="form-check text-start my-3">
+            <input class="form-check-input"
+                   type="checkbox"
+                   [ngClass]="termsValid"
+                   value="terms"
+                   id="terms"
+                   name="terms"
+                   formControlName="terms"
+                   (change)="onChangeTerms()"
+            >
+            <label class="form-check-label" for="terms">
+              I have read and agree to the <a href="https://shig.de/?page_id=114">Terms of Service</a>
+            </label>
+          </div>
+
+          <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Submit</button>
+
+          <hr class="my-4">
+          <small class="text-body-secondary">Already have an account? <a href="/login">Login</a></small>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--<div class="card-app">-->
+<!--    <div class="card-title">-->
+<!--        <h1>Create Account</h1>-->
+<!--    </div>-->
+<!--    <div>-->
+<!--        <p class="success" *ngIf="success">Your account was created! We send you an email with an activation link!</p>-->
+<!--        <p class="fail" *ngIf="fail">We could not create You Account!</p>-->
+<!--    </div>-->
+<!--    <form id="signupForm" class="form-group" [formGroup]="signupForm" (ngSubmit)="onSubmit()">-->
+<!--        <input type="text" name="user" placeholder="User Name" formControlName="user">-->
+
+<!--        <div-->
+<!--            *ngIf="signupForm.get('user')?.invalid && (signupForm.get('user')?.dirty || signupForm.get('user')?.touched)"-->
+<!--            class="invalid">-->
+<!--            <p *ngIf="signupForm.get('user')?.errors?.['required']">User name is required!</p>-->
+<!--            <p *ngIf="signupForm.get('user')?.errors?.['min']">User name must be at least 4 characters long!</p>-->
+<!--        </div>-->
+
+<!--        <input type="email" name="email" placeholder="Email" formControlName="email">-->
+
+<!--        <div-->
+<!--            *ngIf="signupForm.get('email')?.invalid && (signupForm.get('email')?.dirty || signupForm.get('email')?.touched)"-->
+<!--            class="invalid">-->
+<!--            <p *ngIf="signupForm.get('email')?.errors?.['required']">Email is required!</p>-->
+<!--            <p *ngIf="signupForm.get('email')?.errors?.['email']">Provide a valid email!</p>-->
+<!--        </div>-->
+
+<!--        <input type="password" name="password" placeholder="Password" formControlName="password">-->
+
+<!--        <div-->
+<!--            *ngIf="signupForm.get('password')?.invalid && (signupForm.get('password')?.touched || signupForm.get('password')?.dirty)"-->
+<!--            class="invalid">-->
+<!--            <p *ngIf="signupForm.get('password')?.errors?.['uppercaseLetter']">At least one uppercase letter!</p>-->
+<!--            <p *ngIf="signupForm.get('password')?.errors?.['lowercaseLetter']">At least one lowercase letter!</p>-->
+<!--            <p *ngIf="signupForm.get('password')?.errors?.['digit']">At least one digit!</p>-->
+<!--            <p *ngIf="signupForm.get('password')?.errors?.['specialCharacter']">At least one special character!</p>-->
+<!--            <p *ngIf="signupForm.get('password')?.errors?.['minLength']">At least 8 characters long!</p>-->
+<!--        </div>-->
+
+<!--        <input type="password" name="confirmPassword" placeholder="Confirm Password" formControlName="confirmPassword">-->
+
+<!--        <div-->
+<!--            *ngIf="(signupForm.get('confirmPassword')?.invalid && (signupForm.get('confirmPassword')?.dirty || signupForm.get('confirmPassword')?.touched) || signupForm.errors?.['confirm'])"-->
+<!--            class="invalid">-->
+<!--            <p *ngIf="signupForm.get('confirmPassword')?.errors?.['required']">Your original password is required!</p>-->
+<!--            <p *ngIf="signupForm.errors?.['confirm']">Password doesn't match!</p>-->
+<!--        </div>-->
+
+
+<!--        <input id="terms" type="checkbox" name="terms" formControlName="terms"><span> I have read and agree to the <a-->
+<!--        href="https://shig.de/?page_id=114">Terms of Service</a></span>-->
+
+<!--        <div-->
+<!--            *ngIf="signupForm.get('terms')?.invalid && (signupForm.get('terms')?.touched || signupForm.get('terms')?.dirty)"-->
+<!--            class="invalid">-->
+<!--            <p *ngIf="signupForm.get('terms')?.errors?.['required']">Please accept the terms!</p>-->
+<!--        </div>-->
+
+<!--        <input id="signupBtn" type="submit" value="Sign-up">-->
+<!--    </form>-->
+
+<!--    <span class='info-link'>Already have an account? <a href="/login">Login</a></span>-->
+
+<!--</div>-->

@@ -1,0 +1,42 @@
+<div class="d-flex flex-column flex-shrink-0 p-3" style="width: 280px;">
+  <div class="d-flex flex-column align-items-center">
+    <a href="/" class="text-decoration-none">
+      <app-avatar size="60" name="{{ userName$ | async }}"></app-avatar>
+    </a>
+
+    <a href="/" class="text-decoration-none mt-2">{{ userName$ | async }}</a>
+
+  </div>
+
+  <hr>
+  <ul class="nav nav-pills flex-column mb-auto">
+
+    <li class="nav-item">
+      <a href="#" class="dropdown-item" aria-current="page"><i class="bi bi-house  me-3"></i>My Channel</a>
+    </li>
+    <li class="nav-item">
+      <a href="#" class="dropdown-item" aria-current="page"><i class="bi bi-gear  me-3"></i>Settings</a>
+    </li>
+
+    <li>
+      <hr class="dropdown-divider">
+    </li>
+
+    <li class="nav-item">
+      <a href="#" class="dropdown-item" aria-current="page" (click)="logout()"><i
+        class="bi bi-box-arrow-in-right  me-3"></i><b>Sing out</b></a>
+    </li>
+
+    <li>
+      <hr class="dropdown-divider">
+    </li>
+
+    <li class="nav-item">
+      <a href="#" class="dropdown-item" aria-current="page"><i class="bi bi-question-circle  me-3"></i>Help</a>
+    </li>
+    <li class="nav-item">
+      <a href="#" class="dropdown-item" aria-current="page"><i class="bi bi-chat-left-heart  me-3"></i>Send Feedback</a>
+    </li>
+  </ul>
+
+</div>

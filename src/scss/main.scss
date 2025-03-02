@@ -1,0 +1,75 @@
+///* Importing Bootstrap SCSS file. */
+@import "bootstrap-icons/font/bootstrap-icons.min.css";
+@import "bootstrap/scss/mixins/banner";
+@include bsBanner("");
+
+
+// scss-docs-start import-stack
+// Configuration
+@import "bootstrap/scss/functions.scss";
+
+.is-invalid {
+  background-image: none !important;
+}
+
+.is-valid {
+  background-image: none !important;
+}
+
+//// Customize some defaults
+//$body-color: #333;
+//$body-bg: #fff;
+
+@import "./variables.scss";
+
+// Default variable overrides
+@import "bootstrap/scss/variables.scss";
+@import "bootstrap/scss/variables-dark.scss";
+@import "bootstrap/scss/maps.scss";
+@import "bootstrap/scss/mixins.scss";
+@import "bootstrap/scss/utilities.scss";
+// Layout & components
+@import "bootstrap/scss/root.scss";
+@import "bootstrap/scss/reboot.scss";
+@import "bootstrap/scss/type.scss";
+@import "bootstrap/scss/images.scss";
+@import "bootstrap/scss/containers.scss";
+@import "bootstrap/scss/grid.scss";
+@import "bootstrap/scss/tables.scss";
+@import "bootstrap/scss/forms.scss";
+@import "bootstrap/scss/buttons.scss";
+@import "bootstrap/scss/transitions.scss";
+@import "bootstrap/scss/dropdown.scss";
+@import "bootstrap/scss/button-group.scss";
+@import "bootstrap/scss/nav.scss";
+@import "bootstrap/scss/navbar.scss";
+@import "bootstrap/scss/card.scss";
+@import "bootstrap/scss/accordion.scss";
+@import "bootstrap/scss/breadcrumb.scss";
+@import "bootstrap/scss/pagination.scss";
+@import "bootstrap/scss/badge.scss";
+@import "bootstrap/scss/alert.scss";
+@import "bootstrap/scss/progress.scss";
+@import "bootstrap/scss/list-group.scss";
+@import "bootstrap/scss/close.scss";
+@import "bootstrap/scss/toasts.scss";
+@import "bootstrap/scss/modal.scss";
+@import "bootstrap/scss/tooltip.scss";
+@import "bootstrap/scss/popover.scss";
+@import "bootstrap/scss/carousel.scss";
+@import "bootstrap/scss/spinners.scss";
+@import "bootstrap/scss/offcanvas.scss";
+@import "bootstrap/scss/placeholders.scss";
+
+// Helpers
+@import "bootstrap/scss/helpers.scss";
+
+// Utilities
+@import "bootstrap/scss/utilities/api.scss";
+// scss-docs-end import-stack
+
+
+
+// Shig Customs
+@import "./form.scss";
+

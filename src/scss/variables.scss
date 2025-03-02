@@ -1,0 +1,69 @@
+// Customize
+$font-family-sans-serif:
+    // Cross-platform generic font family (default user interface font)
+    system-ui,
+        // Safari for macOS and iOS (San Francisco)
+    -apple-system,
+        // Windows
+    "Segoe UI",
+        // Android
+    Roboto,
+        // Basic web fallback
+    "Helvetica Neue", Arial,
+        // Linux
+    "Noto Sans",
+    "Liberation Sans",
+        // Sans serif fallback
+    sans-serif,
+        // Emoji fonts
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+
+// Shig
+//$primary: #8dcaff;
+//$secondary: #ffffff;
+//$danger: #ff4136;
+
+// Custom vars
+$primary-brand-color: #8dcaff;
+$secondary-brand-color: #fdfdfd;
+
+// Customize Bootstrap
+//$body-color: $secondary-brand-color;
+//$body-bg: #ffffff;
+
+$blue: $primary-brand-color;
+$primary: $primary-brand-color;
+$secondary: $secondary-brand-color;
+
+// Light theme
+//$body-bg: #f2f2f2 !default;
+////$body-tertiary-bg: #ffffff !default;
+//
+//// Dark theme
+//$body-bg-dark: #151619;
+////$body-tertiary-bg-dark: #212529 !default;
+
+
+//input:-internal-autofill-selected {
+//  appearance:unset;
+//  background-image: unset !important;
+//  background-color: unset !important;
+//  color: fieldtext !important;
+//}
+//.form-signin .form-floating:focus-within {
+//  z-index: 2;
+//}
+//
+//.form-signin input[type="email"] {
+//  margin-bottom: -1px;
+//  border-bottom-right-radius: 0;
+//  border-bottom-left-radius: 0;
+//}
+//
+//.form-signin input[type="password"] {
+//  margin-bottom: 10px;
+//  border-top-left-radius: 0;
+//  border-top-right-radius: 0;
+//}
+//
+

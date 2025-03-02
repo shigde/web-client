@@ -1,0 +1,23 @@
+.form-control-dark {
+  border-color: var(--bs-gray);
+}
+.form-control-dark:focus {
+  border-color: #fff;
+  box-shadow: 0 0 0 .25rem rgba(255, 255, 255, .25);
+}
+
+.text-small {
+  font-size: 85%;
+}
+
+.dropdown-toggle:not(:focus) {
+  outline: 0;
+}
+
+footer {
+  background-color: #220122FF;
+  padding-top: 1rem !important;
+  margin-top: 1.5rem !important;
+  color: #8dcaff !important;
+  //background-image: linear-gradient(#8DCAFFFF, rgba(255, 255, 255, 0));
+}
