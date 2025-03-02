@@ -1,7 +1,7 @@
 # Shig Web Client
 
+The **Shig Web Client** is the official and reliable frontend of the Shig Federative Service, making access simple and efficient.
 
-The **Shig Web Client** is the intuitive and reliable frontend of the Shig Federative Service, making access simple and efficient.
 ## Development
 
 ```shell
