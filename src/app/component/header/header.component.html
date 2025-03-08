@@ -1,14 +1,12 @@
 <header class="p-3 border-bottom bg-body">
   <div class="container">
     <div class="d-flex flex-wrap align-items-center justify-content-start">
-      <a href="#" class="d-flex align-items-center  link-body-emphasis text-decoration-none">
+      <a href="#" class="d-flex align-items-center  link-body-emphasis text-decoration-none nav col-auto col-lg-auto me-auto">
         <img width="40" alt="Shig Logo" src="assets/icons/logo.png"/>
+        <ul class="nav">
+          <li class="px-2"><span>Shig</span></li>
+        </ul>
       </a>
-
-
-      <ul class="nav col-auto col-lg-auto me-auto">
-        <li class="px-2"><span>Shig</span></li>
-      </ul>
 
 
       <!--      <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">-->
@@ -17,8 +15,9 @@
 
 
       <div class="mb-0 me-3" *ngIf="(isUserLogin$ | async) == true">
-        <button type="button" class="btn btn-outline-primary me-2"><i class="bi bi-plus-circle-fill bi-border"></i> New
-          Stream
+        <button type="button" class="btn btn-outline-primary me-2" (click)="newStream()">
+          <i class="bi bi-plus-circle-fill bi-border me-0 me-sm-2"></i>
+          <span class="d-none d-sm-inline-block">New Stream</span>
         </button>
       </div>
       <a href="#" class="nav-link position-relative d-block link-body-emphasis text-decoration-none fs-4 mb-0  me-4" *ngIf="(isUserLogin$ | async) == true">
@@ -39,15 +38,6 @@
           <i class="bi bi-person-circle fs-2 mb-0"></i>
         </a>
         <app-sidebar class="dropdown-menu"  ></app-sidebar>
-<!--        <ul class="dropdown-menu text-small" style="">-->
-<!--          <li><a class="dropdown-item" href="/settings">Settings</a></li>-->
-<!--          <li>-->
-<!--            <hr class="dropdown-divider">-->
-<!--          </li>-->
-<!--          <li>-->
-<!--            <button class="dropdown-item" (click)="logout()">Sign out</button>-->
-<!--          </li>-->
-<!--        </ul>-->
       </div>
 
 
