@@ -14,6 +14,7 @@ import {SettingsComponent} from './svg/settings.component';
 import {SidebarComponent} from './component/sidebar/sidebar.component';
 import {HeaderComponent} from './component/header/header.component';
 import {ThumbnailCardComponent} from './component/thumbnail-card/thumbnail-card.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -28,7 +29,7 @@ import {ThumbnailCardComponent} from './component/thumbnail-card/thumbnail-card.
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    ShigModule, LoadingIndicatorComponent, SidebarComponent, HeaderComponent, ThumbnailCardComponent], providers: [
+    ShigModule, LoadingIndicatorComponent, SidebarComponent, HeaderComponent, ThumbnailCardComponent, NgbModule], providers: [
     httpInterceptorProviders,
     provideHttpClient(withInterceptorsFromDi()),
   ]
