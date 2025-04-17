@@ -2,9 +2,14 @@ import {Component} from '@angular/core';
 import {AvatarComponent} from '../avatar/avatar.component';
 import {SessionService} from '../../../../../shig-js-sdk/dist/core';
 import {Router} from '@angular/router';
-import {map} from 'rxjs/operators';
-import {filter, Observable} from 'rxjs';
+import {filter, Observable, tap} from 'rxjs';
 import {AsyncPipe} from '@angular/common';
+import {User} from '@shigde/core';
+import {map} from 'rxjs/operators';
+
+export interface SidebarUser extends User {
+  domainName: string;
+}
 
 @Component({
   selector: 'app-sidebar',
@@ -16,12 +21,12 @@ import {AsyncPipe} from '@angular/common';
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent {
-  public readonly userName$: Observable<string>;
+  public readonly user$: Observable<SidebarUser>;
 
   constructor(private session: SessionService, private router: Router) {
-    this.userName$ = session.getUser().pipe(
+    this.user$ = session.getUser().pipe(
       filter(u => u != null),
-      map(u => u.name + '@' + u.domain)
+      map(u => ({...u, domainName: u.name + '@' + u.domain} as SidebarUser)),
     );
   }
 

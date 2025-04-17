@@ -10,7 +10,7 @@
     "test": "ng test"
   },
   "private": true,
-  "dependencies": {
+  "peerDependencies": {
     "@angular/animations": "^19.2.0",
     "@angular/common": "^19.2.0",
     "@angular/compiler": "^19.2.0",
@@ -22,7 +22,7 @@
     "@material/web": "^1.1.1",
     "@ng-bootstrap/ng-bootstrap": "^18.0.0",
     "@popperjs/core": "^2.11.6",
-    "@shigde/core": "file:../shig-js-sdk/dist/core",
+    "@shigde/core": "file:.yalc/@shigde/core",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "dexie": "^3.2.4",
@@ -48,5 +48,8 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.5.4",
     "uuid": "^11.0.3"
+  },
+  "dependencies": {
+    "@shigde/core": "file:.yalc/@shigde/core"
   }
 }

@@ -1,24 +1,81 @@
 <div class="container px-4 py-5">
   <h2 class="pb-2 border-bottom">Edit Channel</h2>
-  <form class="py-5">
+  <form class="py-5" [formGroup]="channelForm" (ngSubmit)="save(fileInput)" class="needs-validation">
+
     <div class="row mb-3">
-      <label for="name" class="col-sm-2 col-form-label fw-bold">Name</label>
+      <label for="name" class="col-sm-2 col-form-label fw-bold">Name*</label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" id="name">
+
+        <div class="input-group has-validation">
+          <input type="text" class="form-control domain-name-input" id="name" formControlName="name" name="name">
+          <span class="input-group-text">&#64;{{ domain }}</span>
+        </div>
+
+        @if (name?.invalid && (name?.dirty || name?.touched)) {
+          <div class="invalid">
+            @if (name?.hasError('required')) {
+              <div>
+                Name is required.
+              </div>
+            } @else if (name?.hasError('minlength')) {
+              <div>
+                Name must be at least 4 characters long.
+              </div>
+            } @else if (name?.hasError('maxlength')) {
+              <div>
+                Name can only be 50 characters long.
+              </div>
+            }
+          </div>
+        }
+
       </div>
+
     </div>
+
     <div class="row mb-3">
       <label for="description" class="col-sm-2 col-form-label fw-bold">Description</label>
       <div class="col-sm-10">
-        <textarea class="form-control" id="description" rows="3"></textarea>
+        <textarea class="form-control" rows="3" id="description" formControlName="description"
+                  name="description"></textarea>
+
+        @if (description?.invalid && (description?.dirty || description?.touched)) {
+          <div class="invalid">
+            @if (description?.hasError('maxlength')) {
+              <div>
+                Name can only be 250 characters long.
+              </div>
+            }
+          </div>
+        }
       </div>
     </div>
+
     <div class="row mb-3">
       <label for="support" class="col-sm-2 col-form-label fw-bold">Support</label>
       <div class="col-sm-10">
-        <textarea class="form-control" id="support" rows="2"></textarea>
+        <textarea class="form-control" rows="2" id="support" formControlName="support" name="support"></textarea>
+
+        @if (support?.invalid && (support?.dirty || support?.touched)) {
+          <div class="invalid">
+            @if (support?.hasError('maxlength')) {
+              <div>
+                Name can only be 150 characters long.
+              </div>
+            }
+          </div>
+        }
       </div>
     </div>
+
+    <div class="row mb-3">
+      <label for="file" class="col-sm-2 col-form-label fw-bold">Banner</label>
+      <div class="col-sm-10">
+        <input class="form-control" type="file" id="file" #fileInput placeholder="Default Banner">
+      </div>
+    </div>
+
+
     <div class="row mb-3">
       <div class="col-sm-10 offset-sm-2">
         <div class="form-check">
