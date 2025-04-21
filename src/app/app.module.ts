@@ -15,6 +15,7 @@ import {SidebarComponent} from './component/sidebar/sidebar.component';
 import {HeaderComponent} from './component/header/header.component';
 import {ThumbnailCardComponent} from './component/thumbnail-card/thumbnail-card.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {AlertComponent} from './component/alert/alert.component';
 
 
 @NgModule({
@@ -25,11 +26,11 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     SettingsComponent
   ],
   bootstrap: [AppComponent], imports: [CommonModule,
-    BrowserModule,
-    AppRoutingModule,
-    ReactiveFormsModule,
-    FormsModule,
-    ShigModule, LoadingIndicatorComponent, SidebarComponent, HeaderComponent, ThumbnailCardComponent, NgbModule], providers: [
+        BrowserModule,
+        AppRoutingModule,
+        ReactiveFormsModule,
+        FormsModule,
+        ShigModule, LoadingIndicatorComponent, SidebarComponent, HeaderComponent, ThumbnailCardComponent, NgbModule, AlertComponent], providers: [
     httpInterceptorProviders,
     provideHttpClient(withInterceptorsFromDi()),
   ]

@@ -1,10 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {Channel, ChannelService} from '@shigde/core';
+import {ApiResponse, Channel, ChannelService} from '@shigde/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {take} from 'rxjs';
+import {catchError, filter, Observable, of, take, tap} from 'rxjs';
 import {NgIf} from '@angular/common';
 import {FederativeService} from '../../../../providers/federative.service';
+import {AlertKind} from '../../../../entities/alert';
+import {map} from 'rxjs/operators';
+import {AlertService} from '../../../../providers/alert.service';
 
 @Component({
   selector: 'app-edit-channel',
@@ -34,12 +37,17 @@ export class EditChannelComponent {
 
 
   constructor(
-    private channelService: ChannelService,
-    private router: Router,
-    activeRoute: ActivatedRoute
+    private readonly channelService: ChannelService,
+    private readonly router: Router,
+    private readonly alert: AlertService,
+    activeRoute: ActivatedRoute,
   ) {
     this.channelId = activeRoute.snapshot.params['channelId'];
-    this.channelService.fetch(this.channelId).pipe(take(1)).subscribe((c) => {
+    this.channelService.fetch(this.channelId).pipe(
+      take(1),
+      catchError(_ => this.handleError<null>('Could not load channel!', null)),
+      filter((s) => s !== null)
+    ).subscribe((c) => {
       this.channel = c.data;
       let split = FederativeService.splitDomainNameToJson(this.channel.name);
       this.domain = split.domain;
@@ -81,22 +89,27 @@ export class EditChannelComponent {
         support: this.channelForm.get('support')?.value,
         public: this.channelForm.get('public')?.value,
       };
-      this.channelService.save(channel, fileBlob, this.progress).pipe(take(1))
-        .subscribe(() => {
-          setTimeout(() => {
-            this.isUploading = false; // Stop the progress indicator after a delay
-            this.progress.upload = 0; // Reset for the next upload
-          }, 1000); // Delay for smoother UX
-        });
+      this.channelService.save(channel, fileBlob, this.progress).pipe(
+        take(1),
+        tap(_ => this.alert.alert(AlertKind.SUCCESS, 'The Channel has been updated!')),
+        map(_ => this.goToChannel()),
+        catchError(_ => this.handleError<Channel>('Could not update channel!', channel))
+      ).subscribe(() => {
+        setTimeout(() => {
+          this.isUploading = false; // Stop the progress indicator after a delay
+          this.progress.upload = 0; // Reset for the next upload
+        }, 1000); // Delay for smoother UX
+      });
     }
-  }
-
-  onClear() {
-    this.channelForm.reset();
   }
 
   goToChannel() {
     this.router.navigate(['/channel/' + this.channelId]);
+  }
+
+  private handleError<T>(msg: string, rsp: T): Observable<T> {
+    this.alert.alert(AlertKind.DANGER, msg);
+    return of(rsp);
   }
 
 }
