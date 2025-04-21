@@ -8,15 +8,16 @@ import {PASSWORD_CONSTRAIN, PasswordValidator} from '../../../validators/passwor
 import {ValidInput} from '../../../validators/valid-types';
 
 @Component({
-    selector: 'app-update-password',
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        NgIf,
-        NgClass
-    ],
-    templateUrl: './update-password.component.html',
-    styleUrl: './update-password.component.scss'
+  selector: 'app-update-password',
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    NgIf,
+    NgClass
+  ],
+  standalone: true,
+  templateUrl: './update-password.component.html',
+  styleUrl: './update-password.component.scss'
 })
 export class UpdatePasswordComponent {
 
@@ -72,7 +73,7 @@ export class UpdatePasswordComponent {
   onChangeOrgPass() {
     if (this.updateForm.get('orgPassword')?.invalid) {
       this.orgPassValid = 'is-invalid';
-      return
+      return;
     }
     if (this.updateForm.get('orgPassword')?.valid) {
       this.orgPassValid = 'is-valid';
@@ -82,7 +83,7 @@ export class UpdatePasswordComponent {
   onChangeNewPass() {
     if (this.updateForm.get('newPassword')?.invalid) {
       this.newPassValid = 'is-invalid';
-      return
+      return;
     }
     if (this.updateForm.get('newPassword')?.valid) {
       this.newPassValid = 'is-valid';
@@ -92,7 +93,7 @@ export class UpdatePasswordComponent {
   onChangeConfirmPass() {
     if (this.updateForm.get('confirmPassword')?.invalid || this.updateForm.errors?.['confirm']) {
       this.confirmPassValid = 'is-invalid';
-      return
+      return;
     }
     if (this.updateForm.get('confirmPassword')?.valid) {
       this.confirmPassValid = 'is-valid';

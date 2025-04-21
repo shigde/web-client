@@ -1,0 +1,36 @@
+<div id="theme-selection" class="dropdown bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
+  <button class="btn btn-outline-primary py-2 dropdown-toggle d-flex align-items-center" id="bd-theme" type="button"
+          aria-expanded="false" data-bs-toggle="dropdown" aria-label="Toggle theme (dark)">
+    <i *ngIf="isLight()" class="bi bi-brightness-high-fill me-2 theme-icon-active" width="1em" height="1em"></i>
+    <i *ngIf="isDark()" class="bi bi-moon-stars-fill me-2 theme-icon-active" width="1em" height="1em"></i>
+    <i *ngIf="isAuto()" class="bi bi-circle-half me-2 theme-icon-active" width="1em" height="1em"></i>
+    <span class="" id="bd-theme-text">Toggle theme</span>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text" style="">
+    <li>
+      <button type="button" class="dropdown-item d-flex align-items-center" [ngClass]="{'active' : isLight()}" data-bs-theme-value="light"
+              aria-pressed="false" (click)="toggleTheme('light')">
+        <i class="bi bi-brightness-high-fill me-2 opacity-50" width="1em" height="1em"></i>
+        Light
+        <i *ngIf="isLight()" class="bi bi-check ms-auto" width="1em" height="1em"></i>
+      </button>
+    </li>
+    <li>
+      <button type="button" class="dropdown-item d-flex align-items-center" [ngClass]="{'active' : isDark()}" data-bs-theme-value="dark"
+              aria-pressed="true" (click)="toggleTheme('dark')">
+        <i class="bi bi-moon-stars-fill me-2 opacity-50" width="1em" height="1em"></i>
+        Dark
+        <i *ngIf="isDark()" class="bi bi-check ms-auto" width="1em" height="1em"></i>
+      </button>
+    </li>
+    <li>
+      <button type="button" class="dropdown-item d-flex align-items-center" [ngClass]="{'active' : isAuto()}" data-bs-theme-value="auto"
+              aria-pressed="false" (click)="toggleTheme('auto')">
+        <i class="bi bi-circle-half me-2 opacity-50" width="1em" height="1em"></i>
+        Auto
+        <i *ngIf="isAuto()" class="bi bi-check ms-auto" width="1em" height="1em"></i>
+      </button>
+    </li>
+  </ul>
+</div>
+

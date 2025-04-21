@@ -1,0 +1,36 @@
+<div class="container px-4 py-5">
+  <h2 class="pb-2 border-bottom">Settings</h2>
+
+  <div class="row g-4 py-5 row-cols-1">
+
+    <div class="col d-flex align-items-start">
+      <div
+        class="icon-square text-bg-primary d-inline-flex align-items-center justify-content-center bg-gradient fs-4 rounded-3 me-5 ps-2 pe-2 border-bottom">
+        <i class="bi bi-palette" width="1em" height="1em"></i>
+      </div>
+      <div class="row row-cols-1 row-cols-lg-2 w-100">
+        <div>
+          <h4 class="fs-3 text-body-emphasis mb-4 col">Toggle Theme</h4>
+        </div>
+        <app-theme-selection class="col-auto me-auto"></app-theme-selection>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="col d-flex align-items-start">
+      <div
+        class="icon-square text-bg-primary d-inline-flex align-items-center justify-content-center bg-gradient fs-4 rounded-3 me-5 ps-2 pe-2 border-bottom">
+        <i class="bi bi-key" width="1em" height="1em"></i>
+      </div>
+      <div class="row row-cols-1 row-cols-lg-2 w-100">
+        <div>
+          <h4 class="fs-3 text-body-emphasis mb-4">Change Password</h4>
+          <p>This form allows you to update your password securely.</p>
+        </div>
+        <app-update-password class="col-auto me-auto"></app-update-password>
+      </div>
+    </div>
+
+  </div>
+</div>

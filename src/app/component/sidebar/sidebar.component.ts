@@ -1,29 +1,37 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {AvatarComponent} from '../avatar/avatar.component';
 import {SessionService} from '../../../../../shig-js-sdk/dist/core';
 import {Router} from '@angular/router';
-import {map} from 'rxjs/operators';
-import {Observable} from 'rxjs';
+import {filter, Observable, tap} from 'rxjs';
 import {AsyncPipe} from '@angular/common';
+import {User} from '@shigde/core';
+import {map} from 'rxjs/operators';
+
+export interface SidebarUser extends User {
+  domainName: string;
+}
 
 @Component({
-    selector: 'app-sidebar',
-    imports: [
-        AvatarComponent,
-        AsyncPipe
-    ],
-    templateUrl: './sidebar.component.html',
-    styleUrl: './sidebar.component.scss'
+  selector: 'app-sidebar',
+  imports: [
+    AvatarComponent,
+    AsyncPipe
+  ],
+  templateUrl: './sidebar.component.html',
+  styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent {
-  public readonly userName$: Observable<string>;
+  public readonly user$: Observable<SidebarUser>;
 
   constructor(private session: SessionService, private router: Router) {
-    this.userName$ = session.getUserName()
+    this.user$ = session.getUser().pipe(
+      filter(u => u != null),
+      map(u => ({...u, domainName: u.name + '@' + u.domain} as SidebarUser)),
+    );
   }
 
   public logout(): void {
-    this.session.clearData()
+    this.session.clearData();
     this.router.navigate(['login']);
   }
 

@@ -1,10 +1,10 @@
 <div class="d-flex flex-column flex-shrink-0 p-3" style="width: 280px;">
   <div class="d-flex flex-column align-items-center">
     <a href="/" class="text-decoration-none">
-      <app-avatar size="60" name="{{ userName$ | async }}"></app-avatar>
+      <app-avatar size="60" name="{{ (user$ | async)?.name }}"></app-avatar>
     </a>
 
-    <a href="/" class="text-decoration-none mt-2">{{ userName$ | async }}</a>
+    <a href="/" class="text-decoration-none mt-2">{{ (user$ | async)?.domainName }}</a>
 
   </div>
 
@@ -12,10 +12,10 @@
   <ul class="nav nav-pills flex-column mb-auto">
 
     <li class="nav-item">
-      <a href="#" class="dropdown-item" aria-current="page"><i class="bi bi-house  me-3"></i>My Channel</a>
+      <a href="/channel/{{(user$ | async)?.channel_uuid}}" class="dropdown-item" aria-current="page"><i class="bi bi-house  me-3"></i>My Channel</a>
     </li>
     <li class="nav-item">
-      <a href="#" class="dropdown-item" aria-current="page"><i class="bi bi-gear  me-3"></i>Settings</a>
+      <a href="/settings" class="dropdown-item" aria-current="page"><i class="bi bi-gear  me-3"></i>Settings</a>
     </li>
 
     <li>

@@ -8,14 +8,14 @@ import {SessionService} from '@shigde/core';
 import {SidebarComponent} from '../sidebar/sidebar.component';
 
 @Component({
-    selector: 'app-header',
-    imports: [
-        AsyncPipe,
-        NgIf,
-        SidebarComponent
-    ],
-    templateUrl: './header.component.html',
-    styleUrl: './header.component.scss'
+  selector: 'app-header',
+  imports: [
+    AsyncPipe,
+    NgIf,
+    SidebarComponent
+  ],
+  templateUrl: './header.component.html',
+  styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
   public readonly isUserLogin$: Observable<boolean>;
@@ -24,5 +24,9 @@ export class HeaderComponent {
     this.isUserLogin$ = session.getUserName().pipe(
       map((name) => name !== 'anonymous')
     );
+  }
+
+  newStream() {
+    this.router.navigate(['/stream/new']);
   }
 }

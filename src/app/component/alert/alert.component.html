@@ -1,0 +1,3 @@
+@for (alert of alerts; track alert) {
+  <ngb-alert [type]="alert.kind" (closed)="close(alert)">{{ alert.msg }}</ngb-alert>
+}

@@ -1,0 +1,201 @@
+<!--<div class="container px-4 py-5">-->
+<!--  <h2 class="pb-2 border-bottom">New Stream</h2>-->
+<!--  <form class="py-5">-->
+<!--    <div class="row mb-3">-->
+<!--      <label for="titel" class="form-label text-primary fw-bold">Titel</label>-->
+<!--      <input type="text" class="form-control" id="titel" placeholder="Stream Titel">-->
+<!--    </div>-->
+
+<!--    <div class="row mb-3">-->
+<!--      <label for="description" class="form-label text-primary fw-bold">Description</label>-->
+<!--      <textarea class="form-control" id="description" rows="3" placeholder="Describe the stream"></textarea>-->
+<!--    </div>-->
+
+<!--    <div class="row mb-5">-->
+<!--      <label for="support" class="form-label text-primary fw-bold">Support</label>-->
+<!--      <textarea class="form-control" id="support" rows="2" placeholder="Add supports like links here"></textarea>-->
+<!--    </div>-->
+
+<!--    <div class="row mb-5">-->
+<!--      <label for="time" class="form-label text-primary fw-bold">Start Time</label>-->
+<!--      <small>Start time in HH:MM format (e.g., 08:30 or 15:45).</small>-->
+<!--      <ngb-timepicker id="time" class="p-0" [(ngModel)]="time" [ngModelOptions]="{standalone: true}" [meridian]="false"/>-->
+<!--    </div>-->
+
+<!--    <hr>-->
+<!--    <div class="row mb-5">-->
+<!--      <label for="frequency" class="form-label text-primary fw-bold mb-3">Frequency</label>-->
+
+<!--      <div class="form-check">-->
+<!--        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">-->
+<!--        <label class="form-check-label" for="flexRadioDefault1">Repeats</label>-->
+<!--      </div>-->
+
+<!--      <div class="btn-group mt-4 mb-5" role="group" aria-label="Basic radio toggle button group">-->
+<!--        <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>-->
+<!--        <label class="btn btn-outline-primary" for="btnradio1">Every<br> Mon</label>-->
+
+<!--        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">-->
+<!--        <label class="btn btn-outline-primary" for="btnradio2">Every<br> Tue</label>-->
+
+<!--        <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">-->
+<!--        <label class="btn btn-outline-primary" for="btnradio3">Every<br> Wed</label>-->
+
+<!--        <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">-->
+<!--        <label class="btn btn-outline-primary" for="btnradio4">Every<br> Thu</label>-->
+
+<!--        <input type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off">-->
+<!--        <label class="btn btn-outline-primary" for="btnradio5">Every<br> Fri</label>-->
+
+<!--        <input type="radio" class="btn-check" name="btnradio" id="btnradio6" autocomplete="off">-->
+<!--        <label class="btn btn-outline-primary" for="btnradio6">Every<br> Sat</label>-->
+
+<!--        <input type="radio" class="btn-check" name="btnradio" id="btnradio7" autocomplete="off">-->
+<!--        <label class="btn btn-outline-primary" for="btnradio7">Every<br> Sun</label>-->
+
+<!--      </div>-->
+
+<!--      <div class="form-check">-->
+<!--        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>-->
+<!--        <label class="form-check-label" for="flexRadioDefault2">Specific Day</label>-->
+<!--      </div>-->
+
+<!--      <div class="input-group mt-4 p-q" id="date-picker-group">-->
+<!--        <input type="text" id="date-picker" class="form-control" placeholder="date" aria-label="date"-->
+<!--               aria-describedby="button-addon2" ngbDatepicker #d="ngbDatepicker">-->
+<!--        <button class="btn btn-small btn-outline-primary" type="button" (click)="d.toggle()">Date</button>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--    <hr>-->
+
+<!--    <div class="row mb-4 mt-4">-->
+<!--      <div class="form-check">-->
+<!--        <input class="form-check-input" type="checkbox" id="public">-->
+<!--        <label for="public" class="form-label text-primary fw-bold">Is Public</label>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--    <hr>-->
+
+<!--    <div class="row mt-5">-->
+<!--      <div class="offset-0">-->
+<!--        <div class="form-button">-->
+<!--          <button type="button" class="btn btn-secondary me-3" (click)="goToChannel()">Cancel</button>-->
+<!--          <button type="submit" class="btn btn-primary">Save</button>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </form>-->
+<!--</div>-->
+
+
+<div class="container px-4 py-5">
+  <h2 class="pb-2 border-bottom">New Stream</h2>
+  <form class="py-5">
+    <div class="row mb-3">
+      <label for="titel" class="col-sm-2 col-form-label fw-bold">Titel</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="titel">
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <label for="description" class="col-sm-2 col-form-label fw-bold">Description</label>
+      <div class="col-sm-10">
+        <textarea class="form-control" id="description" rows="3"></textarea>
+      </div>
+    </div>
+
+    <div class="row mb-3 pb-3">
+      <label for="support" class="col-sm-2 col-form-label fw-bold">Support</label>
+      <div class="col-sm-10">
+        <textarea class="form-control" id="support" rows="2"></textarea>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="row mb-3 pb-3">
+      <label for="time" class="col-sm-2 col-form-label mt-sm-4 fw-bold">Time</label>
+      <div class="col-sm-10">
+        <ngb-timepicker  id="time" [(ngModel)]="time" [ngModelOptions]="{standalone: true}"/>
+        <small class="pt-2">Add a start time in HH:MM format (e.g., 08:30 or 15:45).</small>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="row mb-3  pb-3">
+      <label for="time" class="col-sm-2 col-form-label fw-bold">Frequency</label>
+      <div class="col-sm-10">
+
+        <div class="form-check pt-2">
+          <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+          <label class="form-check-label" for="flexRadioDefault1">Repeats</label>
+        </div>
+
+        <div class="btn-group ms-4 mt-4 mb-5" role="group" aria-label="Basic radio toggle button group">
+          <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+          <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="btnradio1">Every<br> Mon</label>
+
+          <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+          <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="btnradio2">Every<br> Tue</label>
+
+          <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+          <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="btnradio3">Every<br> Wed</label>
+
+          <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
+          <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="btnradio4">Every<br> Thu</label>
+
+          <input type="radio" class="btn-check" name="btnradio" id="btnradio5" autocomplete="off">
+          <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="btnradio5">Every<br> Fri</label>
+
+          <input type="radio" class="btn-check" name="btnradio" id="btnradio6" autocomplete="off">
+          <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="btnradio6">Every<br> Sat</label>
+
+          <input type="radio" class="btn-check" name="btnradio" id="btnradio7" autocomplete="off">
+          <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="btnradio7">Every<br> Sun</label>
+
+        </div>
+
+
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+          <label class="form-check-label" for="flexRadioDefault2">
+            Specific Day
+          </label>
+
+          <div class="input-group mt-4 p-q" id="date-picker-group">
+            <input type="text" id="date-picker" class="form-control" placeholder="date" aria-label="date"
+                   aria-describedby="button-addon2" ngbDatepicker #d="ngbDatepicker">
+            <button class="btn btn-sm btn-primary" type="button" (click)="d.toggle()">Date</button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="row mb-3 ">
+      <label for="public" class="col-sm-2 col-form-label fw-bold">Is Public</label>
+      <div class="col-sm-10  pt-1">
+        <input class="form-check-input mt-2" type="checkbox" id="public">
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="row mt-4">
+      <div class="col-sm-10 offset-sm-2">
+        <div class="form-button">
+          <button type="button" class="btn btn-secondary me-3" (click)="goToChannel()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>

@@ -1,21 +1,22 @@
 import {Component} from '@angular/core';
-import {FormControl, FormGroup, NgForm, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
-import {User, SessionService, AuthService} from '@shigde/core';
-import {catchError, of, take, tap} from 'rxjs';
+import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {AuthService} from '@shigde/core';
+import {catchError, of, take} from 'rxjs';
 import {NgClass, NgIf} from '@angular/common';
 import {map} from 'rxjs/operators';
 import {ValidInput} from '../../../validators/valid-types';
+import {AlertService} from '../../../providers/alert.service';
+import {AlertKind} from '../../../entities/alert';
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    imports: [
-        ReactiveFormsModule,
-        NgClass,
-        NgIf
-    ],
-    styleUrls: ['./login.component.scss']
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  imports: [
+    ReactiveFormsModule,
+    NgClass,
+    NgIf
+  ],
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
 
@@ -29,9 +30,8 @@ export class LoginComponent {
   });
 
   constructor(
-    private router: Router,
     private readonly authService: AuthService,
-    private session: SessionService) {
+    private readonly alert: AlertService) {
   }
 
   onSubmit() {
@@ -51,6 +51,7 @@ export class LoginComponent {
   }
 
   private handleError() {
+    this.alert.alert(AlertKind.DANGER, 'Login fails')
     this.fail = true;
     return of('');
   }
