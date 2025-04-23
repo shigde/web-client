@@ -3,7 +3,24 @@
 }
 
 #banner {
-  background-image: url("src/assets/images/default-banner-2.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+
 }
+
+#banner-header {
+
+}
+
+#banner-img {
+  margin: 0 !important;
+  padding: 0 !important;
+  object-fit: cover;
+  z-index: -1;
+}
+
+//#banner {
+//  background-image: url("src/assets/images/default-banner-2.jpg");
+//  background-size: cover;
+//  background-repeat: no-repeat;
+//}

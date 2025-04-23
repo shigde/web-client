@@ -1,6 +1,6 @@
 <div class="container px-4 py-5">
   <h2 class="pb-2 border-bottom">Edit Channel</h2>
-  <form class="py-5" [formGroup]="channelForm" (ngSubmit)="save(fileInput)" class="needs-validation">
+  <form class="py-5 needs-validation" [formGroup]="channelForm" (ngSubmit)="save(fileInput)">
 
     <div class="row mb-3">
       <label for="name" class="col-sm-2 col-form-label fw-bold">Name*</label>
@@ -79,7 +79,7 @@
     <div class="row mb-3">
       <div class="col-sm-10 offset-sm-2">
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="public">
+          <input class="form-check-input" type="checkbox" formControlName="public" name="public" id="public">
           <label class="form-check-label" for="public">
             Is Public
           </label>

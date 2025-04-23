@@ -16,7 +16,7 @@ export class FederativeService {
     return {'domain': '', 'name': split[0]};
   }
 
-  public static joinDomainNameToJson(name: string, domain: string): string {
+  public static joinDomainNameToString(name: string, domain: string): string {
     return `${name}@${domain}`;
   }
 }

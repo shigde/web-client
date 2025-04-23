@@ -1,8 +1,13 @@
 <div id="banner-container" class="container my-2 my-lg-4 position-relative">
-  <div class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg" id="banner">
-    <div id="banner-header" class="col-lg-7 p-3 p-lg-5 pt-lg-3 bg-white bg-opacity-75 rounded-top-3 border border-bottom-0 shadow-lg ">
-      <h1 class="display-4 fw-bold lh-1 text-dark">Enrico Channel</h1>
-      <p class="lead text-dark">Live Stream Channel</p>
+  <div id="banner" class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg">
+    @if (banner !== '') {
+      <img id="banner-img" class="rounded-3" ngSrc="{{banner}}" fill priority alt="banner">
+    }
+    <div id="banner-header"
+         class="col-lg-7 p-3 p-lg-5 pt-lg-3 bg-white bg-opacity-75 rounded-top-3 rounded-bottom-start-3 border border-bottom-0 shadow-lg ">
+      <h3 class="display-6 fw-bold lh-1 text-dark text-truncate">{{ (channel$ | async)?.title }}</h3>
+      <p class="lead text-dark text-truncate">{{ (channel$ | async)?.description }}</p>
+      <small class="text-dark text-truncate">{{ (channel$ | async)?.support }}</small>
     </div>
   </div>
   <div class="col m-auto position-absolute top-0 end-0 p-2">

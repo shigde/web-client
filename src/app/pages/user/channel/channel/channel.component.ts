@@ -1,21 +1,33 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Channel, ChannelService, StreamService} from '@shigde/core';
-import {catchError, Observable, of, take} from 'rxjs';
+import {catchError, filter, Observable, of, take} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AlertKind} from '../../../../entities/alert';
 import {AlertService} from '../../../../providers/alert.service';
+import {AsyncPipe, NgOptimizedImage} from '@angular/common';
+import {FederativeService} from '../../../../providers/federative.service';
+
+export interface CompChannel extends Channel {
+  domain: string;
+  title: string;
+  banner: string;
+}
 
 @Component({
   selector: 'app-channel',
-  imports: [],
+  imports: [
+    AsyncPipe,
+    NgOptimizedImage
+  ],
   templateUrl: './channel.component.html',
   styleUrl: './channel.component.scss'
 })
 export class ChannelComponent {
 
-  public readonly channel$: Observable<Channel>;
-  private channelUuid: string;
+  public readonly channel$: Observable<CompChannel>;
+  public banner = '';
+  private readonly channelUuid: string;
 
 
   constructor(
@@ -28,8 +40,16 @@ export class ChannelComponent {
 
     this.channel$ = this.channelService.fetch(this.channelUuid).pipe(
       take(1),
-      map((res) => res.data),
-      catchError(_ => this.handleError<Channel>('Could not load channel!', {} as Channel))
+      map((res) => {
+        let {domain, name} = FederativeService.splitDomainNameToJson(res.data.name);
+        const banner = res.data.banner_name = ''
+          ? 'assets/images/default-banner-2.jpg'
+          : `${window.location.origin}/static/${res.data.banner_name}`;
+        this.banner = banner;
+        return {...res.data, domain, title: name, banner};
+      }),
+      catchError(_ => this.handleError<null>('Could not load channel!', null)),
+      filter(c => c !== null),
     );
   }
 
