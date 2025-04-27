@@ -1,0 +1,56 @@
+<div class="card h-100 position-relative">
+
+  <a class="text-decoration-none text-body position-relative" href="channel/dd8c274b-33e4-4c6b-a92e-c2f8a9be4d08">
+    <img src="assets/images/default-banner-2.jpg" class="card-img-top stream-thumbnail" alt="thumbnail">
+  </a>
+
+
+  <div class="app-card-img-overlay">
+    @if (stream.isLive) {
+      <h5><span class="badge text-bg-danger">Live</span></h5>
+    } @else {
+      <h5><span class="badge text-bg-secondary">Offline</span></h5>
+    }
+  </div>
+
+  <div class="card-footer">
+    <div class="d-flex gap-3 w-100">
+      <a href="channel/dd8c274b-33e4-4c6b-a92e-c2f8a9be4d08">
+        <app-avatar [name]="stream.ownerName" [size]="'40'"></app-avatar>
+      </a>
+      <div class="data-row-caption w-100">
+        <a class="text-decoration-none text-body" href="channel/dd8c274b-33e4-4c6b-a92e-c2f8a9be4d08">
+          <h6 class="mb-0 two-line-truncate">{{ stream.title }} ahgha asfahfbas asfsfasfa sag as g gasgaga asgas ga ga
+            gagag g asg asg asg asgsgag g asg asgsg ag ag g aga g</h6>
+        </a>
+        <a class="text-decoration-none text-body" href="channel/dd8c274b-33e4-4c6b-a92e-c2f8a9be4d08">
+          <p class="mb-0 opacity-75 one-line-truncate pt-2"><small>{{ stream.ownerName }} </small></p>
+        </a>
+        <p class="mb-0 opacity-75 one-line-truncate">
+          @if (stream.isLive) {
+            <small><b>Viewer:</b>
+              {{ stream.viewer }}
+            </small>
+          } @else {
+            <small><b>Start:</b>
+              {{ stream.start?.toDateString() }}
+            </small>
+          }
+        </p>
+
+      </div>
+
+    </div>
+
+    <!--    <div class="list-group-item list-group-item-action d-flex y py-3" aria-current="true">-->
+    <!--      <img src="https://github.com/twbs.png" alt="twbs" width="32" height="32" class="rounded-circle flex-shrink-0">-->
+    <!--      <div class="d-flex gap-2 w-100 justify-content-between">-->
+    <!--        <div class="">-->
+    <!--          <h6 class="mb-0" style="max-width: 30%;">List group item heading</h6>-->
+    <!--          <p class="mb-0 opacity-75 " style="max-width: 30%;">Some placeholder content in a paragraph.</p>-->
+    <!--        </div>-->
+    <!--        <small class="opacity-50 text-nowrap">now</small>-->
+    <!--      </div>-->
+    <!--    </div>-->
+  </div>
+</div>

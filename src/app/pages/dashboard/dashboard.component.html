@@ -1,18 +1,4 @@
-<section class="py-5 text-center container">
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="d-grid d-flex justify-content-between align-items-center">
-        <h3>Streams</h3>
-        <div class="btn-group">
-          <button type="button" class="btn btn-outline-secondary fw-bold "><i
-            class="bi bi-plus-circle-fill bi-border"></i> New Stream
-          </button>
-          <!--          <button type="button" class="btn btn-outline-secondary ">Default</button>-->
-        </div>
-      </div>
-    </div>
-  </div>
-
+<section class="py-5 container">
   <div class="no-album py-5" *ngIf="(streams$ | async)?.length === 0">
     <div class="container">
       <div class="p-5 text-center bg-body-tertiary rounded-3 border border-dashed">
@@ -25,7 +11,7 @@
     <div class="container">
       <div class="row row-cols-1 row-cols-sm-2 g-3 row-cols-md-3">
         <ng-template ngFor let-stream [ngForOf]="streams$ | async">
-          <app-thumbnail-card [stream]="stream"></app-thumbnail-card>
+          <app-stream-preview-card [stream]="stream"></app-stream-preview-card>
         </ng-template>
       </div>
     </div>

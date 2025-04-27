@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Stream, StreamService} from '@shigde/core';
+import {Stream, StreamPreview, StreamService} from '@shigde/core';
 import {catchError, map, Observable, of, take} from 'rxjs';
 import {v4 as uuidv4} from 'uuid';
 import {AlertKind} from '../../entities/alert';
@@ -13,7 +13,7 @@ import {AlertService} from '../../providers/alert.service';
   standalone: false
 })
 export class DashboardComponent implements OnInit {
-  streams$: Observable<Stream[]> = of([]);
+  streams$: Observable<StreamPreview[]> = of([]);
 
   constructor(
     private readonly streamService: StreamService,
@@ -25,7 +25,7 @@ export class DashboardComponent implements OnInit {
     this.streams$ = this.getStreams();
   }
 
-  getStreams(): Observable<Stream[]> {
+  getStreams(): Observable<StreamPreview[]> {
     return this.streamService.getPublicStreams()
       .pipe(
         take(1),
@@ -34,7 +34,7 @@ export class DashboardComponent implements OnInit {
       );
   }
 
-  private handleError(): Observable<Stream[]> {
+  private handleError(): Observable<StreamPreview[]> {
     this.alert.alert(AlertKind.DANGER, 'Could not load public streams!');
     return of([]);
   }

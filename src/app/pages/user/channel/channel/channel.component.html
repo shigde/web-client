@@ -17,3 +17,25 @@
     </button>
   </div>
 </div>
+
+<section class="py-5 text-center container">
+
+  <div class="no-album py-5" *ngIf="(streams$ | async)?.length === 0">
+    <div class="container">
+      <div class="p-5 text-center bg-body-tertiary rounded-3 border border-dashed">
+        <h4 class="text-body-emphasis">No Streams</h4>
+      </div>
+    </div>
+  </div>
+
+  <div class="album py-5" *ngIf="(streams$ | async)?.length !== 0">
+    <div class="container">
+      <div class="row row-cols-1 row-cols-sm-2 g-3 row-cols-md-3">
+        <ng-template ngFor let-stream [ngForOf]="streams$ | async">
+          <app-stream-card [stream]="stream"></app-stream-card>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+</section>

@@ -1,12 +1,13 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Channel, ChannelService, StreamService} from '@shigde/core';
+import {Channel, ChannelService, Stream, StreamService} from '@shigde/core';
 import {catchError, filter, Observable, of, take} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AlertKind} from '../../../../entities/alert';
 import {AlertService} from '../../../../providers/alert.service';
-import {AsyncPipe, NgOptimizedImage} from '@angular/common';
+import {AsyncPipe, NgForOf, NgIf, NgOptimizedImage} from '@angular/common';
 import {FederativeService} from '../../../../providers/federative.service';
+import {StreamCardComponent} from '../../../../component/stream-card/stream-card.component';
 
 export interface CompChannel extends Channel {
   domain: string;
@@ -18,7 +19,10 @@ export interface CompChannel extends Channel {
   selector: 'app-channel',
   imports: [
     AsyncPipe,
-    NgOptimizedImage
+    NgOptimizedImage,
+    NgForOf,
+    NgIf,
+    StreamCardComponent
   ],
   templateUrl: './channel.component.html',
   styleUrl: './channel.component.scss'
@@ -27,6 +31,8 @@ export class ChannelComponent {
 
   public readonly channel$: Observable<CompChannel>;
   public banner = '';
+  public streams$: Observable<Stream[]> = of([]);
+
   private readonly channelUuid: string;
 
 
