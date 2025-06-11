@@ -1,7 +1,7 @@
 .alert {
-  position: absolute !important;
+  position: fixed !important;
   width: 80%;
-  margin-top: 10px;
+  margin-top: 30px;
   left: 50%;
   -ms-transform: translateX(-50%);
   transform: translateX(-50%);

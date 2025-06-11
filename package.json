@@ -31,6 +31,7 @@
     "save": "^2.9.0",
     "sdp-transform": "^2.14.1",
     "tslib": "^2.3.0",
+    "uuid": "^11.0.3",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
@@ -46,8 +47,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.5.4",
-    "uuid": "^11.0.3"
+    "typescript": "~5.5.4"
   },
   "dependencies": {
     "@shigde/core": "file:.yalc/@shigde/core"

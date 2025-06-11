@@ -1,0 +1,47 @@
+<div id="thumbnail-container" class="container my-2 my-lg-4 position-relative w-1ßß">
+  <div class="row">
+    <div class="col-lg-9 mb-4 rounded-3 position-relative">
+      <div class="card">
+        @if (thumbnail === '') {
+          <img class="card-img rounded-3" ngSrc="{{thumbnail}}" fill priority alt="thumbnail">
+        } @else {
+          <img class="card-img rounded-3 thumbnail" src="assets/images/default-banner-2.jpg" alt="thumbnail">
+        }
+      </div>
+      <div class="col m-auto position-absolute h-100 top-0 end-0 p-3">
+        <button type="button" class="btn btn-primary btn  me-2 border fw-bold" (click)="editStream()">
+          <i class="bi bi-pen-fill bi-border me-0 me-sm-2"></i>
+          <span class="d-none d-sm-inline-block">Edit</span>
+        </button>
+
+        <button type="button" class="btn btn-success btn  me-2 border fw-bold" (click)="editStream()">
+          <i class="bi bi-broadcast bi-border me-0 me-sm-2"></i>
+          <span class="d-none d-sm-inline-block">Start</span>
+        </button>
+      </div>
+    </div>
+    <div class="col-lg-3 mb-4">
+      <div class="card w-100 h-100 rounded-3">
+        <div class="card-body">
+          <div class="d-flex gap-3 w-100 mb-3 pb-3 border-bottom align-items-center">
+            <a href="channel/{{(stream$ | async)?.channelUuid }}">
+              <app-avatar [name]="userName" [size]="'40'"></app-avatar>
+            </a>
+            <h5 class="card-title">{{ (stream$ | async)?.title }}</h5>
+          </div>
+
+          <p class="card-text">{{ (stream$ | async)?.description }}.</p>
+          <p class="card-text"><small>{{ (stream$ | async)?.support }}</small></p>
+        </div>
+        <div class="card-footer d-flex gap-3 w-100">
+          <small class="flex-grow-1">{{ (stream$ | async)?.start?.toDateString() }}</small>
+          <small><i class="bi bi-eye-fill"></i> {{ (stream$ | async)?.viewer }}</small>
+          <small><i class="bi bi-hand-thumbs-up-fill"></i> {{ (stream$ | async)?.likes }}</small>
+          <small><i class="bi bi-hand-thumbs-down-fill"></i> {{ (stream$ | async)?.dislikes }}</small>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+

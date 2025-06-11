@@ -42,7 +42,7 @@ export class ChannelComponent {
     private readonly streamService: StreamService,
     private readonly alert: AlertService,
     activeRoute: ActivatedRoute) {
-    this.channelUuid = activeRoute.snapshot.params['channelId'];
+    this.channelUuid = activeRoute.snapshot.params['channelUuid'];
 
     this.channel$ = this.channelService.fetch(this.channelUuid).pipe(
       take(1),

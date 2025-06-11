@@ -30,7 +30,7 @@ export class EditChannelComponent {
   channel: Channel | undefined;
   domain: string = '';
 
-  private readonly channelId: string;
+  private readonly channelUuid: string;
   public isUploading = false;
   public progress = {upload: 0};
 
@@ -41,8 +41,8 @@ export class EditChannelComponent {
     private readonly alert: AlertService,
     activeRoute: ActivatedRoute,
   ) {
-    this.channelId = activeRoute.snapshot.params['channelId'];
-    this.channelService.fetch(this.channelId).pipe(
+    this.channelUuid = activeRoute.snapshot.params['channelUuid'];
+    this.channelService.fetch(this.channelUuid).pipe(
       take(1),
       catchError(_ => this.handleError<null>('Could not load channel!', null)),
       filter((s) => s !== null)
@@ -104,7 +104,7 @@ export class EditChannelComponent {
   }
 
   goToChannel() {
-    this.router.navigate(['/channel/' + this.channelId]);
+    this.router.navigate(['/channel/' + this.channelUuid]);
   }
 
   private handleError<T>(msg: string, rsp: T): Observable<T> {
