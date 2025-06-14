@@ -97,6 +97,30 @@ export class EditStreamComponent {
       this.time.minute = date.getMinutes();
       this.setDefaultStreamingEndpoint();
     }
+
+    let key = uuidv4();
+    this.streamForm.get('url')?.setValue(`${window.location.origin}/stream/${key}`);
+    this.streamForm.get('streamKey')?.setValue(key);
+
+    // Disable fields because they are currently not supported!
+    this.streamForm.get('isRepeating')?.disable();
+    this.streamForm.get('isShig')?.disable();
+    this.streamForm.get('url')?.disable();
+    this.streamForm.get('streamKey')?.disable();
+    this.streamForm.get('protocol')?.disable();
+    this.streamForm.get('permanentLive')?.disable();
+    this.streamForm.get('saveReplay')?.disable();
+    this.streamForm.get('latencyMode')?.disable();
+
+
+
+    this.streamForm.get('guest1')?.disable();
+    this.streamForm.get('guest2')?.disable();
+    this.streamForm.get('guest3')?.disable();
+    this.streamForm.get('guest4')?.disable();
+    this.streamForm.get('guest5')?.disable();
+
+
   }
 
   save(fileInput: any) {

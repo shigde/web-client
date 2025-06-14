@@ -1,26 +1,53 @@
 <div class="container px-4 py-5" xmlns:disabled="http://www.w3.org/1999/xhtml">
   <h2 class="pb-2 border-bottom">New Stream</h2>
-  <form class="py-5needs-validation" [formGroup]="streamForm" (ngSubmit)="save(fileInput)">
+  <form class="py-5 needs-validation" [formGroup]="streamForm" (ngSubmit)="save(fileInput)">
+
+    <!--    Nav Tab menu -------------------------------------------------------------------------------------------------->
     <nav>
       <div class="nav nav-tabs mb-4" id="nav-tab" role="tablist">
-        <button class="nav-link active" id="nav-stream-tab" data-bs-toggle="tab" data-bs-target="#nav-stream"
+        <button class="nav-link active"
+                id="nav-stream-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#nav-stream"
                 type="button"
-                role="tab" aria-controls="nav-stream" aria-selected="true">Stream
+                role="tab"
+                aria-controls="nav-stream"
+                aria-selected="true">Stream
         </button>
-        <button class="nav-link" id="nav-protocol-tab" data-bs-toggle="tab" data-bs-target="#nav-protocol" type="button"
-                role="tab" aria-controls="nav-protocol" aria-selected="false">Protocol
+        <button class="nav-link"
+                id="nav-protocol-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#nav-protocol"
+                type="button"
+                role="tab"
+                aria-controls="nav-protocol"
+                aria-selected="false">Protocol
         </button>
-        <button class="nav-link" id="nav-guest-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button"
-                role="tab" aria-controls="nav-guest" aria-selected="false">Guest
+        <button class="nav-link"
+                id="nav-guest-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#nav-guest"
+                type="button"
+                role="tab"
+                aria-controls="nav-guest"
+                aria-selected="false">Guests
         </button>
       </div>
     </nav>
 
+    <!--    Nav Tab content ------------------------------------------------------------------------------------------->
     <div class="tab-content" id="nav-tabContent">
-      <div class="tab-pane fade show active" id="nav-stream" role="tabpanel" aria-labelledby="nav-stream-tab">
+
+      <!--    Nav Tab Stream content ---------------------------------------------------------------------------------->
+      <div class="tab-pane fade show active"
+           id="nav-stream"
+           role="tabpanel"
+           aria-labelledby="nav-stream-tab"
+           tabindex="0"
+      >
         <div class="row mb-3">
-          <label for="title" class="col-sm-2 col-form-label fw-bold">Title*</label>
-          <div class="col-sm-10">
+          <label for="title" class="col-sm-3 col-form-label fw-bold">Title*</label>
+          <div class="col-sm-9">
             <input type="text" class="form-control" id="title" formControlName="title" name="title">
 
             @if (isFieldInvalid('title')) {
@@ -41,15 +68,15 @@
         </div>
 
         <div class="row mb-3">
-          <label for="file" class="col-sm-2 col-form-label fw-bold">Thumbnail</label>
-          <div class="col-sm-10">
+          <label for="file" class="col-sm-3 col-form-label fw-bold">Thumbnail</label>
+          <div class="col-sm-9">
             <input class="form-control" type="file" id="file" #fileInput placeholder="Default Thumbnail">
           </div>
         </div>
 
         <div class="row mb-3">
-          <label for="description" class="col-sm-2 col-form-label fw-bold">Description</label>
-          <div class="col-sm-10">
+          <label for="description" class="col-sm-3 col-form-label fw-bold">Description</label>
+          <div class="col-sm-9">
             <textarea class="form-control" id="description" rows="3" formControlName="description"
                       name="description"></textarea>
 
@@ -65,8 +92,8 @@
         </div>
 
         <div class="row mb-3 pb-3">
-          <label for="support" class="col-sm-2 col-form-label fw-bold">Support</label>
-          <div class="col-sm-10">
+          <label for="support" class="col-sm-3 col-form-label fw-bold">Support</label>
+          <div class="col-sm-9">
             <textarea class="form-control" id="support" rows="2" formControlName="support" name="support"></textarea>
             @if (isFieldInvalid('support')) {
               <div class="invalid">
@@ -81,8 +108,8 @@
         <hr>
 
         <div class="row mb-3 pb-3">
-          <label for="time" class="col-sm-2 col-form-label mt-sm-4 fw-bold">Time*</label>
-          <div class="col-sm-10">
+          <label for="time" class="col-sm-3 col-form-label mt-sm-4 fw-bold">Time*</label>
+          <div class="col-sm-9">
             <ngb-timepicker id="time" [(ngModel)]="time" [ngModelOptions]="{standalone: true}"/>
             <small class="pt-2">Add a start time in HH:MM format (e.g., 08:30 or 15:45).</small>
           </div>
@@ -91,60 +118,12 @@
         <hr>
 
         <div class="row mb-3  pb-3">
-          <label for="time" class="col-sm-2 col-form-label fw-bold">Frequency*</label>
-          <div class="col-sm-10">
-
-            <div class="form-check pt-2">
-              <input class="form-check-input" type="radio" name="isRepeating" id="isRepeating1"
-                     formControlName="isRepeating" value="true">
-              <label class="form-check-label" for="isRepeating1">Repeats</label>
-            </div>
-
-            <div class="btn-group ms-4 mt-4 mb-5" role="group" aria-label="Basic radio toggle button group">
-              <input type="radio" class="btn-check" name="repeat" id="repeat1" formControlName="repeat" value="1"
-                     autocomplete="off" checked>
-              <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="repeat1">Every<br> Mon</label>
-
-              <input type="radio" class="btn-check" name="repeat" id="repeat2" formControlName="repeat" value="2"
-                     autocomplete="off">
-              <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="repeat2">Every<br> Tue</label>
-
-              <input type="radio" class="btn-check" name="repeat" id="repeat3" formControlName="repeat" value="3"
-                     autocomplete="off">
-              <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="repeat3">Every<br> Wed</label>
-
-              <input type="radio" class="btn-check" name="repeat" id="repeat4" formControlName="repeat" value="4"
-                     autocomplete="off">
-              <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="repeat4">Every<br> Thu</label>
-
-              <input type="radio" class="btn-check" name="repeat" id="repeat5" formControlName="repeat" value="5"
-                     autocomplete="off">
-              <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="repeat5">Every<br> Fri</label>
-
-              <input type="radio" class="btn-check" name="repeat" id="repeat6" formControlName="repeat" value="6"
-                     autocomplete="off">
-              <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="repeat6">Every<br> Sat</label>
-
-              <input type="radio" class="btn-check" name="repeat" id="repeat7" formControlName="repeat" value="7"
-                     autocomplete="off">
-              <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="repeat7">Every<br> Sun</label>
-
-            </div>
-
-
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="isRepeating" formControlName="isRepeating"
-                     id="isRepeating2" value="false" checked>
-              <label class="form-check-label" for="isRepeating2">
-                Specific Day
-              </label>
-
-              <div class="input-group mt-4 p-q" id="date-picker-group">
-                <input type="text" id="date-picker" class="form-control" placeholder="{{today}}" aria-label="day"
-                       aria-describedby="button-addon2" ngbDatepicker #d="ngbDatepicker" formControlName="day">
-                <button class="btn btn-sm btn-primary" type="button" (click)="d.toggle()">Select a Day</button>
-
-              </div>
+          <label for="time" class="col-sm-3 col-form-label fw-bold">Day*</label>
+          <div class="col-sm-9">
+            <div class="input-group mt-2 p-q" id="date-picker-group">
+              <input type="text" id="date-picker" class="form-control" placeholder="{{today}}" aria-label="day"
+                     aria-describedby="button-addon2" ngbDatepicker #d="ngbDatepicker" formControlName="day">
+              <button class="btn btn-sm btn-primary group-btn" type="button" (click)="d.toggle()">Select a Day</button>
             </div>
 
             @if (day?.invalid && (day?.dirty || day?.touched)) {
@@ -163,24 +142,39 @@
         <hr>
 
         <div class="row mb-3 ">
-          <label for="public" class="col-sm-2 col-form-label fw-bold">Is Public</label>
-          <div class="col-sm-10  pt-1">
+          <label for="public" class="col-sm-3 col-form-label fw-bold">Is Public</label>
+          <div class="col-sm-9  pt-1">
             <input class="form-check-input mt-2" type="checkbox" id="public" formControlName="isPublic">
           </div>
         </div>
       </div>
 
-      <div class="tab-pane fade show active" id="nav-protocol" role="tabpanel" aria-labelledby="nav-protocol-tab">
+      <!--    Nav Tab Protocol content -------------------------------------------------------------------------------->
+      <div
+        class="tab-pane fade show"
+        id="nav-protocol"
+        role="tabpanel"
+        aria-labelledby="nav-protocol-tab"
+        tabindex="0"
+      >
         <div class="row mb-3 ">
-          <label for="isShig" class="col-sm-2 col-form-label fw-bold">Stream to Shig</label>
-          <div class="col-sm-10  pt-1">
+
+          <div class="alert alert-primary" role="alert">
+            At this time, our implementation supports only the WHIP protocol for streaming. Support for additional protocols or custom modifications is not yet available. However, this is an area we're actively working on, and we welcome community feedback or contributions to help move things forward.
+            <span class=""> You can follow the progress or contribute directly on: <a href="https://github.com/shigde" class="text-success"><i class="bi bi-github"></i> Shig</a></span>
+          </div>
+
+        </div>
+        <div class="row mb-3 ">
+          <label for="isShig" class="col-sm-3 col-form-label fw-bold">Stream to Shig</label>
+          <div class="col-sm-9  pt-1">
             <input class="form-check-input mt-2" type="checkbox" id="isShig" formControlName="isShig">
           </div>
         </div>
 
         <div class="row mb-3">
-          <label for="url" class="col-sm-2 col-form-label fw-bold">Stream Url*</label>
-          <div class="col-sm-10">
+          <label for="url" class="col-sm-3 col-form-label fw-bold">Stream Url*</label>
+          <div class="col-sm-9">
             <input type="text" class="form-control" id="url" formControlName="url" name="url">
 
             @if (isFieldInvalid('url')) {
@@ -197,8 +191,8 @@
         </div>
 
         <div class="row mb-3">
-          <label for="streamKey" class="col-sm-2 col-form-label fw-bold">Stream Key*</label>
-          <div class="col-sm-10">
+          <label for="streamKey" class="col-sm-3 col-form-label fw-bold">Stream Key*</label>
+          <div class="col-sm-9">
             <input type="text" class="form-control" id="streamKey" formControlName="streamKey" name="streamKey">
 
             @if (isFieldInvalid('streamKey')) {
@@ -218,8 +212,8 @@
         </div>
 
         <div class="row mb-3">
-          <label for="protocol" class="col-sm-2 col-form-label fw-bold">Protocol*</label>
-          <div class="col-sm-10">
+          <label for="protocol" class="col-sm-3 col-form-label fw-bold">Protocol*</label>
+          <div class="col-sm-9">
             <select class="form-select" id="protocol" formControlName="protocol" name="protocol">
               <option value="rtmp">RTMP</option>
               <option value="hls">HLS</option>
@@ -229,22 +223,22 @@
         </div>
 
         <div class="row mb-3 ">
-          <label for="permanentLive" class="col-sm-2 col-form-label fw-bold">Permanent Live</label>
-          <div class="col-sm-10  pt-1">
+          <label for="permanentLive" class="col-sm-3 col-form-label fw-bold">Permanent Live</label>
+          <div class="col-sm-9  pt-1">
             <input class="form-check-input mt-2" type="checkbox" id="permanentLive" formControlName="permanentLive">
           </div>
         </div>
 
         <div class="row mb-3 ">
-          <label for="saveReplay" class="col-sm-2 col-form-label fw-bold">Save for Replay</label>
-          <div class="col-sm-10  pt-1">
+          <label for="saveReplay" class="col-sm-3 col-form-label fw-bold">Save for Replay</label>
+          <div class="col-sm-9  pt-1">
             <input class="form-check-input mt-2" type="checkbox" id="saveReplay" formControlName="saveReplay">
           </div>
         </div>
 
         <div class="row mb-3">
-          <label for="latencyMode" class="col-sm-2 col-form-label fw-bold">Latency Mode*</label>
-          <div class="col-sm-10">
+          <label for="latencyMode" class="col-sm-3 col-form-label fw-bold">Latency Mode*</label>
+          <div class="col-sm-9">
             <select class="form-select" id="latencyMode" formControlName="latencyMode" name="latencyMode">
               <option value="STANDARD">Standard</option>
               <option value="LOW">Low</option>
@@ -255,10 +249,23 @@
 
       </div>
 
-      <div class="tab-pane fade show active" id="nav-guest" role="tabpanel" aria-labelledby="nav-guest-tab">
+      <!--    Nav Tab Guest content ----------------------------------------------------------------------------------->
+      <div
+        class="tab-pane fade show"
+        id="nav-guest"
+        role="tabpanel"
+        aria-labelledby="nav-guest-tab"
+        tabindex="0"
+      >
         <div class="row mb-3">
-          <label for="guest1" class="col-sm-2 col-form-label fw-bold">Guest 1</label>
-          <div class="col-sm-10">
+
+          <div class="alert alert-primary" role="alert">
+            At this time, our implementation does not yet support inviting guests to a stream. This is a feature we're actively working on, and we welcome feedback or contributions from the community.
+            <span class=""> You can follow the progress or contribute directly on: <a href="https://github.com/shigde" class="text-success"><i class="bi bi-github"></i> Shig</a></span>
+          </div>
+
+          <label for="guest1" class="col-sm-3 col-form-label fw-bold">Guest 1</label>
+          <div class="col-sm-9">
             <input type="text" class="form-control" id="guest1" formControlName="guest1" name="guest1">
             @if (isFieldInvalid('guest1')) {
               <div class="invalid">
@@ -267,8 +274,8 @@
           </div>
         </div>
         <div class="row mb-3">
-          <label for="guest2" class="col-sm-2 col-form-label fw-bold">Guest 2</label>
-          <div class="col-sm-10">
+          <label for="guest2" class="col-sm-3 col-form-label fw-bold">Guest 2</label>
+          <div class="col-sm-9">
             <input type="text" class="form-control" id="guest3" formControlName="guest2" name="guest2">
             @if (isFieldInvalid('guest2')) {
               <div class="invalid">
@@ -277,8 +284,8 @@
           </div>
         </div>
         <div class="row mb-3">
-          <label for="guest3" class="col-sm-2 col-form-label fw-bold">Guest 3</label>
-          <div class="col-sm-10">
+          <label for="guest3" class="col-sm-3 col-form-label fw-bold">Guest 3</label>
+          <div class="col-sm-9">
             <input type="text" class="form-control" id="guest3" formControlName="guest3" name="guest1">
             @if (isFieldInvalid('guest3')) {
               <div class="invalid">
@@ -287,8 +294,8 @@
           </div>
         </div>
         <div class="row mb-3">
-          <label for="guest4" class="col-sm-2 col-form-label fw-bold">Guest 4</label>
-          <div class="col-sm-10">
+          <label for="guest4" class="col-sm-3 col-form-label fw-bold">Guest 4</label>
+          <div class="col-sm-9">
             <input type="text" class="form-control" id="guest4" formControlName="guest4" name="guest4">
             @if (isFieldInvalid('guest4')) {
               <div class="invalid">
@@ -297,8 +304,8 @@
           </div>
         </div>
         <div class="row mb-3">
-          <label for="guest5" class="col-sm-2 col-form-label fw-bold">Guest 5</label>
-          <div class="col-sm-10">
+          <label for="guest5" class="col-sm-3 col-form-label fw-bold">Guest 5</label>
+          <div class="col-sm-9">
             <input type="text" class="form-control" id="gues5" formControlName="guest5" name="guest5">
             @if (isFieldInvalid('guest5')) {
               <div class="invalid">
@@ -308,11 +315,13 @@
         </div>
       </div>
     </div>
+    <!---    End Nav Tab content -------------------------------------------------------------------------------------->
 
     <hr>
 
+    <!--    Button row ------------------------------------------------------------------------------------------------>
     <div class="row mt-4">
-      <div class="col-sm-10 offset-sm-2">
+      <div class="col-sm-9 offset-sm-3">
         <div class="form-button">
           <button type="button" class="btn btn-secondary me-3" (click)="goToStream()">Cancel</button>
           <button type="submit" class="btn btn-primary">Save</button>

@@ -21,7 +21,7 @@
     "@angular/router": "^20.0.3",
     "@popperjs/core": "^2.11.6",
     "@shigde/core": "file:.yalc/@shigde/core",
-    "bootstrap": "^5.3.3",
+    "bootstrap": "^5.3.6",
     "bootstrap-icons": "^1.11.3",
     "dexie": "^3.2.4",
     "multistreamsmixer": "^1.2.2",
