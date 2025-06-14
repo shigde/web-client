@@ -101,6 +101,10 @@ export class EditStreamComponent {
     let key = uuidv4();
     this.streamForm.get('url')?.setValue(`${window.location.origin}/stream/${key}`);
     this.streamForm.get('streamKey')?.setValue(key);
+    this.streamForm.get('protocol')?.setValue(`${StreamProtocol.WHIP}`);
+    this.streamForm.get('permanentLive')?.setValue(false);
+    this.streamForm.get('saveReplay')?.setValue(false);
+    this.streamForm.get('latencyMode')?.setValue(`${StreamLatency.STANDARD}`);
 
     // Disable fields because they are currently not supported!
     this.streamForm.get('isRepeating')?.disable();
@@ -111,7 +115,6 @@ export class EditStreamComponent {
     this.streamForm.get('permanentLive')?.disable();
     this.streamForm.get('saveReplay')?.disable();
     this.streamForm.get('latencyMode')?.disable();
-
 
 
     this.streamForm.get('guest1')?.disable();

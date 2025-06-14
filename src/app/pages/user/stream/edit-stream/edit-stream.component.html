@@ -126,12 +126,10 @@
               <button class="btn btn-sm btn-primary group-btn" type="button" (click)="d.toggle()">Select a Day</button>
             </div>
 
-            @if (day?.invalid && (day?.dirty || day?.touched)) {
-              <div class="invalid mt-3">
-                @if (day?.hasError('required')) {
-                  <div>
-                    A Date is required.
-                  </div>
+            @if (isFieldInvalid('day')) {
+              <div class="invalid">
+                @if (getFieldError('day', 'required')) {
+                  <div>A Day is required..</div>
                 }
               </div>
             }
@@ -166,7 +164,7 @@
 
         </div>
         <div class="row mb-3 ">
-          <label for="isShig" class="col-sm-3 col-form-label fw-bold">Stream to Shig</label>
+          <label for="isShig" class="col-sm-3 col-form-label fw-bold">Stream with Shig</label>
           <div class="col-sm-9  pt-1">
             <input class="form-check-input mt-2" type="checkbox" id="isShig" formControlName="isShig">
           </div>
@@ -180,7 +178,7 @@
             @if (isFieldInvalid('url')) {
               <div class="invalid">
                 @if (getFieldError('url', 'required')) {
-                  <div>Stream Key is required.</div>
+                  <div>Stream url is required.</div>
                 }
                 @if (getFieldError('url', 'minlength')) {
                   <div>Stream url has to be valid!</div>
@@ -214,11 +212,42 @@
         <div class="row mb-3">
           <label for="protocol" class="col-sm-3 col-form-label fw-bold">Protocol*</label>
           <div class="col-sm-9">
-            <select class="form-select" id="protocol" formControlName="protocol" name="protocol">
-              <option value="rtmp">RTMP</option>
-              <option value="hls">HLS</option>
-              <option value="dash">DASH</option>
-            </select>
+
+            <div class="btn-group mt-2 mb-2" role="group" aria-label="Streaming Protocol">
+              <input type="radio" class="btn-check" name="protocol" id="whip" formControlName="protocol" value="2"
+                     autocomplete="off" checked>
+              <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="whip">WHIP</label>
+
+              <input type="radio" class="btn-check" name="protocol" id="rtmp" formControlName="protocol" value="1"
+                     autocomplete="off">
+              <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="rtmp">RTMP</label>
+
+              <input type="radio" class="btn-check" name="protocol" id="moq" formControlName="protocol" value="3"
+                     autocomplete="off">
+              <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="moq">MoQ</label>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label for="latencyMode" class="col-sm-3 col-form-label fw-bold">Latency Mode*</label>
+          <div class="col-sm-9">
+
+            <div class="btn-group mt-2 mb-2" role="group" aria-label="Streaming Protocol">
+              <input type="radio" class="btn-check" name="latencyMode" id="low" formControlName="latencyMode" value="1"
+                     autocomplete="off">
+              <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="low">Low</label>
+
+              <input type="radio" class="btn-check" name="latencyMode" id="standard" formControlName="latencyMode" value="2"
+                     autocomplete="off" checked>
+              <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="standard">Standard</label>
+
+              <input type="radio" class="btn-check" name="latencyMode" id="high" formControlName="latencyMode" value="3"
+                     autocomplete="off">
+              <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="high">High</label>
+            </div>
+
           </div>
         </div>
 
@@ -233,17 +262,6 @@
           <label for="saveReplay" class="col-sm-3 col-form-label fw-bold">Save for Replay</label>
           <div class="col-sm-9  pt-1">
             <input class="form-check-input mt-2" type="checkbox" id="saveReplay" formControlName="saveReplay">
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <label for="latencyMode" class="col-sm-3 col-form-label fw-bold">Latency Mode*</label>
-          <div class="col-sm-9">
-            <select class="form-select" id="latencyMode" formControlName="latencyMode" name="latencyMode">
-              <option value="STANDARD">Standard</option>
-              <option value="LOW">Low</option>
-              <option value="HIGH">High</option>
-            </select>
           </div>
         </div>
 
