@@ -62,6 +62,11 @@ export class EditStreamComponent {
     permanentLive: new FormControl(false),
     saveReplay: new FormControl(false),
     latencyMode: new FormControl(StreamLatency.STANDARD),
+    guest1: new FormControl(),
+    guest2: new FormControl(),
+    guest3: new FormControl(),
+    guest4: new FormControl(),
+    guest5: new FormControl(),
   });
 
   constructor(
@@ -158,6 +163,7 @@ export class EditStreamComponent {
     }
   }
 
+  // Getter
   get title() {
     return this.streamForm.get('title');
   }
@@ -166,23 +172,20 @@ export class EditStreamComponent {
     return this.streamForm.get('thumbnail');
   }
 
-  get support() {
-    return this.streamForm.get('support');
-  }
-
   get description() {
     return this.streamForm.get('description');
+  }
+
+  get support() {
+    return this.streamForm.get('support');
   }
 
   get day() {
     return this.streamForm.get('day');
   }
 
-  get date() {
-    let day = this.streamForm.get('day')?.value;
-    let time = this.streamForm.get('time')?.value;
-    let date = new Date(day.getFullYear(), day.getMonth(), day.getDate(), time.hour, time.minute);
-    return date;
+  get isRepeating() {
+    return this.streamForm.get('isRepeating');
   }
 
   get repeat() {
@@ -195,6 +198,10 @@ export class EditStreamComponent {
 
   get streamKey() {
     return this.streamForm.get('streamKey');
+  }
+
+  get isShig() {
+    return this.streamForm.get('isShig');
   }
 
   get url() {
@@ -216,6 +223,26 @@ export class EditStreamComponent {
   get latencyMode() {
     return this.streamForm.get('latencyMode');
   }
+
+  // Hilfsmethode zur Validierung des Formulars
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.streamForm.get(fieldName);
+    return field ? field.invalid && (field.dirty || field.touched) : false;
+  }
+
+  // Hilfsmethode zum Abrufen spezifischer Validierungsfehler
+  getFieldError(fieldName: string, errorType: string): boolean {
+    const field = this.streamForm.get(fieldName);
+    return field ? field.hasError(errorType) : false;
+  }
+
+  get date() {
+    let day = this.streamForm.get('day')?.value;
+    let time = this.streamForm.get('time')?.value;
+    let date = new Date(day.getFullYear(), day.getMonth(), day.getDate(), time.hour, time.minute);
+    return date;
+  }
+
 
   public setDefaultStreamingEndpoint() {
     let urlProtocol = 'https';

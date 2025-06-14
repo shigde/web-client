@@ -1,4 +1,4 @@
-<div class="container px-4 py-5">
+<div class="container px-4 py-5" xmlns:disabled="http://www.w3.org/1999/xhtml">
   <h2 class="pb-2 border-bottom">New Stream</h2>
   <form class="py-5needs-validation" [formGroup]="streamForm" (ngSubmit)="save(fileInput)">
     <nav>
@@ -23,23 +23,20 @@
           <div class="col-sm-10">
             <input type="text" class="form-control" id="title" formControlName="title" name="title">
 
-            @if (title?.invalid && (title?.dirty || title?.touched)) {
+            @if (isFieldInvalid('title')) {
               <div class="invalid">
-                @if (title?.hasError('required')) {
-                  <div>
-                    Title is required.
-                  </div>
-                } @else if (title?.hasError('minlength')) {
-                  <div>
-                    Title must be at least 4 characters long.
-                  </div>
-                } @else if (title?.hasError('maxlength')) {
-                  <div>
-                    Title can only be 50 characters long.
-                  </div>
+                @if (getFieldError('title', 'required')) {
+                  <div>Title is required.</div>
+                }
+                @if (getFieldError('title', 'minlength')) {
+                  <div>Title must be at least 4 characters long.</div>
+                }
+                @if (getFieldError('title', 'maxlength')) {
+                  <div>Title can only be 50 characters long.</div>
                 }
               </div>
             }
+
           </div>
         </div>
 
@@ -53,15 +50,13 @@
         <div class="row mb-3">
           <label for="description" class="col-sm-2 col-form-label fw-bold">Description</label>
           <div class="col-sm-10">
-               <textarea class="form-control" id="description" rows="3" formControlName="description"
-                         name="description"></textarea>
+            <textarea class="form-control" id="description" rows="3" formControlName="description"
+                      name="description"></textarea>
 
-            @if (description?.invalid && (description?.dirty || description?.touched)) {
+            @if (isFieldInvalid('description')) {
               <div class="invalid">
-                @if (description?.hasError('maxlength')) {
-                  <div>
-                    Description can only be 250 characters long.
-                  </div>
+                @if (getFieldError('description', 'maxlength')) {
+                  <div>Description can only be 250 characters long.</div>
                 }
               </div>
             }
@@ -73,12 +68,10 @@
           <label for="support" class="col-sm-2 col-form-label fw-bold">Support</label>
           <div class="col-sm-10">
             <textarea class="form-control" id="support" rows="2" formControlName="support" name="support"></textarea>
-            @if (support?.invalid && (support?.dirty || support?.touched)) {
+            @if (isFieldInvalid('support')) {
               <div class="invalid">
-                @if (support?.hasError('maxlength')) {
-                  <div>
-                    Support can only be 150 characters long.
-                  </div>
+                @if (getFieldError('support', 'maxlength')) {
+                  <div>Support can only be 150 characters long.</div>
                 }
               </div>
             }
@@ -175,7 +168,144 @@
             <input class="form-check-input mt-2" type="checkbox" id="public" formControlName="isPublic">
           </div>
         </div>
+      </div>
 
+      <div class="tab-pane fade show active" id="nav-protocol" role="tabpanel" aria-labelledby="nav-protocol-tab">
+        <div class="row mb-3 ">
+          <label for="isShig" class="col-sm-2 col-form-label fw-bold">Stream to Shig</label>
+          <div class="col-sm-10  pt-1">
+            <input class="form-check-input mt-2" type="checkbox" id="isShig" formControlName="isShig">
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label for="url" class="col-sm-2 col-form-label fw-bold">Stream Url*</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="url" formControlName="url" name="url">
+
+            @if (isFieldInvalid('url')) {
+              <div class="invalid">
+                @if (getFieldError('url', 'required')) {
+                  <div>Stream Key is required.</div>
+                }
+                @if (getFieldError('url', 'minlength')) {
+                  <div>Stream url has to be valid!</div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label for="streamKey" class="col-sm-2 col-form-label fw-bold">Stream Key*</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="streamKey" formControlName="streamKey" name="streamKey">
+
+            @if (isFieldInvalid('streamKey')) {
+              <div class="invalid">
+                @if (getFieldError('streamKey', 'required')) {
+                  <div>Stream Key is required.</div>
+                }
+                @if (getFieldError('streamKey', 'minlength')) {
+                  <div>Stream Key must be at least 8 characters long.</div>
+                }
+                @if (getFieldError('streamKey', 'maxlength')) {
+                  <div>Stream Key can only be 100 characters long.</div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label for="protocol" class="col-sm-2 col-form-label fw-bold">Protocol*</label>
+          <div class="col-sm-10">
+            <select class="form-select" id="protocol" formControlName="protocol" name="protocol">
+              <option value="rtmp">RTMP</option>
+              <option value="hls">HLS</option>
+              <option value="dash">DASH</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row mb-3 ">
+          <label for="permanentLive" class="col-sm-2 col-form-label fw-bold">Permanent Live</label>
+          <div class="col-sm-10  pt-1">
+            <input class="form-check-input mt-2" type="checkbox" id="permanentLive" formControlName="permanentLive">
+          </div>
+        </div>
+
+        <div class="row mb-3 ">
+          <label for="saveReplay" class="col-sm-2 col-form-label fw-bold">Save for Replay</label>
+          <div class="col-sm-10  pt-1">
+            <input class="form-check-input mt-2" type="checkbox" id="saveReplay" formControlName="saveReplay">
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label for="latencyMode" class="col-sm-2 col-form-label fw-bold">Latency Mode*</label>
+          <div class="col-sm-10">
+            <select class="form-select" id="latencyMode" formControlName="latencyMode" name="latencyMode">
+              <option value="STANDARD">Standard</option>
+              <option value="LOW">Low</option>
+              <option value="HIGH">High</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="tab-pane fade show active" id="nav-guest" role="tabpanel" aria-labelledby="nav-guest-tab">
+        <div class="row mb-3">
+          <label for="guest1" class="col-sm-2 col-form-label fw-bold">Guest 1</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="guest1" formControlName="guest1" name="guest1">
+            @if (isFieldInvalid('guest1')) {
+              <div class="invalid">
+              </div>
+            }
+          </div>
+        </div>
+        <div class="row mb-3">
+          <label for="guest2" class="col-sm-2 col-form-label fw-bold">Guest 2</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="guest3" formControlName="guest2" name="guest2">
+            @if (isFieldInvalid('guest2')) {
+              <div class="invalid">
+              </div>
+            }
+          </div>
+        </div>
+        <div class="row mb-3">
+          <label for="guest3" class="col-sm-2 col-form-label fw-bold">Guest 3</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="guest3" formControlName="guest3" name="guest1">
+            @if (isFieldInvalid('guest3')) {
+              <div class="invalid">
+              </div>
+            }
+          </div>
+        </div>
+        <div class="row mb-3">
+          <label for="guest4" class="col-sm-2 col-form-label fw-bold">Guest 4</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="guest4" formControlName="guest4" name="guest4">
+            @if (isFieldInvalid('guest4')) {
+              <div class="invalid">
+              </div>
+            }
+          </div>
+        </div>
+        <div class="row mb-3">
+          <label for="guest5" class="col-sm-2 col-form-label fw-bold">Guest 5</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="gues5" formControlName="guest5" name="guest5">
+            @if (isFieldInvalid('guest5')) {
+              <div class="invalid">
+              </div>
+            }
+          </div>
+        </div>
       </div>
     </div>
 
