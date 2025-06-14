@@ -34,7 +34,7 @@
           <p class="card-text"><small>{{ (stream$ | async)?.support }}</small></p>
         </div>
         <div class="card-footer d-flex gap-3 w-100">
-          <small class="flex-grow-1">{{ (stream$ | async)?.start?.toDateString() }}</small>
+          <small class="flex-grow-1">{{ (stream$ | async)?.start_time?.toDateString() }}</small>
           <small><i class="bi bi-eye-fill"></i> {{ (stream$ | async)?.viewer }}</small>
           <small><i class="bi bi-hand-thumbs-up-fill"></i> {{ (stream$ | async)?.likes }}</small>
           <small><i class="bi bi-hand-thumbs-down-fill"></i> {{ (stream$ | async)?.dislikes }}</small>

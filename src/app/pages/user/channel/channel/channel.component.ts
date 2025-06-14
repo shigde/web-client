@@ -48,6 +48,7 @@ export class ChannelComponent {
       take(1),
       map((res) => {
         let {domain, name} = FederativeService.splitDomainNameToJson(res.data.name);
+        // @ts-ignore
         const banner = res.data.banner_name = ''
           ? 'assets/images/default-banner-2.jpg'
           : `${window.location.origin}/static/${res.data.banner_name}`;
