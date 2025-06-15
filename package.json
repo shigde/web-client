@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --proxy-config proxy.config.json --host 0.0.0.0 --ssl",
-    "start:remote": "ng serve --proxy-config proxy.remote.config.json --host 0.0.0.0 --port 4201  --ssl",
+    "start": "ng serve --host 0.0.0.0 --ssl",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -37,6 +36,7 @@
     "@angular/cli": "~20.0.2",
     "@angular/compiler-cli": "^20.0.3",
     "@angular/localize": "^20.0.3",
+    "@angular-devkit/build-angular": "^20.0.2",
     "@ng-bootstrap/ng-bootstrap": "^19.0.0-rc.0",
     "@types/jasmine": "~4.3.0",
     "@types/uuid": "^10.0.0",

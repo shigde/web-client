@@ -80,13 +80,15 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular/build:dev-server",
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "proxyConfig": "proxy.config.json"
+          },
           "configurations": {
             "production": {
               "buildTarget": "web-client:build:production"
             },
             "development": {
-              "proxyConfig": "proxy.config.json",
               "buildTarget": "web-client:build:development"
             }
           },

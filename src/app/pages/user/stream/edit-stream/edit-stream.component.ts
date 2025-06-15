@@ -1,18 +1,15 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
-  NgbDatepickerModule,
+  NgbDatepickerModule, NgbDateStruct,
   NgbDropdownModule,
   NgbTimepicker
 } from '@ng-bootstrap/ng-bootstrap';
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
   Validators
 } from '@angular/forms';
 import {SettingsService, Stream, StreamLatency, StreamProtocol, StreamService, Weekday} from '@shigde/core';
@@ -22,7 +19,6 @@ import {catchError, filter, Observable, of, take, tap} from 'rxjs';
 import {AlertKind} from '../../../../entities/alert';
 import {v4 as uuidv4} from 'uuid';
 import {TimeService} from '../../../../providers/time.service';
-import {formatDate} from '@angular/common';
 
 @Component({
   selector: 'app-edit-stream',
@@ -38,7 +34,6 @@ import {formatDate} from '@angular/common';
   styleUrl: './edit-stream.component.scss'
 })
 export class EditStreamComponent {
-  public today = formatDate(new Date(), 'yyyy-MM-dd', 'en-US');
   public isEdit = false;
   public stream!: Stream;
   public streamUuid!: string;
@@ -51,17 +46,17 @@ export class EditStreamComponent {
     thumbnail: new FormControl(''),
     description: new FormControl('', [Validators.maxLength(250)]),
     support: new FormControl('', [Validators.maxLength(150)]),
-    day: new FormControl(this.today, [Validators.required, this.createDayValidator()]),
-    isRepeating: new FormControl('false'),
-    repeat: new FormControl(Weekday.MONDAY),
+    day: new FormControl(new Date(), [Validators.required]),
+    isRepeating: new FormControl(false),
+    repeat: new FormControl(`${Weekday.MONDAY}`),
     isPublic: new FormControl(false),
     streamKey: new FormControl('', [Validators.required]),
     isShig: new FormControl(true),
     url: new FormControl('', [Validators.required]),
-    protocol: new FormControl(StreamProtocol.RTMP),
+    protocol: new FormControl(`${StreamProtocol.WHIP}`),
     permanentLive: new FormControl(false),
     saveReplay: new FormControl(false),
-    latencyMode: new FormControl(StreamLatency.STANDARD),
+    latencyMode: new FormControl(`${StreamLatency.STANDARD}`),
     guest1: new FormControl(),
     guest2: new FormControl(),
     guest3: new FormControl(),
@@ -82,31 +77,22 @@ export class EditStreamComponent {
       this.streamUuid = streamUuid;
 
       streamService.getStream(streamUuid).pipe(
+        take(1),
         map(d => d.data),
         tap(d => this.stream = d),
         tap(d => this.setStreamInFormular(d)),
-        catchError(_ => this.handleError<null>('Could not load channel!', null)),
+        catchError(_ => this.handleError<null>('Could not load stream!', null)),
         filter(s => s !== null),
-      );
+      ).subscribe();
     }
 
     // Set default values
     if (!this.isEdit) {
-      let date = new Date();
-      this.time.hour = date.getHours();
-      this.time.minute = date.getMinutes();
-      this.setDefaultStreamingEndpoint();
+      this.setDayInForm(new Date());
+      this.setDefaultStreamingEndpoint(uuidv4());
     }
 
-    let key = uuidv4();
-    this.streamForm.get('url')?.setValue(`${window.location.origin}/stream/${key}`);
-    this.streamForm.get('streamKey')?.setValue(key);
-    this.streamForm.get('protocol')?.setValue(`${StreamProtocol.WHIP}`);
-    this.streamForm.get('permanentLive')?.setValue(false);
-    this.streamForm.get('saveReplay')?.setValue(false);
-    this.streamForm.get('latencyMode')?.setValue(`${StreamLatency.STANDARD}`);
-
-    // Disable fields because they are currently not supported!
+    // Disable fields because changes on there are currently not supported!
     this.streamForm.get('isRepeating')?.disable();
     this.streamForm.get('isShig')?.disable();
     this.streamForm.get('url')?.disable();
@@ -116,14 +102,11 @@ export class EditStreamComponent {
     this.streamForm.get('saveReplay')?.disable();
     this.streamForm.get('latencyMode')?.disable();
 
-
     this.streamForm.get('guest1')?.disable();
     this.streamForm.get('guest2')?.disable();
     this.streamForm.get('guest3')?.disable();
     this.streamForm.get('guest4')?.disable();
     this.streamForm.get('guest5')?.disable();
-
-
   }
 
   save(fileInput: any) {
@@ -142,7 +125,7 @@ export class EditStreamComponent {
         description: this.streamForm.get('description')?.value,
         support: this.streamForm.get('support')?.value,
         isRepeating: this.streamForm.get('isRepeating')?.value,
-        repeat: this.streamForm.get('repeat')?.value,
+        repeat: Number(this.streamForm.get('repeat')?.value),
 
         date: this.streamForm.get('day')?.value,
 
@@ -151,24 +134,20 @@ export class EditStreamComponent {
           isShig: this.streamForm.get('isShig')?.value,
           streamKey: this.streamForm.get('streamKey')?.value,
           url: this.streamForm.get('url')?.value,
-          protocol: this.streamForm.get('protocol')?.value,
+          protocol: Number(this.streamForm.get('protocol')?.value),
           permanentLive: this.streamForm.get('permanentLive')?.value,
           saveReplay: this.streamForm.get('saveReplay')?.value,
-          latencyMode: this.streamForm.get('latencyMode')?.value,
+          latencyMode: Number(this.streamForm.get('latencyMode')?.value),
         },
         thumbnail: this.streamForm.get('thumbnail')?.value,
       };
 
-      let day: Date;
-      if (stream.isRepeating) {
-        day = new Date();
-      } else {
-        stream.date = new Date();
-      }
+      const day: NgbDateStruct = this.streamForm.get('day')?.value;
+      stream.date = TimeService.buildDaytime(new Date(day.year, day.month - 1, day.day), this.time.hour, this.time.minute);
 
       this.streamService.save(stream, fileBlob, this.progress).pipe(
         take(1),
-        tap(_ => this.alert.alert(AlertKind.SUCCESS, 'The Stream has been updated!')),
+        tap(_ => this.alert.alert(AlertKind.SUCCESS, `The Stream has been ${this.isEdit ? 'updated' : 'created'}!`)),
         map(_ => this.goToStream()),
         catchError(_ => this.handleError<Stream>('Could not update stream!', stream))
       ).subscribe(() => {
@@ -178,9 +157,37 @@ export class EditStreamComponent {
         }, 1000); // Delay for smoother UX
       });
     } else {
-      //this.streamForm.markAsDirty();
+      // this.streamForm.markAsDirty();
       this.streamForm.markAllAsTouched();
-      this.alert.alert(AlertKind.DANGER, 'Could not save the Stream! Please fill all required fields!');
+      let errorString = '';
+
+      for (const [key, control] of Object.entries(this.streamForm.controls)) {
+        const errors = control.errors;
+        if (!errors) continue;
+
+        for (const errorName of Object.keys(errors)) {
+          switch (errorName) {
+            case 'required':
+              errorString += `\n  * The field ${key} is required!`;
+              break;
+            case 'minlength':
+              errorString += `\n  * The field ${key} has a min length of ${errors['minlength']['requiredLength']} characters!`;
+              break;
+            case 'maxlength':
+              errorString += `\n  * The field ${key} has a max length of ${errors['maxlength']['requiredLength']} characters!`;
+              break;
+            case 'ngbDate':
+              errorString += `\n  * The field ${key} must be a valid date (Ex: yyyy-mm-dd)`;
+              break;
+              break;
+            default:
+              errorString += `\n  * The field ${key} has an error: ${errorName}`;
+              break;
+          }
+        }
+      }
+
+      this.alert.alert(AlertKind.DANGER, `Could not ${this.isEdit ? 'update' : 'create'} the Stream! Please fill all required fields! ${errorString}`);
     }
   }
 
@@ -190,127 +197,68 @@ export class EditStreamComponent {
     }
   }
 
-  // Getter
-  get title() {
-    return this.streamForm.get('title');
-  }
-
-  get thumbnail() {
-    return this.streamForm.get('thumbnail');
-  }
-
-  get description() {
-    return this.streamForm.get('description');
-  }
-
-  get support() {
-    return this.streamForm.get('support');
-  }
-
-  get day() {
-    return this.streamForm.get('day');
-  }
-
-  get isRepeating() {
-    return this.streamForm.get('isRepeating');
-  }
-
-  get repeat() {
-    return this.streamForm.get('repeat');
-  }
-
-  get isPublic() {
-    return this.streamForm.get('isPublic');
-  }
-
-  get streamKey() {
-    return this.streamForm.get('streamKey');
-  }
-
-  get isShig() {
-    return this.streamForm.get('isShig');
-  }
-
-  get url() {
-    return this.streamForm.get('url');
-  }
-
-  get protocol() {
-    return this.streamForm.get('protocol');
-  }
-
-  get permanentLive() {
-    return this.streamForm.get('permanentLive');
-  }
-
-  get saveReplay() {
-    return this.streamForm.get('saveReplay');
-  }
-
-  get latencyMode() {
-    return this.streamForm.get('latencyMode');
-  }
-
-  // Hilfsmethode zur Validierung des Formulars
   isFieldInvalid(fieldName: string): boolean {
     const field = this.streamForm.get(fieldName);
     return field ? field.invalid && (field.dirty || field.touched) : false;
   }
 
-  // Hilfsmethode zum Abrufen spezifischer Validierungsfehler
   getFieldError(fieldName: string, errorType: string): boolean {
     const field = this.streamForm.get(fieldName);
     return field ? field.hasError(errorType) : false;
   }
 
-  get date() {
-    let day = this.streamForm.get('day')?.value;
-    let time = this.streamForm.get('time')?.value;
-    let date = new Date(day.getFullYear(), day.getMonth(), day.getDate(), time.hour, time.minute);
-    return date;
-  }
-
-
-  public setDefaultStreamingEndpoint() {
+  public setDefaultStreamingEndpoint(streamUuid: string) {
     let urlProtocol = 'https';
-    const protocol = this.streamForm.get('protocol')?.value;
+    const protocol = Number(this.streamForm.get('protocol')?.value);
     if (protocol == StreamProtocol.RTMP) {
       urlProtocol = 'rtmps';
     }
+    let key = uuidv4();
+    this.streamForm.get('url')?.setValue(`${window.location.origin}/livestream/${streamUuid}`);
+    this.streamForm.get('streamKey')?.setValue(key);
 
-    this.settingsService.getSettings().subscribe((s) => {
+    this.settingsService.getSettings().pipe(take(1)).subscribe((s) => {
       this.streamForm.get('url')?.setValue(`${urlProtocol}://${s.domain}/livestream/${uuidv4()}`);
       this.streamForm.get('streamKey')?.setValue(uuidv4());
     });
   }
 
   private setStreamInFormular(stream: Stream): void {
+    this.setDayInForm(stream.date);
+    this.streamForm.get('title')?.setValue(stream.title);
+    this.streamForm.get('description')?.setValue(stream.description);
+    this.streamForm.get('thumbnail')?.setValue(stream.thumbnail);
+    this.streamForm.get('support')?.setValue(stream.support);
+    this.streamForm.get('isRepeating')?.setValue(stream.isRepeating);
+    this.streamForm.get('repeat')?.setValue(`${stream.repeat}`);
+    this.streamForm.get('isPublic')?.setValue(stream.isPublic);
+    this.streamForm.get('isShig')?.setValue(stream.metaData.isShig);
+    this.streamForm.get('streamKey')?.setValue(stream.metaData.streamKey);
+    this.streamForm.get('url')?.setValue(stream.metaData.url);
+    this.streamForm.get('protocol')?.setValue(`${stream.metaData.protocol}`);
+    this.streamForm.get('permanentLive')?.setValue(stream.metaData.permanentLive);
+    this.streamForm.get('saveReplay')?.setValue(stream.metaData.saveReplay);
+    this.streamForm.get('latencyMode')?.setValue(`${stream.metaData.latencyMode}`);
+    // this.streamForm.get('guest1')?.setValue(stream.guest1);
+    // this.streamForm.get('guest2')?.setValue(stream.guest2);
+    // this.streamForm.get('guest3')?.setValue(stream.guest3);
+    // this.streamForm.get('guest4')?.setValue(stream.guest4);
+    // this.streamForm.get('guest5')?.setValue(stream.guest5);
+  }
 
+  private setDayInForm(day: Date): void {
+    this.time.hour = day?.getHours();
+    this.time.minute = day?.getMinutes();
+    let streamDay: NgbDateStruct = {
+      year: day.getFullYear(),
+      month: day.getMonth() + 1,
+      day: day.getDate()
+    };
+    this.streamForm.get('day')?.setValue(streamDay);
   }
 
   private handleError<T>(msg: string, resp: T): Observable<T> {
     this.alert.alert(AlertKind.DANGER, msg);
     return of(resp);
-  }
-
-  private createDayValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-
-      const value = control.value;
-
-      if (!value) {
-        return null;
-      }
-
-      const hasUpperCase = /[A-Z]+/.test(value);
-
-      const hasLowerCase = /[a-z]+/.test(value);
-
-      const hasNumeric = /[0-9]+/.test(value);
-
-      const passwordValid = hasUpperCase && hasLowerCase && hasNumeric;
-
-      return !passwordValid ? {passwordStrength: true} : null;
-    };
   }
 }

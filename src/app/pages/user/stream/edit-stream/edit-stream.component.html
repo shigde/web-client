@@ -1,5 +1,11 @@
 <div class="container px-4 py-5" xmlns:disabled="http://www.w3.org/1999/xhtml">
-  <h2 class="pb-2 border-bottom">New Stream</h2>
+  <h2 class="pb-2 border-bottom">
+    @if (isEdit) {
+      Edit Stream
+    } @else {
+      New Stream
+    }
+  </h2>
   <form class="py-5 needs-validation" [formGroup]="streamForm" (ngSubmit)="save(fileInput)">
 
     <!--    Nav Tab menu -------------------------------------------------------------------------------------------------->
@@ -121,7 +127,7 @@
           <label for="time" class="col-sm-3 col-form-label fw-bold">Day*</label>
           <div class="col-sm-9">
             <div class="input-group mt-2 p-q" id="date-picker-group">
-              <input type="text" id="date-picker" class="form-control" placeholder="{{today}}" aria-label="day"
+              <input type="text" id="date-picker" class="form-control" aria-label="day"
                      aria-describedby="button-addon2" ngbDatepicker #d="ngbDatepicker" formControlName="day">
               <button class="btn btn-sm btn-primary group-btn" type="button" (click)="d.toggle()">Select a Day</button>
             </div>
@@ -129,7 +135,10 @@
             @if (isFieldInvalid('day')) {
               <div class="invalid">
                 @if (getFieldError('day', 'required')) {
-                  <div>A Day is required..</div>
+                  <div>A Day is required.</div>
+                }
+                @if (getFieldError('day', 'ngbDate')) {
+                  <div>A Day must be a valid date (Ex: yyyy-mm-dd)</div>
                 }
               </div>
             }
@@ -158,8 +167,12 @@
         <div class="row mb-3 ">
 
           <div class="alert alert-primary" role="alert">
-            At this time, our implementation supports only the WHIP protocol for streaming. Support for additional protocols or custom modifications is not yet available. However, this is an area we're actively working on, and we welcome community feedback or contributions to help move things forward.
-            <span class=""> You can follow the progress or contribute directly on: <a href="https://github.com/shigde" class="text-success"><i class="bi bi-github"></i> Shig</a></span>
+            At this time, our implementation supports only the WHIP protocol for streaming. Support for additional
+            protocols or custom modifications is not yet available. However, this is an area we're actively working on,
+            and we welcome community feedback or contributions to help move things forward.
+            <span class=""> You can follow the progress or contribute directly on: <a href="https://github.com/shigde"
+                                                                                      class="text-success"><i
+              class="bi bi-github"></i> Shig</a></span>
           </div>
 
         </div>
@@ -239,7 +252,8 @@
                      autocomplete="off">
               <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="low">Low</label>
 
-              <input type="radio" class="btn-check" name="latencyMode" id="standard" formControlName="latencyMode" value="2"
+              <input type="radio" class="btn-check" name="latencyMode" id="standard" formControlName="latencyMode"
+                     value="2"
                      autocomplete="off" checked>
               <label class="btn btn-sm btn-outline-primary text-dark-emphasis" for="standard">Standard</label>
 
@@ -278,8 +292,11 @@
         <div class="row mb-3">
 
           <div class="alert alert-primary" role="alert">
-            At this time, our implementation does not yet support inviting guests to a stream. This is a feature we're actively working on, and we welcome feedback or contributions from the community.
-            <span class=""> You can follow the progress or contribute directly on: <a href="https://github.com/shigde" class="text-success"><i class="bi bi-github"></i> Shig</a></span>
+            At this time, our implementation does not yet support inviting guests to a stream. This is a feature we're
+            actively working on, and we welcome feedback or contributions from the community.
+            <span class=""> You can follow the progress or contribute directly on: <a href="https://github.com/shigde"
+                                                                                      class="text-success"><i
+              class="bi bi-github"></i> Shig</a></span>
           </div>
 
           <label for="guest1" class="col-sm-3 col-form-label fw-bold">Guest 1</label>
