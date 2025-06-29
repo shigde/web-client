@@ -1,15 +1,17 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {SessionService} from '@shigde/core';
+import {SessionService, ShigModule} from '@shigde/core';
 import {filter} from 'rxjs';
 
 type Param = { streamId: string, spaceId: string, userToken: string }
 
 @Component({
-    selector: 'app-lobby-entry',
-    templateUrl: './lobby-entry.component.html',
-    styleUrls: ['./lobby-entry.component.scss'],
-    standalone: false
+  selector: 'app-lobby-entry',
+  templateUrl: './lobby-entry.component.html',
+  styleUrls: ['./lobby-entry.component.scss'],
+  imports: [
+    ShigModule
+  ]
 })
 export class LobbyEntryComponent implements OnInit {
   // params: Observable<Param> = new BehaviorSubject(null)
@@ -17,8 +19,8 @@ export class LobbyEntryComponent implements OnInit {
   streamId: string;
   spaceId: string;
   userToken: string;
-  user: string = "unknown";
-  apiPrifix: string = "/api";
+  user: string = 'unknown';
+  apiPrifix: string = '/api';
 
 
   constructor(
@@ -26,9 +28,9 @@ export class LobbyEntryComponent implements OnInit {
     session: SessionService,
   ) {
     const jwt = session.getAuthenticationToken();
-    this.userToken = `${jwt}`
+    this.userToken = `${jwt}`;
     session.getUserName().subscribe((name) => {
-        this.user = name
+      this.user = name;
     });
     //this.user$ = userName.pipe(map((name: string) => !name? "unknown" : name)) as Observable<string>;
     const streamId = this.route.snapshot.paramMap.get('streamId');
@@ -44,5 +46,5 @@ export class LobbyEntryComponent implements OnInit {
     // this.spaceId = this.route.snapshot.paramMap.get('spaceId');
   }
 
-    protected readonly filter = filter;
+  protected readonly filter = filter;
 }

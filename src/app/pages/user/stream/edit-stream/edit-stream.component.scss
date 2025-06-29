@@ -1,4 +1,21 @@
 #date-picker-group {
-  width: 200px !important;
+  width: 250px !important;
+}
+.col-form-label {
+  white-space: nowrap;         /* Kein Zeilenumbruch */
+  overflow: hidden;            /* Alles, was überläuft, wird versteckt */
+  text-overflow: ellipsis;
+  min-width: 100px;
 }
 
+.group-btn {
+  border-bottom-right-radius: var(--bs-border-radius) !important;
+  border-top-right-radius: var(--bs-border-radius) !important;
+  border: var(--bs-border-width) solid var(--bs-border-color) !important;
+  background-clip: padding-box !important;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+}
+
+.container {
+  max-width: 1000px;
+}

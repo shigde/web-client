@@ -1,3 +1,3 @@
 @for (alert of alerts; track alert) {
-  <ngb-alert [type]="alert.kind" (closed)="close(alert)">{{ alert.msg }}</ngb-alert>
+  <ngb-alert [type]="alert.kind" (closed)="close(alert)" style="white-space: pre-line;">{{ alert.msg }}</ngb-alert>
 }

@@ -1,9 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {ApiResponse, Channel, ChannelService} from '@shigde/core';
+import {Component} from '@angular/core';
+import {Channel, ChannelService} from '@shigde/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {catchError, filter, Observable, of, take, tap} from 'rxjs';
-import {NgIf} from '@angular/common';
 import {FederativeService} from '../../../../providers/federative.service';
 import {AlertKind} from '../../../../entities/alert';
 import {map} from 'rxjs/operators';
@@ -24,14 +23,14 @@ export class EditChannelComponent {
     name: new FormControl('', [Validators.minLength(4), Validators.required, Validators.maxLength(50)]),
     description: new FormControl('', [Validators.maxLength(250)]),
     support: new FormControl('', [Validators.maxLength(150)]),
-    public: new FormControl('', [Validators.required]),
+    public: new FormControl(false),
     file: new FormControl('')
   });
 
   channel: Channel | undefined;
   domain: string = '';
 
-  private readonly channelId: string;
+  private readonly channelUuid: string;
   public isUploading = false;
   public progress = {upload: 0};
 
@@ -42,8 +41,8 @@ export class EditChannelComponent {
     private readonly alert: AlertService,
     activeRoute: ActivatedRoute,
   ) {
-    this.channelId = activeRoute.snapshot.params['channelId'];
-    this.channelService.fetch(this.channelId).pipe(
+    this.channelUuid = activeRoute.snapshot.params['channelUuid'];
+    this.channelService.fetch(this.channelUuid).pipe(
       take(1),
       catchError(_ => this.handleError<null>('Could not load channel!', null)),
       filter((s) => s !== null)
@@ -55,6 +54,7 @@ export class EditChannelComponent {
       this.channelForm.get('description')?.setValue(this.channel.description);
       this.channelForm.get('support')?.setValue(this.channel.support);
       this.channelForm.get('public')?.setValue(this.channel.public);
+      this.channelForm.get('name')?.disable();
     });
   }
 
@@ -80,7 +80,7 @@ export class EditChannelComponent {
         fileBlob = files[0];
       }
 
-      let channelName = FederativeService.joinDomainNameToJson(this.channelForm.get('name')?.value, this.domain);
+      let channelName = FederativeService.joinDomainNameToString(this.channelForm.get('name')?.value, this.domain);
       // @ts-ignore
       const channel: Channel = {
         ...this.channel,
@@ -89,6 +89,7 @@ export class EditChannelComponent {
         support: this.channelForm.get('support')?.value,
         public: this.channelForm.get('public')?.value,
       };
+      console.log('#####', this.channelForm.get('public')?.value)
       this.channelService.save(channel, fileBlob, this.progress).pipe(
         take(1),
         tap(_ => this.alert.alert(AlertKind.SUCCESS, 'The Channel has been updated!')),
@@ -104,7 +105,7 @@ export class EditChannelComponent {
   }
 
   goToChannel() {
-    this.router.navigate(['/channel/' + this.channelId]);
+    this.router.navigate(['/channel/' + this.channelUuid]);
   }
 
   private handleError<T>(msg: string, rsp: T): Observable<T> {

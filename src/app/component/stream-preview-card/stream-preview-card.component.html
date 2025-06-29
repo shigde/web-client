@@ -1,0 +1,47 @@
+<div class="card h-100 position-relative">
+
+  <a class="text-decoration-none text-body position-relative" href="stream/{{stream.uuid}}">
+    <!--    <img class="card-img rounded-3 thumbnail" ngSrc="{{thumbnail}}" fill priority style="position: relative" alt="thumbnail">-->
+    @if (stream.thumbnail !== '') {
+      <img ngSrc="{{ thumbnail }}" class="card-img-top stream-thumbnail" fill priority style="position: relative"  alt="thumbnail">
+    } @else {
+      <img src="assets/images/default-banner-2.jpg" class="card-img-top stream-thumbnail" alt="thumbnail">
+    }
+  </a>
+
+
+  <div class="app-card-img-overlay">
+    @if (stream.isLive) {
+      <h5><span class="badge text-bg-danger">Live</span></h5>
+    } @else {
+      <h5><span class="badge text-bg-secondary">Offline</span></h5>
+    }
+  </div>
+
+  <div class="card-footer">
+    <div class="d-flex gap-3 w-100">
+      <a href="channel/{{stream.channelUuid}}">
+        <app-avatar [name]="stream.ownerName" [size]="'40'"></app-avatar>
+      </a>
+      <div class="data-row-caption w-100">
+        <a class="text-decoration-none text-body" href="stream/{{stream.uuid}}">
+          <h6 class="mb-0 two-line-truncate">{{ stream.title }}</h6>
+        </a>
+        <a class="text-decoration-none text-body" href="channel/{{stream.channelUuid}}">
+          <p class="mb-0 opacity-75 one-line-truncate pt-2"><small>{{ stream.ownerName }} </small></p>
+        </a>
+        <p class="mb-0 opacity-75 one-line-truncate">
+          @if (stream.isLive) {
+            <small><b>Viewer:</b>
+              {{ stream.viewer }}
+            </small>
+          } @else {
+            <small><b>Start:</b>
+              {{ stream.date | date:'HH:mm (dd.MM.yyyy)' }}
+            </small>
+          }
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,7 +1,13 @@
 {
   "/api": {
     "changeOrigin": true,
-    "target": "https://localhost:8080",
+    "target": "https://127.0.0.1:8080",
+    "secure": false,
+    "logLevel": "debug"
+  },
+  "/static": {
+    "changeOrigin": true,
+    "target": "https://127.0.0.1:8080",
     "secure": false,
     "logLevel": "debug"
   }

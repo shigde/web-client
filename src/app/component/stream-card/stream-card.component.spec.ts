@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EditStreamComponent } from './edit-stream.component';
+import { StreamCardComponent } from './stream-card.component';
 
-describe('EditStreamComponent', () => {
-  let component: EditStreamComponent;
-  let fixture: ComponentFixture<EditStreamComponent>;
+describe('ThumbnailCardComponent', () => {
+  let component: StreamCardComponent;
+  let fixture: ComponentFixture<StreamCardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EditStreamComponent]
+      imports: [StreamCardComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(EditStreamComponent);
+    fixture = TestBed.createComponent(StreamCardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

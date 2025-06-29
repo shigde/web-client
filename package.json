@@ -3,27 +3,24 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --proxy-config proxy.config.json --host 0.0.0.0 --disable-host-check --ssl",
-    "start:remote": "ng serve --proxy-config proxy.remote.config.json --host 0.0.0.0 --port 4201 --disable-host-check --ssl",
+    "start": "ng serve --host 0.0.0.0 --ssl",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
   "private": true,
   "peerDependencies": {
-    "@angular/animations": "^19.2.0",
-    "@angular/common": "^19.2.0",
-    "@angular/compiler": "^19.2.0",
-    "@angular/core": "^19.2.0",
-    "@angular/forms": "^19.2.0",
-    "@angular/platform-browser": "^19.2.0",
-    "@angular/platform-browser-dynamic": "^19.2.0",
-    "@angular/router": "^19.2.0",
-    "@material/web": "^1.1.1",
-    "@ng-bootstrap/ng-bootstrap": "^18.0.0",
+    "@angular/animations": "^20.0.2",
+    "@angular/common": "^20.0.2",
+    "@angular/compiler": "^20.0.2",
+    "@angular/core": "^20.0.2",
+    "@angular/forms": "^20.0.2",
+    "@angular/platform-browser": "^20.0.2",
+    "@angular/platform-browser-dynamic": "^20.0.2",
+    "@angular/router": "^20.0.2",
     "@popperjs/core": "^2.11.6",
     "@shigde/core": "file:.yalc/@shigde/core",
-    "bootstrap": "^5.3.3",
+    "bootstrap": "^5.3.6",
     "bootstrap-icons": "^1.11.3",
     "dexie": "^3.2.4",
     "multistreamsmixer": "^1.2.2",
@@ -31,13 +28,16 @@
     "save": "^2.9.0",
     "sdp-transform": "^2.14.1",
     "tslib": "^2.3.0",
+    "uuid": "^11.0.3",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^19.2.0",
-    "@angular/cli": "~19.2.0",
-    "@angular/compiler-cli": "^19.2.0",
-    "@angular/localize": "^19.2.0",
+    "@angular/build": "^20.0.2",
+    "@angular/cli": "^20.0.2",
+    "@angular/compiler-cli": "^20.0.2",
+    "@angular/localize": "^20.0.2",
+    "@angular-devkit/build-angular": "^20.0.2",
+    "@ng-bootstrap/ng-bootstrap": "19.0.0-rc.0",
     "@types/jasmine": "~4.3.0",
     "@types/uuid": "^10.0.0",
     "jasmine-core": "~4.6.0",
@@ -46,8 +46,11 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.5.4",
-    "uuid": "^11.0.3"
+    "typescript": "~5.8.3",
+    "css-select": "5.2.0"
+  },
+  "resolutions": {
+    "css-select": "5.2.0"
   },
   "dependencies": {
     "@shigde/core": "file:.yalc/@shigde/core"
