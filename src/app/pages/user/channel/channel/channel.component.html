@@ -3,11 +3,12 @@
     @if (banner !== '') {
       <img id="banner-img" class="rounded-3" ngSrc="{{banner}}" fill priority alt="banner">
     }
+
     <div id="banner-header"
          class="col-lg-7 p-3 p-lg-5 pt-lg-3 bg-white bg-opacity-75 rounded-top-3 rounded-bottom-start-3 border border-bottom-0 shadow-lg ">
-      <h3 class="display-6 fw-bold lh-1 text-dark text-truncate">{{ (channel$ | async)?.title }}</h3>
-      <p class="lead text-dark text-truncate">{{ (channel$ | async)?.description }}</p>
-      <small class="text-dark text-truncate">{{ (channel$ | async)?.support }}</small>
+      <h3 class="display-6 fw-bold lh-1 text-dark text-truncate">{{ channel.title }}</h3>
+      <p class="lead text-dark text-truncate">{{ channel.description }}</p>
+      <small class="text-dark text-truncate">{{ channel.support }}</small>
     </div>
   </div>
   <div class="col m-auto position-absolute top-0 end-0 p-2">
@@ -20,21 +21,25 @@
 
 <section class="py-5 text-center container">
 
-  <div class="no-album py-5" *ngIf="(streams$ | async)?.length === 0">
-    <div class="container">
-      <div class="p-5 text-center bg-body-tertiary rounded-3 border border-dashed">
-        <h4 class="text-body-emphasis">No Streams</h4>
-      </div>
-    </div>
-  </div>
 
-  <div class="album py-5" *ngIf="(streams$ | async)?.length !== 0">
+  <div class="album py-5">
     <div class="container">
-      <div class="row row-cols-1 row-cols-sm-2 g-3 row-cols-md-3">
-        <ng-template ngFor let-stream [ngForOf]="streams$ | async">
-          <app-stream-card [stream]="stream"></app-stream-card>
-        </ng-template>
-      </div>
+      @if (!hasStreams) {
+        <div class="p-5 text-center bg-body-tertiary rounded-3 border border-dashed">
+          <h4 class="text-body-emphasis">No Streams</h4>
+        </div>
+      } @else {
+
+        <div class="row row-cols-1 row-cols-sm-2 g-3 row-cols-md-3">
+
+          @for (stream of streams; track stream.uuid) {
+
+            <app-stream-preview-card [stream]="stream"></app-stream-preview-card>
+
+          }
+
+        </div>
+      }
     </div>
   </div>
 

@@ -30,6 +30,10 @@ export class TimeService {
     return day;
   }
 
+  static dateToISOButLocal(date: Date) {
+    return date.toLocaleString('sv').replace(' ', 'T');
+  }
+
   static formatDateToString(date: Date) {
     let month = '' + (date.getMonth() + 1),
       day = '' + date.getDate(),
@@ -42,4 +46,5 @@ export class TimeService {
 
     return [year, month, day].join('-');
   }
+
 }

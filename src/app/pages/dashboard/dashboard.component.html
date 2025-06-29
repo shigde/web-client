@@ -1,21 +1,31 @@
 <section class="py-5 container">
-  <div class="no-album py-5" *ngIf="(streams$ | async)?.length === 0">
-    <div class="container">
-      <div class="p-5 text-center bg-body-tertiary rounded-3 border border-dashed">
-        <h4 class="text-body-emphasis">No Streams</h4>
-      </div>
-    </div>
-  </div>
+  @if (!hasStreams) {
 
-  <div class="album py-5" *ngIf="(streams$ | async)?.length !== 0">
-    <div class="container">
-      <div class="row row-cols-1 row-cols-sm-2 g-3 row-cols-md-3">
-        <ng-template ngFor let-stream [ngForOf]="streams$ | async">
-          <app-stream-preview-card [stream]="stream"></app-stream-preview-card>
-        </ng-template>
+    <div class="no-album py-5">
+      <div class="container">
+        <div class="p-5 text-center bg-body-tertiary rounded-3 border border-dashed">
+          <h4 class="text-body-emphasis">No Streams</h4>
+        </div>
       </div>
     </div>
-  </div>
+
+  } @else {
+
+    <div class="album py-5">
+      <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 g-3 row-cols-md-3">
+
+          @for (stream of streams; track stream.uuid) {
+
+            <app-stream-preview-card [stream]="stream"></app-stream-preview-card>
+
+          }
+
+        </div>
+      </div>
+    </div>
+
+  }
 
 </section>
 

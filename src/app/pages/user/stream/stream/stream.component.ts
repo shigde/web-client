@@ -1,26 +1,27 @@
 import {Component} from '@angular/core';
-import {catchError, filter, Observable, of, take, tap} from 'rxjs';
-import {Stream, StreamService, User, UserService} from '@shigde/core';
+import {catchError, filter, mergeMap, Observable, of, take, tap} from 'rxjs';
+import {StreamPreview, StreamService, UserService} from '@shigde/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AlertService} from '../../../../providers/alert.service';
 import {map} from 'rxjs/operators';
 import {AlertKind} from '../../../../entities/alert';
-import {AsyncPipe, NgOptimizedImage} from '@angular/common';
+import {DatePipe, NgOptimizedImage} from '@angular/common';
 import {AvatarComponent} from '../../../../component/avatar/avatar.component';
 
 @Component({
   selector: 'app-stream',
   imports: [
     NgOptimizedImage,
-    AsyncPipe,
-    AvatarComponent
+    AvatarComponent,
+    DatePipe
   ],
   templateUrl: './stream.component.html',
   styleUrl: './stream.component.scss'
 })
 export class StreamComponent {
-  stream$!: Observable<Stream>;
-  userName = 'dd';
+  hasStream = false;
+  stream!: StreamPreview;
+  userName = 'unknown';
   streamUuid!: string;
   thumbnail!: string;
 
@@ -30,10 +31,13 @@ export class StreamComponent {
     private readonly userService: UserService,
     private readonly alert: AlertService,
     activeRoute: ActivatedRoute) {
+
+    // Load Stream and Owner
     if (activeRoute.snapshot.params['streamUuid']) {
       const streamUuid = activeRoute.snapshot.params['streamUuid'];
       this.streamUuid = streamUuid;
-      this.stream$ = streamService.getStream(streamUuid).pipe(
+      streamService.getStreamPreview(streamUuid).pipe(
+        take(1),
         map(d => {
           this.thumbnail = d.data.thumbnail == ''
             ? 'assets/images/default-banner-2.jpg'
@@ -42,8 +46,11 @@ export class StreamComponent {
         }),
         catchError(_ => this.handleError<null>('Could not load stream!', null)),
         filter(s => s !== null),
-      );
-      userService.getUser().pipe(
+        tap((s) => {
+          this.hasStream = true;
+          this.stream = s;
+        }),
+        mergeMap((s) => userService.getUser(s.ownerUuid)),
         take(1),
         tap(u => this.userName = u.name),
         catchError(_ => this.handleError<null>('Could not load user!', null)),
@@ -53,6 +60,15 @@ export class StreamComponent {
 
   editStream() {
     this.router.navigate(['/stream/' + this.streamUuid + '/edit']);
+  }
+
+  deleteStream() {
+    this.streamService.deleteStream(this.streamUuid).pipe(
+      take(1),
+      tap(_ => this.alert.alert(AlertKind.SUCCESS, 'The Stream has been deleted!')),
+      map(_ => this.router.navigate(['/dashboard'])),
+      catchError(_ => this.handleError<null>('Could not delete stream!', null)),
+    ).subscribe();
   }
 
   private handleError<T>(msg: string, resp: T): Observable<T> {

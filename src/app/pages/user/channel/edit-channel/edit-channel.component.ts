@@ -54,6 +54,7 @@ export class EditChannelComponent {
       this.channelForm.get('description')?.setValue(this.channel.description);
       this.channelForm.get('support')?.setValue(this.channel.support);
       this.channelForm.get('public')?.setValue(this.channel.public);
+      this.channelForm.get('name')?.disable();
     });
   }
 

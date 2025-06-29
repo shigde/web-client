@@ -1,4 +1,4 @@
-<div class="container px-4 py-5" xmlns:disabled="http://www.w3.org/1999/xhtml">
+<div class="container px-4 py-5">
   <h2 class="pb-2 border-bottom">
     @if (isEdit) {
       Edit Stream
@@ -116,7 +116,12 @@
         <div class="row mb-3 pb-3">
           <label for="time" class="col-sm-3 col-form-label mt-sm-4 fw-bold">Time*</label>
           <div class="col-sm-9">
-            <ngb-timepicker id="time" [(ngModel)]="time" [ngModelOptions]="{standalone: true}"/>
+            <ngb-timepicker
+              id="time"
+              [(ngModel)]="time"
+              [ngModelOptions]="{standalone: true}"
+              #timepicker
+            />
             <small class="pt-2">Add a start time in HH:MM format (e.g., 08:30 or 15:45).</small>
           </div>
         </div>

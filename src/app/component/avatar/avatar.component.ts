@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 
 @Component({
     selector: 'app-avatar',
@@ -6,7 +6,7 @@ import {Component, Input, OnInit} from '@angular/core';
     templateUrl: './avatar.component.html',
     styleUrl: './avatar.component.scss'
 })
-export class AvatarComponent implements OnInit{
+export class AvatarComponent implements OnInit, OnChanges {
   @Input() name = 'dddd';
   @Input() size = '60';
   imageSrc = '';
@@ -28,6 +28,12 @@ export class AvatarComponent implements OnInit{
 
   ngOnInit(): void {
     this.imageSrc = this.letterAvatar(this.name, Number(this.size));
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['name']) {
+      this.imageSrc = this.letterAvatar(changes['name'].currentValue, Number(this.size));
+    }
   }
 
   private letterAvatar(name: string, size: number): string {

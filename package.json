@@ -10,14 +10,14 @@
   },
   "private": true,
   "peerDependencies": {
-    "@angular/animations": "^20.0.3",
-    "@angular/common": "^20.0.3",
-    "@angular/compiler": "^20.0.3",
-    "@angular/core": "^20.0.3",
-    "@angular/forms": "^20.0.3",
-    "@angular/platform-browser": "^20.0.3",
-    "@angular/platform-browser-dynamic": "^20.0.3",
-    "@angular/router": "^20.0.3",
+    "@angular/animations": "^20.0.2",
+    "@angular/common": "^20.0.2",
+    "@angular/compiler": "^20.0.2",
+    "@angular/core": "^20.0.2",
+    "@angular/forms": "^20.0.2",
+    "@angular/platform-browser": "^20.0.2",
+    "@angular/platform-browser-dynamic": "^20.0.2",
+    "@angular/router": "^20.0.2",
     "@popperjs/core": "^2.11.6",
     "@shigde/core": "file:.yalc/@shigde/core",
     "bootstrap": "^5.3.6",
@@ -33,11 +33,11 @@
   },
   "devDependencies": {
     "@angular/build": "^20.0.2",
-    "@angular/cli": "~20.0.2",
-    "@angular/compiler-cli": "^20.0.3",
-    "@angular/localize": "^20.0.3",
+    "@angular/cli": "^20.0.2",
+    "@angular/compiler-cli": "^20.0.2",
+    "@angular/localize": "^20.0.2",
     "@angular-devkit/build-angular": "^20.0.2",
-    "@ng-bootstrap/ng-bootstrap": "^19.0.0-rc.0",
+    "@ng-bootstrap/ng-bootstrap": "19.0.0-rc.0",
     "@types/jasmine": "~4.3.0",
     "@types/uuid": "^10.0.0",
     "jasmine-core": "~4.6.0",
@@ -46,7 +46,11 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.8.3"
+    "typescript": "~5.8.3",
+    "css-select": "5.2.0"
+  },
+  "resolutions": {
+    "css-select": "5.2.0"
   },
   "dependencies": {
     "@shigde/core": "file:.yalc/@shigde/core"

@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {Stream} from '@shigde/core';
+import {StreamPreview} from '@shigde/core';
 
 @Component({
     selector: 'app-stream-card',
@@ -8,5 +8,5 @@ import {Stream} from '@shigde/core';
     styleUrl: './stream-card.component.scss'
 })
 export class StreamCardComponent {
-  @Input() stream!: Stream;
+  @Input() stream!: StreamPreview;
 }

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
   NgbDatepickerModule, NgbDateStruct,
@@ -12,7 +12,15 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-import {SettingsService, Stream, StreamLatency, StreamProtocol, StreamService, Weekday} from '@shigde/core';
+import {
+  ApiResponse, SessionService,
+  SettingsService,
+  Stream,
+  StreamLatency, StreamLicence,
+  StreamProtocol,
+  StreamService, User,
+  Weekday
+} from '@shigde/core';
 import {AlertService} from '../../../../providers/alert.service';
 import {map} from 'rxjs/operators';
 import {catchError, filter, Observable, of, take, tap} from 'rxjs';
@@ -34,8 +42,12 @@ import {TimeService} from '../../../../providers/time.service';
   styleUrl: './edit-stream.component.scss'
 })
 export class EditStreamComponent {
+  @ViewChild('timepicker') timepicker!: NgbTimepicker;
+
   public isEdit = false;
   public stream!: Stream;
+  private currentUser: User | null = null;
+
   public streamUuid!: string;
   public time = {hour: 13, minute: 30};
   public isUploading = false;
@@ -68,8 +80,13 @@ export class EditStreamComponent {
     private readonly router: Router,
     private readonly streamService: StreamService,
     private readonly settingsService: SettingsService,
+    private readonly session: SessionService,
     private readonly alert: AlertService,
     activeRoute: ActivatedRoute) {
+
+    this.session.getUser().pipe(take(1)).subscribe(user => {
+      this.currentUser = user;
+    });
 
     if (activeRoute.snapshot.params['streamUuid']) {
       this.isEdit = true;
@@ -79,10 +96,11 @@ export class EditStreamComponent {
       streamService.getStream(streamUuid).pipe(
         take(1),
         map(d => d.data),
+        filter(s => s !== null),
         tap(d => this.stream = d),
         tap(d => this.setStreamInFormular(d)),
         catchError(_ => this.handleError<null>('Could not load stream!', null)),
-        filter(s => s !== null),
+
       ).subscribe();
     }
 
@@ -145,17 +163,22 @@ export class EditStreamComponent {
       const day: NgbDateStruct = this.streamForm.get('day')?.value;
       stream.date = TimeService.buildDaytime(new Date(day.year, day.month - 1, day.day), this.time.hour, this.time.minute);
 
-      this.streamService.save(stream, fileBlob, this.progress).pipe(
-        take(1),
-        tap(_ => this.alert.alert(AlertKind.SUCCESS, `The Stream has been ${this.isEdit ? 'updated' : 'created'}!`)),
-        map(_ => this.goToStream()),
-        catchError(_ => this.handleError<Stream>('Could not update stream!', stream))
-      ).subscribe(() => {
-        setTimeout(() => {
-          this.isUploading = false; // Stop the progress indicator after a delay
-          this.progress.upload = 0; // Reset for the next upload
-        }, 1000); // Delay for smoother UX
-      });
+      let save: Observable<ApiResponse<Stream> | null>;
+      if (this.isEdit) {
+        save = this.streamService.updateStream(stream, fileBlob, this.progress);
+      } else {
+        stream.uuid = '';
+        stream.viewer = 0;
+        stream.likes = 0;
+        stream.dislikes = 0;
+        stream.licence = StreamLicence.DEFAULT;
+        stream.isLive = false;
+        stream.ownerUuid = <string>this.currentUser?.uuid;
+        stream.channelUuid = <string>this.currentUser?.channel_uuid;
+
+        save = this.streamService.createStream(stream, fileBlob, this.progress);
+      }
+      this.handleSave(save);
     } else {
       // this.streamForm.markAsDirty();
       this.streamForm.markAllAsTouched();
@@ -178,7 +201,6 @@ export class EditStreamComponent {
               break;
             case 'ngbDate':
               errorString += `\n  * The field ${key} must be a valid date (Ex: yyyy-mm-dd)`;
-              break;
               break;
             default:
               errorString += `\n  * The field ${key} has an error: ${errorName}`;
@@ -239,6 +261,7 @@ export class EditStreamComponent {
     this.streamForm.get('permanentLive')?.setValue(stream.metaData.permanentLive);
     this.streamForm.get('saveReplay')?.setValue(stream.metaData.saveReplay);
     this.streamForm.get('latencyMode')?.setValue(`${stream.metaData.latencyMode}`);
+
     // this.streamForm.get('guest1')?.setValue(stream.guest1);
     // this.streamForm.get('guest2')?.setValue(stream.guest2);
     // this.streamForm.get('guest3')?.setValue(stream.guest3);
@@ -247,14 +270,38 @@ export class EditStreamComponent {
   }
 
   private setDayInForm(day: Date): void {
-    this.time.hour = day?.getHours();
-    this.time.minute = day?.getMinutes();
+    this.time.hour = day.getHours();
+    this.time.minute = day.getMinutes();
+
+    this.timepicker?.updateHour(`${day.getHours()}`)
+    this.timepicker?.updateMinute(`${day.getMinutes()}`)
+
     let streamDay: NgbDateStruct = {
       year: day.getFullYear(),
       month: day.getMonth() + 1,
       day: day.getDate()
     };
+
     this.streamForm.get('day')?.setValue(streamDay);
+  }
+
+  private handleSave(observer: Observable<ApiResponse<Stream> | null>) {
+    observer.pipe(
+      take(1),
+      tap(s => {
+        if (s !== null) {
+            this.streamUuid = s.data.uuid;
+        }
+      }),
+      tap(_ => this.alert.alert(AlertKind.SUCCESS, `The Stream has been ${this.isEdit ? 'updated' : 'created'}!`)),
+      map(_ => this.goToStream()),
+      catchError(_ => this.handleError<Stream>(`Could not ${this.isEdit ? 'updated' : 'created'} Stream!`, {} as Stream))
+    ).subscribe(() => {
+      setTimeout(() => {
+        this.isUploading = false; // Stop the progress indicator after a delay
+        this.progress.upload = 0; // Reset for the next upload
+      }, 1000); // Delay for smoother UX
+    });
   }
 
   private handleError<T>(msg: string, resp: T): Observable<T> {
