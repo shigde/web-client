@@ -23,6 +23,7 @@ export class StreamComponent {
   stream!: StreamPreview;
   userName = 'unknown';
   streamUuid!: string;
+  channelUuid!: string;
   thumbnail!: string;
 
   constructor(
@@ -60,6 +61,11 @@ export class StreamComponent {
 
   editStream() {
     this.router.navigate(['/stream/' + this.streamUuid + '/edit']);
+  }
+
+  startStream() {
+    console.log('start stream', this.streamUuid, this.stream.channelUuid);
+    this.router.navigate(['/channel/' + this.stream.channelUuid + '/stream/' + this.streamUuid + '/lobby']);
   }
 
   deleteStream() {

@@ -28,7 +28,7 @@ const routes: Routes = [
   {path: 'stream/new', component: EditStreamComponent, canActivate: [UserAccessGuard]},
   {path: 'stream/:streamUuid', component: StreamComponent, canActivate: [UserAccessGuard]},
   {path: 'stream/:streamUuid/edit', component: EditStreamComponent, canActivate: [UserAccessGuard]},
-  {path: 'lobby/:spaceId/stream/:streamId', component: LobbyEntryComponent, canActivate: [UserAccessGuard]},
+  {path: 'channel/:channelUuid/stream/:streamUuid/lobby', component: LobbyEntryComponent, canActivate: [UserAccessGuard]},
   {path: 'login', component: LoginComponent},
   {path: 'forgotPasswordMail', component: ForgotPasswordMailComponent},
   {path: 'forgotPassword/:token', component: ForgotPasswordComponent},

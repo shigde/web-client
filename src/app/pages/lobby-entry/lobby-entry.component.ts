@@ -11,13 +11,14 @@ type Param = { streamId: string, spaceId: string, userToken: string }
   styleUrls: ['./lobby-entry.component.scss'],
   imports: [
     ShigModule
-  ]
+  ],
+  standalone: true,
 })
 export class LobbyEntryComponent implements OnInit {
   // params: Observable<Param> = new BehaviorSubject(null)
 
-  streamId: string;
-  spaceId: string;
+  streamUuid: string;
+  channelUuid: string;
   userToken: string;
   user: string = 'unknown';
   apiPrifix: string = '/api';
@@ -33,11 +34,11 @@ export class LobbyEntryComponent implements OnInit {
       this.user = name;
     });
     //this.user$ = userName.pipe(map((name: string) => !name? "unknown" : name)) as Observable<string>;
-    const streamId = this.route.snapshot.paramMap.get('streamId');
-    const spaceId = this.route.snapshot.paramMap.get('spaceId');
+    const streamUuid = this.route.snapshot.paramMap.get('streamUuid');
+    const channelUuid = this.route.snapshot.paramMap.get('channelUuid');
 
-    this.streamId = streamId ? streamId : '';
-    this.spaceId = spaceId ? spaceId : '';
+    this.streamUuid = streamUuid ? streamUuid : '';
+    this.channelUuid = channelUuid ? channelUuid : '';
   }
 
   ngOnInit(): void {
@@ -47,4 +48,5 @@ export class LobbyEntryComponent implements OnInit {
   }
 
   protected readonly filter = filter;
+
 }
