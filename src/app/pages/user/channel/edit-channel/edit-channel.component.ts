@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Channel, ChannelService} from '@shigde/core';
+import {Channel, ChannelService, createAppLogger} from '@shigde/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {catchError, filter, Observable, of, take, tap} from 'rxjs';
@@ -18,6 +18,7 @@ import {AlertService} from '../../../../providers/alert.service';
   styleUrl: './edit-channel.component.scss'
 })
 export class EditChannelComponent {
+  private readonly log = createAppLogger('EditChannelComponent');
 
   channelForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.minLength(4), Validators.required, Validators.maxLength(50)]),
@@ -89,7 +90,7 @@ export class EditChannelComponent {
         support: this.channelForm.get('support')?.value,
         public: this.channelForm.get('public')?.value,
       };
-      console.log('#####', this.channelForm.get('public')?.value)
+      this.log.info('save formular', this.channelForm.get('public')?.value)
       this.channelService.save(channel, fileBlob, this.progress).pipe(
         take(1),
         tap(_ => this.alert.alert(AlertKind.SUCCESS, 'The Channel has been updated!')),

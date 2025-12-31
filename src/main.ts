@@ -1,9 +1,12 @@
 /// <reference types="@angular/localize" />
 
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 
-import { AppModule } from './app/app.module';
+import {AppModule} from './app/app.module';
+import {createAppLogger, enableLogger, LEVEL} from '@shigde/core';
 
+let logger = createAppLogger('main');
+enableLogger(LEVEL.ALL);
 
 platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+  .catch(err => logger.error(err));

@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {catchError, filter, mergeMap, Observable, of, take, tap} from 'rxjs';
-import {StreamPreview, StreamService, UserService} from '@shigde/core';
+import {createAppLogger, StreamPreview, StreamService, UserService} from '@shigde/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AlertService} from '../../../../providers/alert.service';
 import {map} from 'rxjs/operators';
@@ -19,6 +19,8 @@ import {AvatarComponent} from '../../../../component/avatar/avatar.component';
   styleUrl: './stream.component.scss'
 })
 export class StreamComponent {
+  private readonly log = createAppLogger('StreamComponent');
+
   hasStream = false;
   stream!: StreamPreview;
   userName = 'unknown';
@@ -64,7 +66,7 @@ export class StreamComponent {
   }
 
   startStream() {
-    console.log('start stream', this.streamUuid, this.stream.channelUuid);
+    this.log.info('start stream', this.streamUuid, this.stream.channelUuid);
     this.router.navigate(['/channel/' + this.stream.channelUuid + '/stream/' + this.streamUuid + '/lobby']);
   }
 
