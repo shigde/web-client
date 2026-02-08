@@ -2,5 +2,6 @@
             [channelUuid]="channelUuid"
             [token]="userToken"
             [apiPrefix]="apiPrifix"
-            [userUuid]="user"
+            [userUuid]="(userUuid$ | async) ?? undefined"
+            (onError)="handleLobbyErrorEvent($event)" )
             style="position: relative;"></shig-lobby>

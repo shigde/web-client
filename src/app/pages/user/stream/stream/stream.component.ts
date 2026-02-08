@@ -1,6 +1,14 @@
-import {Component} from '@angular/core';
-import {catchError, filter, mergeMap, Observable, of, take, tap} from 'rxjs';
-import {createAppLogger, StreamPreview, StreamService, UserService} from '@shigde/core';
+import {ChangeDetectorRef, Component} from '@angular/core';
+import {catchError, filter, forkJoin, mergeMap, Observable, of, switchMap, take, tap} from 'rxjs';
+import {
+  createAppLogger,
+  SessionService,
+  StreamFriendService,
+  StreamPreview,
+  StreamService,
+  User,
+  UserService
+} from '@shigde/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AlertService} from '../../../../providers/alert.service';
 import {map} from 'rxjs/operators';
@@ -21,9 +29,13 @@ import {AvatarComponent} from '../../../../component/avatar/avatar.component';
 export class StreamComponent {
   private readonly log = createAppLogger('StreamComponent');
 
+  isOwner = false;
+  isGuest = false;
   hasStream = false;
+
   stream!: StreamPreview;
   userName = 'unknown';
+  sessionUser!: User | null;
   streamUuid!: string;
   channelUuid!: string;
   thumbnail!: string;
@@ -31,8 +43,11 @@ export class StreamComponent {
   constructor(
     private readonly router: Router,
     private readonly streamService: StreamService,
-    private readonly userService: UserService,
     private readonly alert: AlertService,
+    private readonly guestService: StreamFriendService,
+    private readonly session: SessionService,
+    private readonly userService: UserService,
+    private cdr: ChangeDetectorRef,
     activeRoute: ActivatedRoute) {
 
     // Load Stream and Owner
@@ -53,9 +68,29 @@ export class StreamComponent {
           this.hasStream = true;
           this.stream = s;
         }),
-        mergeMap((s) => userService.getUser(s.ownerUuid)),
-        take(1),
-        tap(u => this.userName = u.name),
+
+        switchMap(stream =>
+          forkJoin({
+            owner: userService.getUser(stream.ownerUuid),
+            sessionUser: session.getUser().pipe(
+              filter((u): u is User => !!u),
+              take(1)
+            ),
+            friends: guestService.getStreamFriendsList(stream.uuid)
+          })
+        ),
+
+        tap(({owner, sessionUser, friends}) => {
+          this.userName = owner.name;
+          this.sessionUser = sessionUser;
+          const current_user_uuid = sessionUser ? sessionUser.uuid : '';
+
+          this.isOwner = owner.uuid === current_user_uuid;
+          this.isGuest = friends.some(f => f.uuid === current_user_uuid);
+
+          this.log.info(`User is owner: ${this.isOwner} or guest: ${this.isGuest}`);
+          cdr.detectChanges();
+        }),
         catchError(_ => this.handleError<null>('Could not load user!', null)),
       ).subscribe();
     }
@@ -65,7 +100,7 @@ export class StreamComponent {
     this.router.navigate(['/stream/' + this.streamUuid + '/edit']);
   }
 
-  startStream() {
+  openStream() {
     this.log.info('start stream', this.streamUuid, this.stream.channelUuid);
     this.router.navigate(['/channel/' + this.stream.channelUuid + '/stream/' + this.streamUuid + '/lobby']);
   }

@@ -1,7 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {SessionService, ShigModule} from '@shigde/core';
-import {filter} from 'rxjs';
+import {ActivatedRoute, Router} from '@angular/router';
+import {createAppLogger, LobbyErrorEvent, SessionService, ShigModule, User} from '@shigde/core';
+import {filter, Observable, take} from 'rxjs';
+import {map} from "rxjs/operators";
+import {AsyncPipe} from "@angular/common";
+import {AlertService} from "../../providers/alert.service";
+import {AlertKind} from "../../entities/alert";
 
 type Param = { streamId: string, spaceId: string, userToken: string }
 
@@ -10,29 +14,37 @@ type Param = { streamId: string, spaceId: string, userToken: string }
   templateUrl: './lobby-entry.component.html',
   styleUrls: ['./lobby-entry.component.scss'],
   imports: [
-    ShigModule
+    ShigModule,
+    AsyncPipe
   ],
   standalone: true,
 })
 export class LobbyEntryComponent implements OnInit {
+  private log = createAppLogger('LobbyEntryComponent');
   // params: Observable<Param> = new BehaviorSubject(null)
 
   streamUuid: string;
   channelUuid: string;
   userToken: string;
-  user: string = 'unknown';
+  userUuid$: Observable<string | undefined>;
   apiPrifix: string = '/api';
 
 
   constructor(
     private route: ActivatedRoute,
+    private alert: AlertService,
+    private router: Router,
     session: SessionService,
   ) {
     const jwt = session.getAuthenticationToken();
     this.userToken = `${jwt}`;
-    session.getUserName().subscribe((name) => {
-      this.user = name;
-    });
+
+    this.userUuid$ = session.getUser().pipe(
+      filter((u): u is User => !!u),
+      take(1),
+      map((u) => u.uuid)
+    );
+
     //this.user$ = userName.pipe(map((name: string) => !name? "unknown" : name)) as Observable<string>;
     const streamUuid = this.route.snapshot.paramMap.get('streamUuid');
     const channelUuid = this.route.snapshot.paramMap.get('channelUuid');
@@ -49,4 +61,15 @@ export class LobbyEntryComponent implements OnInit {
 
   protected readonly filter = filter;
 
+  protected handleLobbyErrorEvent(event: LobbyErrorEvent) {
+    if (event === LobbyErrorEvent.NO_STREAM_PERMISSIONS) {
+      this.log.warn('No stream permissions to enter lobby', this.streamUuid);
+      this.alert.alert(AlertKind.WARNING, "You have not permissions to enter the Stream Lobby").then(
+        ()=>   this.router.navigate([
+          '/stream',
+          this.streamUuid,
+        ])
+      );
+    }
+  }
 }
