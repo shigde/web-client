@@ -54,6 +54,6 @@
   },
   "dependencies": {
     "@moq/watch": "^0.2.11",
-    "@shigde/core": "file:.yalc/@shigde/core"
+    "@shigde/core": "1.0.0"
   }
 }
