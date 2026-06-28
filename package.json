@@ -10,8 +10,8 @@
   },
   "private": true,
   "peerDependencies": {
-    "@angular/aria": "^21.1.1",
     "@angular/animations": "^21.0.6",
+    "@angular/aria": "^21.1.1",
     "@angular/common": "^21.0.6",
     "@angular/compiler": "^21.0.6",
     "@angular/core": "^21.0.6",
@@ -53,6 +53,7 @@
     "css-select": "5.2.0"
   },
   "dependencies": {
+    "@moq/watch": "^0.2.11",
     "@shigde/core": "file:.yalc/@shigde/core"
   }
 }

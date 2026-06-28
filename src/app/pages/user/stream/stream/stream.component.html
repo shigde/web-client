@@ -7,15 +7,27 @@
       </div>
     </div>
   </div>
-
 } @else {
+
   <div id="thumbnail-container" class="container my-2 my-lg-4 position-relative w-100">
     <div class="row">
       <div class="col-lg-9 mb-4 position-relative">
         <div class="card">
-          <img class="card-img thumbnail" ngSrc="{{thumbnail}}" fill priority style="position: relative"
-               alt="thumbnail">
 
+          @if (isLive) {
+            <div class="moq-player-wrapper">
+              <moq-watch-ui>
+                <moq-watch
+                  url="http://localhost:4443/live/{{channelUuid}}"
+                  name="{{streamUuid}}">
+                  muted>
+                  <canvas></canvas>
+                </moq-watch>
+              </moq-watch-ui>
+            </div>
+          } @else {
+            <img class="card-img thumbnail" ngSrc="{{thumbnail}}" fill priority style="position: relative" alt="thumbnail">
+          }
 
           <div class="thumbnail-toolbar position-absolute top-0 start-0 w-100 px-3 py-2">
             <div class="d-flex justify-content-end gap-2">

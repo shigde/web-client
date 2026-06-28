@@ -1,7 +1,9 @@
-import {ChangeDetectorRef, Component} from '@angular/core';
-import {catchError, filter, forkJoin, mergeMap, Observable, of, switchMap, take, tap} from 'rxjs';
+import '@moq/watch/element';
+import '@moq/watch/ui';
+import {ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {catchError, filter, forkJoin, Observable, of, Subject, switchMap, take, takeUntil, tap} from 'rxjs';
 import {
-  createAppLogger,
+  createAppLogger, RelayService,
   SessionService,
   StreamFriendService,
   StreamPreview,
@@ -23,6 +25,7 @@ import {AvatarComponent} from '../../../../component/avatar/avatar.component';
     AvatarComponent,
     DatePipe
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './stream.component.html',
   styleUrl: './stream.component.scss'
 })
@@ -39,10 +42,13 @@ export class StreamComponent {
   streamUuid!: string;
   channelUuid!: string;
   thumbnail!: string;
+  isLive: boolean = false;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private readonly router: Router,
     private readonly streamService: StreamService,
+    private readonly relayService: RelayService,
     private readonly alert: AlertService,
     private readonly guestService: StreamFriendService,
     private readonly session: SessionService,
@@ -67,6 +73,7 @@ export class StreamComponent {
         tap((s) => {
           this.hasStream = true;
           this.stream = s;
+          this.channelUuid = this.stream.channelUuid;
         }),
 
         switchMap(stream =>
@@ -92,8 +99,19 @@ export class StreamComponent {
           cdr.detectChanges();
         }),
         catchError(_ => this.handleError<null>('Could not load user!', null)),
-      ).subscribe();
+      ).subscribe(() => {
+        this.startAnnouncementPolling();
+      });
     }
+  }
+
+  ngOnInit() {
+
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   editStream() {
@@ -117,5 +135,24 @@ export class StreamComponent {
   private handleError<T>(msg: string, resp: T): Observable<T> {
     this.alert.alert(AlertKind.DANGER, msg);
     return of(resp);
+  }
+
+  private startAnnouncementPolling(): void {
+    this.relayService
+      .pollHasAnnouncement(this.channelUuid, this.streamUuid, 5000)
+      .pipe(
+        takeUntil(this.destroy$),
+        filter(isLive => isLive !== this.isLive)
+      )
+      .subscribe({
+        next: isLive => {
+          this.log.info('Stream is live: ' + isLive);
+          this.isLive = isLive;
+          this.cdr.detectChanges();
+        },
+        error: err => {
+          this.log.error('Polling error', err);
+        }
+      });
   }
 }
