@@ -18,9 +18,9 @@
             <div class="moq-player-wrapper">
               <moq-watch-ui>
                 <moq-watch
-                  url="http://localhost:4443/live/{{channelUuid}}"
-                  name="{{streamUuid}}">
-                  muted>
+                  url="{{relayUrl}}/{{channelUuid}}"
+                  name="{{streamUuid}}"
+                  latency="350">
                   <canvas></canvas>
                 </moq-watch>
               </moq-watch-ui>

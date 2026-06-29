@@ -6,6 +6,7 @@ import {map} from "rxjs/operators";
 import {AsyncPipe} from "@angular/common";
 import {AlertService} from "../../providers/alert.service";
 import {AlertKind} from "../../entities/alert";
+import {RuntimeConfigService} from "../../providers/runtime-config.service";
 
 type Param = { streamId: string, spaceId: string, userToken: string }
 
@@ -27,7 +28,7 @@ export class LobbyEntryComponent implements OnInit {
   channelUuid: string;
   userToken: string;
   userUuid$: Observable<string | undefined>;
-  apiPrifix: string = '/api';
+  apiPrifix: string;
 
 
   constructor(
@@ -35,9 +36,11 @@ export class LobbyEntryComponent implements OnInit {
     private alert: AlertService,
     private router: Router,
     session: SessionService,
+    runtimeConfig: RuntimeConfigService,
   ) {
     const jwt = session.getAuthenticationToken();
     this.userToken = `${jwt}`;
+    this.apiPrifix = runtimeConfig.apiPrefix;
 
     this.userUuid$ = session.getUser().pipe(
       filter((u): u is User => !!u),

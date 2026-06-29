@@ -17,6 +17,7 @@ import {map} from 'rxjs/operators';
 import {AlertKind} from '../../../../entities/alert';
 import {DatePipe, NgOptimizedImage} from '@angular/common';
 import {AvatarComponent} from '../../../../component/avatar/avatar.component';
+import {RuntimeConfigService} from "../../../../providers/runtime-config.service";
 
 @Component({
   selector: 'app-stream',
@@ -30,6 +31,7 @@ import {AvatarComponent} from '../../../../component/avatar/avatar.component';
   styleUrl: './stream.component.scss'
 })
 export class StreamComponent {
+  readonly relayUrl: string
   private readonly log = createAppLogger('StreamComponent');
 
   isOwner = false;
@@ -50,12 +52,14 @@ export class StreamComponent {
     private readonly streamService: StreamService,
     private readonly relayService: RelayService,
     private readonly alert: AlertService,
-    private readonly guestService: StreamFriendService,
-    private readonly session: SessionService,
-    private readonly userService: UserService,
-    private cdr: ChangeDetectorRef,
+    private readonly runtime: RuntimeConfigService,
+    private readonly cdr: ChangeDetectorRef,
+    guestService: StreamFriendService,
+    session: SessionService,
+    userService: UserService,
     activeRoute: ActivatedRoute) {
 
+    this.relayUrl = runtime.relayService;
     // Load Stream and Owner
     if (activeRoute.snapshot.params['streamUuid']) {
       const streamUuid = activeRoute.snapshot.params['streamUuid'];
