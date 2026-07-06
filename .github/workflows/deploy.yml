@@ -13,6 +13,7 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: production
 
     env:
       SHIG_API_PREFIX: ${{ vars.SHIG_API_PREFIX || '/api' }}
