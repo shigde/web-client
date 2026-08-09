@@ -1,6 +1,6 @@
 {
   "name": "web-client",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "scripts": {
     "ng": "ng",
     "generate-env": "node scripts/generate-env.js",
@@ -21,7 +21,7 @@
     "@angular/platform-browser-dynamic": "^21.0.6",
     "@angular/router": "^21.0.6",
     "@popperjs/core": "^2.11.6",
-    "@shigde/core": "1.1.0",
+    "@shigde/core": "1.1.1",
     "bootstrap": "^5.3.6",
     "bootstrap-icons": "^1.11.3",
     "dexie": "^3.2.4",
@@ -55,6 +55,6 @@
   },
   "dependencies": {
     "@moq/watch": "^0.2.11",
-    "@shigde/core": "1.1.0"
+    "@shigde/core": "1.1.1"
   }
 }
