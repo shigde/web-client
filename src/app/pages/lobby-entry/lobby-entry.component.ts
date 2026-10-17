@@ -1,12 +1,15 @@
-import {Component, OnInit} from '@angular/core';
+import '@moq/watch/element';
+import '@moq/watch/ui';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {createAppLogger, LobbyErrorEvent, SessionService, ShigModule, User} from '@shigde/core';
+import {createAppLogger, LobbyComponent, LobbyErrorEvent, SessionService, ShigModule, User} from '@shigde/core';
 import {filter, Observable, take} from 'rxjs';
 import {map} from "rxjs/operators";
 import {AsyncPipe} from "@angular/common";
 import {AlertService} from "../../providers/alert.service";
 import {AlertKind} from "../../entities/alert";
 import {RuntimeConfigService} from "../../providers/runtime-config.service";
+import {ConfirmDialogComponent} from '../../component/confirm-dialog/confirm-dialog.component';
 
 type Param = { streamId: string, spaceId: string, userToken: string }
 
@@ -16,11 +19,16 @@ type Param = { streamId: string, spaceId: string, userToken: string }
   styleUrls: ['./lobby-entry.component.scss'],
   imports: [
     ShigModule,
-    AsyncPipe
+    AsyncPipe,
+    ConfirmDialogComponent
   ],
   standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class LobbyEntryComponent implements OnInit {
+  @ViewChild(LobbyComponent) lobby?: LobbyComponent;
+  @ViewChild(ConfirmDialogComponent) leaveDialog!: ConfirmDialogComponent;
+  readonly relayUrl: string;
   private log = createAppLogger('LobbyEntryComponent');
   // params: Observable<Param> = new BehaviorSubject(null)
 
@@ -41,6 +49,7 @@ export class LobbyEntryComponent implements OnInit {
     const jwt = session.getAuthenticationToken();
     this.userToken = `${jwt}`;
     this.apiPrifix = runtimeConfig.apiPrefix;
+    this.relayUrl = runtimeConfig.relayService;
 
     this.userUuid$ = session.getUser().pipe(
       filter((u): u is User => !!u),
@@ -64,6 +73,27 @@ export class LobbyEntryComponent implements OnInit {
 
   protected readonly filter = filter;
 
+  get playbackUrl(): string {
+    const url = new URL(`${this.relayUrl}/${this.channelUuid}`);
+    if (this.userToken && this.userToken !== 'undefined') url.searchParams.set('jwt', this.userToken);
+    return url.toString();
+  }
+
+  async canLeave(): Promise<boolean> {
+    if (!this.lobby?.connectionActive) return true;
+    if (!await this.leaveDialog.confirm()) return false;
+    await this.lobby.leaveCurrentLobby();
+    return true;
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  beforeUnload(event: BeforeUnloadEvent): void {
+    if (this.lobby?.connectionActive) {
+      event.preventDefault();
+      event.returnValue = '';
+    }
+  }
+
   protected handleLobbyErrorEvent(event: LobbyErrorEvent) {
     if (event === LobbyErrorEvent.NO_STREAM_PERMISSIONS) {
       this.log.warn('No stream permissions to enter lobby', this.streamUuid);
@@ -73,6 +103,10 @@ export class LobbyEntryComponent implements OnInit {
           this.streamUuid,
         ])
       );
+    } else if (event === LobbyErrorEvent.LOBBY_CONNECTION_EXISTS) {
+      this.alert.alert(AlertKind.WARNING, 'You are already connected to this lobby.');
+    } else if (event === LobbyErrorEvent.LOBBY_JOIN_FAILED) {
+      this.alert.alert(AlertKind.DANGER, 'Could not join the lobby. The connection setup failed.');
     }
   }
 }

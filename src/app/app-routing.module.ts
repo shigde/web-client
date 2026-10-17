@@ -5,6 +5,7 @@ import {DashboardComponent as AdminDashboardComponent} from './pages/admin/dashb
 import {UserAccessGuard} from './guards/user-access-guard.service';
 import {LoginComponent} from './pages/auth/login/login.component';
 import {LobbyEntryComponent} from './pages/lobby-entry/lobby-entry.component';
+import {lobbyLeaveGuard} from './guards/lobby-leave.guard';
 import {AdminAccessGuard} from './guards/admin-access-guard.service';
 
 import {SignupComponent} from './pages/auth/signup/signup.component';
@@ -28,7 +29,7 @@ const routes: Routes = [
   {path: 'stream/new', component: EditStreamComponent, canActivate: [UserAccessGuard]},
   {path: 'stream/:streamUuid', component: StreamComponent, canActivate: [UserAccessGuard]},
   {path: 'stream/:streamUuid/edit', component: EditStreamComponent, canActivate: [UserAccessGuard]},
-  {path: 'channel/:channelUuid/stream/:streamUuid/lobby', component: LobbyEntryComponent, canActivate: [UserAccessGuard]},
+  {path: 'channel/:channelUuid/stream/:streamUuid/lobby', component: LobbyEntryComponent, canActivate: [UserAccessGuard], canDeactivate: [lobbyLeaveGuard]},
   {path: 'login', component: LoginComponent},
   {path: 'forgotPasswordMail', component: ForgotPasswordMailComponent},
   {path: 'forgotPassword/:token', component: ForgotPasswordComponent},

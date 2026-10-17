@@ -11,7 +11,7 @@
 
 
   <div class="app-card-img-overlay">
-    @if (stream.isLive) {
+    @if (isLive) {
       <h5><span class="badge text-bg-danger">Live</span></h5>
     } @else {
       <h5><span class="badge text-bg-secondary">Offline</span></h5>
@@ -31,7 +31,7 @@
           <p class="mb-0 opacity-75 one-line-truncate pt-2"><small>{{ stream.ownerName }} </small></p>
         </a>
         <p class="mb-0 opacity-75 one-line-truncate">
-          @if (stream.isLive) {
+          @if (isLive) {
             <small><b>Viewer:</b>
               {{ stream.viewer }}
             </small>

@@ -1,1 +1,35 @@
 
+:host { display: block; }
+
+.setup-player, .setup-thumbnail {
+  position: absolute;
+  inset: 0;
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.setup-player, .setup-player moq-watch {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.setup-player {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  overflow: hidden;
+}
+
+// MoQ sets inline auto heights outside fullscreen; constrain playback to the setup area.
+.setup-player moq-watch, .setup-player canvas {
+  height: 100% !important;
+}
+
+.setup-player canvas, .setup-thumbnail {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

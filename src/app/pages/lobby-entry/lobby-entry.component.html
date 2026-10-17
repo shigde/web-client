@@ -1,7 +1,23 @@
+<app-confirm-dialog></app-confirm-dialog>
 <shig-lobby [streamUuid]="streamUuid"
             [channelUuid]="channelUuid"
             [token]="userToken"
             [apiPrefix]="apiPrifix"
             [userUuid]="(userUuid$ | async) ?? undefined"
-            (onError)="handleLobbyErrorEvent($event)" )
+            [setupPreview]="setupPreview"
+            (onError)="handleLobbyErrorEvent($event)"
             style="position: relative;"></shig-lobby>
+
+<ng-template #setupPreview let-stream let-live="live">
+  @if (live) {
+    <moq-watch-ui class="setup-player">
+      <moq-watch [attr.url]="playbackUrl" [attr.name]="streamUuid" latency="350">
+        <canvas></canvas>
+      </moq-watch>
+    </moq-watch-ui>
+  } @else {
+    <img class="setup-thumbnail"
+         [src]="stream.thumbnail ? '/static/' + stream.thumbnail : 'assets/images/default-banner-2.jpg'"
+         [alt]="stream.title">
+  }
+</ng-template>

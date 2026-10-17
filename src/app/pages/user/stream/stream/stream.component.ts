@@ -55,7 +55,7 @@ export class StreamComponent {
     private readonly cdr: ChangeDetectorRef,
     runtime: RuntimeConfigService,
     guestService: StreamFriendService,
-    session: SessionService,
+    private readonly session: SessionService,
     userService: UserService,
     activeRoute: ActivatedRoute) {
 
@@ -83,11 +83,11 @@ export class StreamComponent {
         switchMap(stream =>
           forkJoin({
             owner: userService.getUser(stream.ownerUuid),
-            sessionUser: session.getUser().pipe(
+            sessionUser: session.isAuthenticated() ? session.getUser().pipe(
               filter((u): u is User => !!u),
               take(1)
-            ),
-            friends: guestService.getStreamFriendsList(stream.uuid)
+            ) : of(null),
+            friends: session.isAuthenticated() ? guestService.getStreamFriendsList(stream.uuid) : of([])
           })
         ),
 
@@ -111,6 +111,15 @@ export class StreamComponent {
 
   ngOnInit() {
 
+  }
+
+  get playbackUrl(): string {
+    const url = new URL(`${this.relayUrl}/${this.channelUuid}`);
+    const token = this.session.getAuthenticationToken();
+    if (token) {
+      url.searchParams.set('jwt', token);
+    }
+    return url.toString();
   }
 
   ngOnDestroy() {

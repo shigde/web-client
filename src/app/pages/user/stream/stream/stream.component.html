@@ -18,7 +18,7 @@
             <div class="moq-player-wrapper">
               <moq-watch-ui>
                 <moq-watch
-                  url="{{relayUrl}}/{{channelUuid}}"
+                  url="{{playbackUrl}}"
                   name="{{streamUuid}}"
                   latency="350">
                   <canvas></canvas>
@@ -35,7 +35,7 @@
               @if (isOwner || isGuest) {
                 <button type="button" class="btn btn-primary nav-icon-button icon" (click)="openStream()">
                   <i class="bi bi-person-video3 me-1"></i>
-                  <span class="d-none d-sm-inline">Open</span>
+                  <span>Enter Stream</span>
                 </button>
               }
 
