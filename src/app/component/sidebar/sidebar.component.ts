@@ -1,10 +1,9 @@
 import {Component} from '@angular/core';
 import {AvatarComponent} from '../avatar/avatar.component';
-import {SessionService} from '@shigde/core';
+import {SessionService, User} from '@shigde/core';
 import {Router} from '@angular/router';
 import {filter, Observable} from 'rxjs';
 import {AsyncPipe} from '@angular/common';
-import {User} from '@shigde/core';
 import {map} from 'rxjs/operators';
 
 

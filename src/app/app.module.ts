@@ -9,7 +9,6 @@ import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {httpInterceptorProviders, LoadingIndicatorComponent, ShigModule} from '@shigde/core';
-import {LobbyEntryComponent} from './pages/lobby-entry/lobby-entry.component';
 import {SettingsComponent} from './svg/settings.component';
 import {SidebarComponent} from './component/sidebar/sidebar.component';
 import {HeaderComponent} from './component/header/header.component';
@@ -33,7 +32,7 @@ import {StreamCardComponent} from './component/stream-card/stream-card.component
     FormsModule,
     ShigModule, LoadingIndicatorComponent, SidebarComponent, HeaderComponent, StreamCardComponent, NgbModule, AlertComponent, StreamPreviewCardComponent],
   providers: [
-    httpInterceptorProviders,
+    ...httpInterceptorProviders,
     provideHttpClient(withInterceptorsFromDi()),
   ]
 })
