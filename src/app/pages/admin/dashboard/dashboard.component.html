@@ -1,1 +1,28 @@
-<p>dashboard works!</p>
+<div class="container px-4 py-5">
+  <a routerLink="/dashboard">← Overview</a>
+  <p class="text-body-secondary mt-4 mb-1">Admin</p>
+  <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center border-bottom pb-3 mb-4">
+    <h2 class="mb-0">Monitoring</h2>
+    <button type="button" class="btn btn-outline-primary" [disabled]="loading" (click)="refresh()">{{ loading ? 'Loading…' : 'Refresh' }}</button>
+  </div>
+  <p class="text-body-secondary">Live server metrics · Refreshes every 15 seconds</p>
+  @if (error) {
+    <div class="alert alert-danger" role="alert">Metrics could not be loaded. Check your connection and admin access. Displayed values are from the last successful refresh.</div>
+  }
+  @if (snapshot; as data) {
+    <div class="row g-3 mb-4" aria-live="polite">
+      <div class="col-md-4"><div class="card h-100"><div class="card-body"><h3 class="h6">Active lobbies</h3><p class="display-6 mb-0">{{ data.active_lobbies }}</p></div></div></div>
+      <div class="col-md-4"><div class="card h-100"><div class="card-body"><h3 class="h6">Connected participants</h3><p class="display-6 mb-0">{{ data.active_peers }}</p></div></div></div>
+      <div class="col-md-4"><div class="card h-100"><div class="card-body"><h3 class="h6">Server version</h3><p class="fs-3 mb-0">{{ data.version }}</p></div></div></div>
+    </div>
+    <h3 class="h5">Participants per lobby</h3>
+    @if (data.lobbies.length) {
+      <div class="table-responsive"><table class="table">
+        <thead><tr><th scope="col">Lobby</th><th scope="col">Participants</th></tr></thead>
+        <tbody>@for (lobby of data.lobbies; track lobby.lobby_id) {<tr><td>{{ lobby.lobby_id }}</td><td>{{ lobby.peers }}</td></tr>}</tbody>
+      </table></div>
+    } @else { <p class="text-body-secondary">No active lobby participants.</p> }
+    <p class="small text-body-secondary">Last successful refresh: {{ updatedAt | date:'medium' }}</p>
+  }
+  <div class="alert alert-secondary mt-4">These metrics show the current state of this server. Historical trends, error rates and fix comparisons are not collected yet.</div>
+</div>

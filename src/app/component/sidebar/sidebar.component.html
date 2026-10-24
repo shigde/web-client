@@ -18,6 +18,15 @@
       <a href="/settings" class="dropdown-item" aria-current="page"><i class="bi bi-gear  me-3"></i>Settings</a>
     </li>
 
+    @if (isAdmin$ | async) {
+      <li class="nav-item mt-2">
+        <h6 class="dropdown-header admin-heading">Admin</h6>
+        <a routerLink="/admin/monitoring" class="dropdown-item ps-5">
+          <i class="bi bi-activity me-3" aria-hidden="true"></i>Monitoring
+        </a>
+      </li>
+    }
+
     <li>
       <hr class="dropdown-divider">
     </li>

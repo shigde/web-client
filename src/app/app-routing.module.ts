@@ -22,7 +22,8 @@ import {StreamComponent} from './pages/user/stream/stream/stream.component';
 const routes: Routes = [
   {path: '', redirectTo: '/dashboard', pathMatch: 'full'},
   {path: 'dashboard', component: DashboardComponent, canActivate: [UserAccessGuard]},
-  {path: 'admin/dashboard', component: AdminDashboardComponent, canActivate: [AdminAccessGuard]},
+  {path: 'admin/dashboard', redirectTo: 'admin/monitoring', pathMatch: 'full'},
+  {path: 'admin/monitoring', component: AdminDashboardComponent, canActivate: [AdminAccessGuard]},
   {path: 'settings', component: SettingsComponent, canActivate: [UserAccessGuard]},
   {path: 'channel/:channelUuid', component: ChannelComponent},
   {path: 'channel/:channelUuid/edit', component: EditChannelComponent, canActivate: [UserAccessGuard]},

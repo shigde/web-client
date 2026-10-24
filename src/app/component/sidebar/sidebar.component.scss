@@ -1,0 +1,11 @@
+.admin-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  &::after {
+    content: '';
+    flex: 1;
+    border-top: 1px solid var(--bs-border-color);
+  }
+}
