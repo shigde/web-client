@@ -1,0 +1,63 @@
+<div class="container px-4 py-5">
+  <p class="text-body-secondary mb-1">Admin</p>
+  <h2 class="border-bottom pb-3">Users</h2>
+  <p>Manage accounts, registration dates and channels. Inactive accounts cannot sign in or make authenticated requests.</p>
+  <form class="d-flex flex-wrap gap-2 my-4" (ngSubmit)="find()">
+    <label for="user-search" class="visually-hidden">Search by account, email or channel</label>
+    <input id="user-search" name="search" class="form-control w-auto flex-grow-1" type="search" maxlength="200" placeholder="Search by account, email or channel" [(ngModel)]="search" [disabled]="saving">
+    <button class="btn btn-outline-primary" [disabled]="loading || saving">Search / Refresh</button>
+  </form>
+  @if (error) { <div class="alert alert-danger" role="alert">{{ error }}</div> }
+  @if (message) { <div class="alert alert-success" role="status">{{ message }}</div> }
+  @if (pending; as user) {
+    <div class="alert alert-warning" role="region" aria-label="Confirm account status change">
+      <p><strong>{{ user.active ? 'Block' : 'Activate' }} {{ user.name }}?</strong>
+        {{ user.active ? 'Authenticated access will be denied, including requests using an existing login.' : 'This allows the account to sign in, including accounts awaiting email verification.' }}</p>
+      <button type="button" class="btn me-2" [class.btn-danger]="user.active" [class.btn-success]="!user.active" [disabled]="saving" (click)="confirm()">{{ saving ? 'Saving…' : 'Confirm' }}</button>
+      <button type="button" class="btn btn-light text-dark border-secondary" [disabled]="saving" (click)="pending = null">Cancel</button>
+    </div>
+  }
+  @if (pendingRole; as user) {
+    <div class="alert alert-warning" role="region" aria-label="Confirm role change">
+      <p><strong>{{ user.role === Role.ADMIN ? 'Remove admin rights from' : 'Grant admin rights to' }} {{ user.name }}?</strong>
+        {{ user.role === Role.ADMIN ? 'The account will become a regular User and lose access to admin functions.' : 'The account will be able to manage users and access monitoring.' }}</p>
+      <button type="button" class="btn btn-danger me-2" [disabled]="saving" (click)="confirmRole()">{{ saving ? 'Saving…' : 'Confirm' }}</button>
+      <button type="button" class="btn btn-light text-dark border-secondary" [disabled]="saving" (click)="pendingRole = null">Cancel</button>
+    </div>
+  }
+  @if (loading) { <p role="status">Loading accounts…</p> }
+  @else {
+    <p class="text-body-secondary">{{ total }} accounts{{ appliedSearch ? ' matching your search' : '' }}</p>
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <caption>Accounts ordered by registration date, newest first. Dates use your local timezone.</caption>
+        <thead><tr><th scope="col">Account</th><th scope="col">Channel</th><th scope="col">Registered</th><th scope="col">Verified</th><th scope="col">Role</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
+        <tbody>
+          @for (user of users; track user.uuid) {
+            <tr>
+              <td><strong>{{ user.name }}</strong><div class="small text-body-secondary">{{ user.email }}</div></td>
+              <td>@if (user.channel_uuid) { <a [routerLink]="['/channel', user.channel_uuid]">{{ user.channel_name || 'Unnamed channel' }}</a> } @else { <span class="text-body-secondary">No channel</span> }</td>
+              <td class="text-nowrap">{{ user.created_at | date:'medium' }}</td>
+              <td><span class="badge" [class.text-bg-success]="user.verified" [class.text-bg-secondary]="!user.verified">{{ user.verified ? 'Yes' : 'No' }}</span></td>
+              <td><span class="badge" [class.text-bg-primary]="user.role === Role.ADMIN" [class.text-bg-secondary]="user.role !== Role.ADMIN">{{ roleName(user.role) }}</span></td>
+              <td><span class="badge" [class.text-bg-success]="user.active" [class.text-bg-secondary]="!user.active">{{ user.active ? 'Active' : 'Inactive' }}</span></td>
+              <td>
+                @if (user.uuid === currentUuid) { <span class="small text-body-secondary">Your account</span> }
+                @else { <button type="button" class="btn btn-sm" [class.btn-outline-danger]="user.active" [class.btn-outline-success]="!user.active" [disabled]="saving || pending !== null || pendingRole !== null" (click)="pending = user; message = ''">{{ user.active ? 'Block' : 'Activate' }}</button>
+                  @if (user.role === Role.ADMIN || user.role === Role.USER) {
+                    <button type="button" class="btn btn-sm btn-outline-primary ms-2" [disabled]="saving || pending !== null || pendingRole !== null" (click)="pendingRole = user; message = ''">{{ user.role === Role.ADMIN ? 'Make User' : 'Make Admin' }}</button>
+                  }
+                }
+              </td>
+            </tr>
+          } @empty { <tr><td colspan="7">No accounts found.</td></tr> }
+        </tbody>
+      </table>
+    </div>
+    <nav class="d-flex align-items-center gap-3" aria-label="Account pages">
+      <button type="button" class="btn btn-outline-secondary" [disabled]="offset === 0 || saving" (click)="go(offset - pageSize)">Previous</button>
+      <span>Page {{ offset / pageSize + 1 }}</span>
+      <button type="button" class="btn btn-outline-secondary" [disabled]="offset + pageSize >= total || saving" (click)="go(offset + pageSize)">Next</button>
+    </nav>
+  }
+</div>

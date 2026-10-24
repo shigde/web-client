@@ -1,3 +1,4 @@
+import {UsersComponent as AdminUsersComponent} from './pages/admin/users/users.component';
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {DashboardComponent} from './pages/dashboard/dashboard.component';
@@ -23,6 +24,7 @@ const routes: Routes = [
   {path: '', redirectTo: '/dashboard', pathMatch: 'full'},
   {path: 'dashboard', component: DashboardComponent, canActivate: [UserAccessGuard]},
   {path: 'admin/dashboard', redirectTo: 'admin/monitoring', pathMatch: 'full'},
+  {path: 'admin/users', component: AdminUsersComponent, canActivate: [AdminAccessGuard]},
   {path: 'admin/monitoring', component: AdminDashboardComponent, canActivate: [AdminAccessGuard]},
   {path: 'settings', component: SettingsComponent, canActivate: [UserAccessGuard]},
   {path: 'channel/:channelUuid', component: ChannelComponent},
