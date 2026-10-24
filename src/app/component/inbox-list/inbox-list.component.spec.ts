@@ -1,52 +1,50 @@
 import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {provideRouter, Router} from '@angular/router';
-import {of, Subject, throwError} from 'rxjs';
-import {MessageService, NotificationService, SessionService} from '@shigde/core';
+import {provideHttpClient} from '@angular/common/http';
+import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
+import {of} from 'rxjs';
+import {SessionService, SkipLoading} from '@shigde/core';
 import {InboxListComponent} from './inbox-list.component';
 
-describe('Inbox list', () => {
-  let service: jasmine.SpyObj<MessageService>;
-  const item = {id: 'entry', title: 'Stream invitation', body: 'Host invited you to <Stream>',
-    read_at: null, created_at: '2026-10-24T12:00:00Z', action_path: '/channel/c/stream/s/lobby'};
+describe('Batched inbox list', () => {
+  const item = {id: 'entry', title: 'Stream invitation', body: 'Host invited you to <Stream>', read_at: null,
+    created_at: '2026-10-24T12:00:00Z', action_path: '/channel/c/stream/s/lobby'};
+  let http: HttpTestingController;
+  function respond(background: boolean) {
+    const request = http.expectOne('/api/poll');
+    expect(request.request.context.get(SkipLoading)).toBe(background);
+    expect(request.request.body.requests[0].resource).toBe('messages');
+    request.flush({results: [{id: request.request.body.requests[0].id, status: 200, data: {items: [item], total: 1, unread: 1}}]});
+  }
   beforeEach(() => {
-    service = jasmine.createSpyObj('Inbox', ['list', 'markRead', 'markAllRead']);
-    service.list.and.returnValue(of({items: [item], total: 1, unread: 1}));
-    TestBed.configureTestingModule({imports: [InboxListComponent], providers: [provideRouter([]),
-      {provide: MessageService, useValue: service}, {provide: NotificationService, useValue: service},
+    TestBed.configureTestingModule({imports: [InboxListComponent], providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting(),
       {provide: SessionService, useValue: {getUser: () => of({uuid: 'guest'})}}]});
+    http = TestBed.inject(HttpTestingController);
   });
-  it('shows the message and saves its read state before opening the stream', fakeAsync(() => {
+  afterEach(() => http.verify());
+  it('shows a batched message and saves its read state before opening the stream', fakeAsync(() => {
     const fixture = TestBed.createComponent(InboxListComponent);
     const router = spyOn(TestBed.inject(Router), 'navigateByUrl').and.resolveTo(true);
-    fixture.detectChanges(); tick(0); fixture.detectChanges();
+    fixture.detectChanges(); tick(0); respond(false); fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Host invited you to <Stream>');
-    expect(service.markRead).not.toHaveBeenCalled();
-    const saved = new Subject<boolean>(); service.markRead.and.returnValue(saved);
     fixture.nativeElement.querySelector('.btn-primary').click();
-    expect(service.markRead).toHaveBeenCalledWith('entry');
     expect(router).not.toHaveBeenCalled();
-    saved.next(true); saved.complete();
+    http.expectOne('/api/messages/entry/read').flush({data: true});
     expect(router).toHaveBeenCalledWith('/channel/c/stream/s/lobby');
     fixture.destroy();
   }));
-  it('uses the normal loader for opening and manual refresh, and skips it for timer refresh', fakeAsync(() => {
+  it('keeps the normal loader for opening and manual refresh, and skips it for timer batches', fakeAsync(() => {
     const fixture = TestBed.createComponent(InboxListComponent);
-    fixture.detectChanges(); tick(0);
-    expect(service.list).toHaveBeenCalledWith(0, false);
-    service.list.calls.reset();
-    tick(15000);
-    expect(service.list).toHaveBeenCalledOnceWith(0, true);
-    service.list.calls.reset();
-    fixture.componentInstance.refresh();
-    expect(service.list).toHaveBeenCalledOnceWith(0, false);
-    fixture.destroy();
+    fixture.detectChanges(); tick(0); respond(false);
+    tick(15000); respond(true);
+    fixture.componentInstance.refresh(); tick(0); respond(false);
+    fixture.destroy(); tick(30000); http.expectNone('/api/poll');
   }));
-
-  it('keeps the entry visible and reports failed read updates', fakeAsync(() => {
+  it('keeps the entry visible after a failed read update', fakeAsync(() => {
     const fixture = TestBed.createComponent(InboxListComponent);
-    fixture.detectChanges(); tick(0); fixture.detectChanges();
-    service.markRead.and.returnValue(throwError(() => new Error('offline')));
+    fixture.detectChanges(); tick(0); respond(false); fixture.detectChanges();
     fixture.componentInstance.read(item);
+    http.expectOne('/api/messages/entry/read').flush({}, {status: 500, statusText: 'Unavailable'});
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('[role="alert"]').textContent).toContain('Could not mark');
     expect(fixture.componentInstance.items[0].read_at).toBeNull();

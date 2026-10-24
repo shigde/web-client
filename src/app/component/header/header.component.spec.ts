@@ -1,7 +1,7 @@
 import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {provideRouter} from '@angular/router';
 import {BehaviorSubject, of} from 'rxjs';
-import {MessageService, NotificationService, Role, SessionService} from '@shigde/core';
+import {MessageService, NotificationService, PollingService, Role, SessionService} from '@shigde/core';
 import {HeaderComponent} from './header.component';
 
 describe('Header inbox controls', () => {
@@ -10,6 +10,7 @@ describe('Header inbox controls', () => {
     const inbox = {counts$: counts.asObservable(), list: () => of({items: [], total: 0, unread: 0})};
     TestBed.configureTestingModule({imports: [HeaderComponent], providers: [provideRouter([]),
       {provide: SessionService, useValue: {getUserName: () => of('guest'), getUser: () => of({uuid: 'guest', name: 'Guest'}), getUserRole: () => of(Role.USER)}},
+      {provide: PollingService, useValue: {watch: () => of({data: {items: [], total: 0, unread: 0}, error: null, loading: false}), refresh: () => {}}},
       {provide: MessageService, useValue: inbox}, {provide: NotificationService, useValue: inbox}]});
     const fixture = TestBed.createComponent(HeaderComponent);
     fixture.detectChanges();

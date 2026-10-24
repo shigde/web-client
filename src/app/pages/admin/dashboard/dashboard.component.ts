@@ -3,8 +3,7 @@ import {DatePipe} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
 import {RouterLink} from '@angular/router';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {ParameterService} from '@shigde/core';
-import {catchError, exhaustMap, of, Subject, merge, timer} from 'rxjs';
+import {ParameterService, PollingService} from '@shigde/core';
 
 interface Snapshot {
   active_lobbies: number;
@@ -23,25 +22,21 @@ export class DashboardComponent {
   updatedAt: Date | null = null;
   error = false;
   loading = false;
-  private readonly refreshRequests = new Subject<void>();
+  private readonly polling = inject(PollingService);
+  private readonly pollKey = 'admin-monitoring';
   private readonly http = inject(HttpClient);
   private readonly params = inject(ParameterService);
 
   constructor() {
-    merge(timer(0, 15000), this.refreshRequests).pipe(
-      exhaustMap(() => {
-        this.loading = true;
-        return this.http.get<Snapshot>(`${this.params.API_PREFIX}/admin/monitoring`).pipe(catchError(() => of(null)));
-      }),
-      takeUntilDestroyed()
-    ).subscribe(snapshot => {
-      this.loading = false;
-      this.error = snapshot === null;
-      if (snapshot) {
-        this.snapshot = snapshot;
-        this.updatedAt = new Date();
-      }
+    this.polling.watch<Snapshot>({
+      key: this.pollKey, intervalMs: 15000, requiresSession: true, batch: {resource: 'monitoring'},
+      load: context => this.http.get<Snapshot>(`${this.params.API_PREFIX}/admin/monitoring`, {context})
+    }).pipe(takeUntilDestroyed()).subscribe(state => {
+      this.loading = state.loading;
+      this.error = !!state.error;
+      this.snapshot = state.data;
+      this.updatedAt = state.updatedAt === null ? null : new Date(state.updatedAt);
     });
   }
-  refresh(): void { this.refreshRequests.next(); }
+  refresh(): void { this.polling.refresh(this.pollKey); }
 }
