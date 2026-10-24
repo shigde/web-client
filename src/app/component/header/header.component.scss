@@ -1,3 +1,16 @@
 .alert-circle {
   top: 0.4em;
 }
+
+.notification-inbox {
+  position: absolute;
+  z-index: 1050;
+  top: calc(100% + 1rem);
+  right: -4rem;
+  width: min(28rem, calc(100vw - 2rem));
+  max-height: min(70vh, 40rem);
+  overflow-y: auto;
+}
+@media (max-width: 575px) {
+  .notification-inbox { position: fixed; top: 5rem; right: 1rem; }
+}

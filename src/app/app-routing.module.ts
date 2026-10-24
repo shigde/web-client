@@ -1,3 +1,4 @@
+import {MessagesComponent} from './pages/messages/messages.component';
 import {UsersComponent as AdminUsersComponent} from './pages/admin/users/users.component';
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
@@ -26,6 +27,7 @@ const routes: Routes = [
   {path: 'admin/dashboard', redirectTo: 'admin/monitoring', pathMatch: 'full'},
   {path: 'admin/users', component: AdminUsersComponent, canActivate: [AdminAccessGuard]},
   {path: 'admin/monitoring', component: AdminDashboardComponent, canActivate: [AdminAccessGuard]},
+  {path: 'messages', component: MessagesComponent, canActivate: [UserAccessGuard]},
   {path: 'settings', component: SettingsComponent, canActivate: [UserAccessGuard]},
   {path: 'channel/:channelUuid', component: ChannelComponent},
   {path: 'channel/:channelUuid/edit', component: EditChannelComponent, canActivate: [UserAccessGuard]},

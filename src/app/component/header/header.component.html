@@ -20,18 +20,24 @@
           <span class="d-none d-sm-inline-block">New Stream</span>
         </button>
       </div>
-      <a href="#" class="nav-link position-relative d-block link-body-emphasis text-decoration-none fs-4 mb-0  me-4" *ngIf="(isUserLogin$ | async) == true">
-        <i class="bi bi-bell"></i>
-        <span class="position-absolute alert-circle translate-middle p-1 bg-danger border border-light rounded-circle">
-            <span class="visually-hidden">New alerts</span>
-          </span>
-      </a>
-      <a href="#" class="nav-link position-relative d-block link-body-emphasis text-decoration-none fs-4 mb-0 me-4" *ngIf="(isUserLogin$ | async) == true">
-        <i class="bi bi-inbox"></i>
-        <span class="position-absolute alert-circle translate-middle p-1 bg-danger border border-light rounded-circle">
-            <span class="visually-hidden">New alerts</span>
-          </span>
-      </a>
+      @if ((isUserLogin$ | async) === true) {
+        <div class="position-relative me-4" (click)="$event.stopPropagation()">
+          <button type="button" class="btn border-0 p-0 position-relative link-body-emphasis fs-4" aria-label="Notifications" aria-controls="notification-inbox" [attr.aria-expanded]="notificationsOpen" (click)="notificationsOpen = !notificationsOpen">
+            <i class="bi bi-bell" aria-hidden="true"></i>
+            @if ((notificationCounts$ | async)?.unread; as count) { <span class="position-absolute alert-circle translate-middle p-1 bg-danger border border-light rounded-circle"><span class="visually-hidden">{{ count }} unread notifications</span></span> }
+          </button>
+          @if (notificationsOpen) {
+            <section id="notification-inbox" class="notification-inbox card shadow p-3" aria-label="Notifications">
+              <div class="d-flex justify-content-between align-items-center mb-3"><h2 class="h5 mb-0">Notifications</h2><button type="button" class="btn-close" aria-label="Close notifications" (click)="notificationsOpen = false"></button></div>
+              <app-inbox-list kind="notifications" (opened)="notificationsOpen = false" />
+            </section>
+          }
+        </div>
+        <a routerLink="/messages" class="nav-link position-relative d-block link-body-emphasis fs-4 me-4" aria-label="Messages" (click)="notificationsOpen = false">
+          <i class="bi bi-inbox" aria-hidden="true"></i>
+          @if ((messageCounts$ | async)?.unread; as count) { <span class="position-absolute alert-circle translate-middle p-1 bg-danger border border-light rounded-circle"><span class="visually-hidden">{{ count }} unread messages</span></span> }
+        </a>
+      }
       <div class="dropdown text-end" *ngIf="(isUserLogin$ | async) == true">
         <a href="#" class="nav-link d-block link-body-emphasis text-decoration-none dropdown-toggle"
            data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="-50,-50">
