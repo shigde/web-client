@@ -13,7 +13,7 @@ import {
   Validators
 } from '@angular/forms';
 import {
-  ApiResponse, SessionService,
+  ApiResponse, SessionService, ShigModule,
   SettingsService,
   Stream,
   StreamLatency, StreamLicence,
@@ -32,6 +32,7 @@ import {TimeService} from '../../../../providers/time.service';
   selector: 'app-edit-stream',
   standalone: true,
   imports: [
+    ShigModule,
     NgbTimepicker,
     FormsModule,
     NgbDropdownModule,
@@ -46,7 +47,8 @@ export class EditStreamComponent {
 
   public isEdit = false;
   public stream!: Stream;
-  private currentUser: User | null = null;
+  selectedGuestUuids: string[] | undefined;
+  public currentUser: User | null = null;
 
   public streamUuid!: string;
   public time = {hour: 13, minute: 30};
@@ -139,6 +141,7 @@ export class EditStreamComponent {
       // @ts-ignore
       const stream: Stream = {
         ...this.stream,
+        ...(this.selectedGuestUuids !== undefined ? {guestUuids: this.selectedGuestUuids} : {}),
         title: this.streamForm.get('title')?.value,
         description: this.streamForm.get('description')?.value,
         support: this.streamForm.get('support')?.value,

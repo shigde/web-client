@@ -1,0 +1,31 @@
+// Shared appearance for create/edit pages; Bootstrap owns controls and states.
+.editor-page {
+  max-width: 820px;
+  padding-top: 28px;
+  padding-bottom: 40px;
+  .editor-title { font-size: 1.65rem; font-weight: 600; margin: 0 0 20px; }
+  .editor-form { padding: 24px; }
+  .editor-section-title { font-size: 1.05rem; font-weight: 600; margin: 0 0 18px; }
+  .editor-row { margin-bottom: 20px; min-width: 0; }
+  .form-label { display: block; font-size: .9rem; font-weight: 600; margin-bottom: 7px; }
+  .editor-field { min-width: 0; }
+  .editor-field > small { display: block; margin-top: 6px; color: var(--bs-secondary-color); font-size: .8rem; }
+  .invalid { margin-top: 6px; color: var(--bs-danger-text-emphasis); font-size: .85rem; }
+  textarea { min-height: 90px; resize: vertical; }
+  .form-control, .input-group { max-width: 100%; }
+  .input-group-text { overflow-wrap: anywhere; white-space: normal; }
+  hr { margin: 24px 0; color: var(--bs-border-color); opacity: 1; }
+  .editor-actions { margin-top: 24px; }
+  .editor-buttons { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; }
+  .editor-tabs { gap: 8px; border-bottom-color: var(--bs-border-color); }
+  .editor-tabs .nav-link { border: 0; border-bottom: 2px solid transparent; border-radius: 0; color: var(--bs-secondary-color); background: transparent; }
+  .editor-tabs .nav-link.active { color: var(--bs-body-color); border-bottom-color: var(--bs-primary); font-weight: 600; }
+  .editor-tabs .nav-link:focus-visible { outline: 2px solid var(--bs-primary); outline-offset: -2px; }
+  .alert { font-size: .875rem; line-height: 1.6; }
+  @media (max-width: 575.98px) {
+    padding-top: 20px;
+    .editor-form { padding: 16px; }
+    .editor-title { font-size: 1.4rem; }
+    .editor-buttons .btn { flex: 1 1 auto; }
+  }
+}

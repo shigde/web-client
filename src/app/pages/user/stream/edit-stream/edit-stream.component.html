@@ -1,16 +1,16 @@
-<div class="container px-4 py-5">
-  <h2 class="pb-2 border-bottom">
+<div class="container editor-page">
+  <h2 class="editor-title">
     @if (isEdit) {
       Edit Stream
     } @else {
       New Stream
     }
   </h2>
-  <form class="py-5 needs-validation" [formGroup]="streamForm" (ngSubmit)="save(fileInput)">
+  <form class="editor-form bg-body border rounded-2 needs-validation" [formGroup]="streamForm" (ngSubmit)="save(fileInput)">
 
     <!--    Nav Tab menu -------------------------------------------------------------------------------------------------->
     <nav>
-      <div class="nav nav-tabs mb-4" id="nav-tab" role="tablist">
+      <div class="nav nav-tabs editor-tabs mb-4" id="nav-tab" role="tablist">
         <button class="nav-link active"
                 id="nav-stream-tab"
                 data-bs-toggle="tab"
@@ -19,15 +19,6 @@
                 role="tab"
                 aria-controls="nav-stream"
                 aria-selected="true">Stream
-        </button>
-        <button class="nav-link"
-                id="nav-protocol-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#nav-protocol"
-                type="button"
-                role="tab"
-                aria-controls="nav-protocol"
-                aria-selected="false">Protocol
         </button>
         <button class="nav-link"
                 id="nav-guest-tab"
@@ -51,9 +42,10 @@
            aria-labelledby="nav-stream-tab"
            tabindex="0"
       >
-        <div class="row mb-3">
-          <label for="title" class="col-sm-3 col-form-label fw-bold">Title*</label>
-          <div class="col-sm-9">
+        <h3 class="editor-section-title">General</h3>
+        <div class="editor-row">
+          <label for="title" class="form-label">Title*</label>
+          <div class="editor-field">
             <input type="text" class="form-control" id="title" formControlName="title" name="title">
 
             @if (isFieldInvalid('title')) {
@@ -73,16 +65,16 @@
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label for="file" class="col-sm-3 col-form-label fw-bold">Thumbnail</label>
-          <div class="col-sm-9">
+        <div class="editor-row">
+          <label for="file" class="form-label">Thumbnail</label>
+          <div class="editor-field">
             <input class="form-control" type="file" id="file" #fileInput placeholder="Default Thumbnail">
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label for="description" class="col-sm-3 col-form-label fw-bold">Description</label>
-          <div class="col-sm-9">
+        <div class="editor-row">
+          <label for="description" class="form-label">Description</label>
+          <div class="editor-field">
             <textarea class="form-control" id="description" rows="3" formControlName="description"
                       name="description"></textarea>
 
@@ -97,9 +89,9 @@
           </div>
         </div>
 
-        <div class="row mb-3 pb-3">
-          <label for="support" class="col-sm-3 col-form-label fw-bold">Support</label>
-          <div class="col-sm-9">
+        <div class="editor-row">
+          <label for="support" class="form-label">Support</label>
+          <div class="editor-field">
             <textarea class="form-control" id="support" rows="2" formControlName="support" name="support"></textarea>
             @if (isFieldInvalid('support')) {
               <div class="invalid">
@@ -113,9 +105,10 @@
 
         <hr>
 
-        <div class="row mb-3 pb-3">
-          <label for="time" class="col-sm-3 col-form-label mt-sm-4 fw-bold">Time*</label>
-          <div class="col-sm-9">
+        <h3 class="editor-section-title">Schedule</h3>
+        <div class="editor-row">
+          <label for="time" class="form-label">Time*</label>
+          <div class="editor-field">
             <ngb-timepicker
               id="time"
               [(ngModel)]="time"
@@ -128,13 +121,13 @@
 
         <hr>
 
-        <div class="row mb-3  pb-3">
-          <label for="time" class="col-sm-3 col-form-label fw-bold">Day*</label>
-          <div class="col-sm-9">
-            <div class="input-group mt-2 p-q" id="date-picker-group">
+        <div class="editor-row">
+          <label for="date-picker" class="form-label">Day*</label>
+          <div class="editor-field">
+            <div class="input-group" id="date-picker-group">
               <input type="text" id="date-picker" class="form-control" aria-label="day"
                      aria-describedby="button-addon2" ngbDatepicker #d="ngbDatepicker" formControlName="day">
-              <button class="btn btn-sm btn-primary group-btn" type="button" (click)="d.toggle()">Select a Day</button>
+              <button class="btn btn-outline-primary group-btn" type="button" (click)="d.toggle()">Select a Day</button>
             </div>
 
             @if (isFieldInvalid('day')) {
@@ -153,10 +146,11 @@
 
         <hr>
 
-        <div class="row mb-3 ">
-          <label for="public" class="col-sm-3 col-form-label fw-bold">Is Public</label>
-          <div class="col-sm-9  pt-1">
-            <input class="form-check-input mt-2" type="checkbox" id="public" formControlName="isPublic">
+        <h3 class="editor-section-title">Visibility</h3>
+        <div class="editor-row">
+          <label for="public" class="form-label">Is Public</label>
+          <div class="editor-field">
+            <input class="form-check-input" type="checkbox" id="public" formControlName="isPublic">
           </div>
         </div>
       </div>
@@ -165,11 +159,12 @@
       <div
         class="tab-pane fade show"
         id="nav-protocol"
+        hidden
         role="tabpanel"
         aria-labelledby="nav-protocol-tab"
         tabindex="0"
       >
-        <div class="row mb-3 ">
+        <div class="editor-row">
 
           <div class="alert alert-primary" role="alert">
             At this time, our implementation supports only the WHIP protocol for streaming. Support for additional
@@ -181,16 +176,16 @@
           </div>
 
         </div>
-        <div class="row mb-3 ">
-          <label for="isShig" class="col-sm-3 col-form-label fw-bold">Stream with Shig</label>
-          <div class="col-sm-9  pt-1">
-            <input class="form-check-input mt-2" type="checkbox" id="isShig" formControlName="isShig">
+        <div class="editor-row">
+          <label for="isShig" class="form-label">Stream with Shig</label>
+          <div class="editor-field">
+            <input class="form-check-input" type="checkbox" id="isShig" formControlName="isShig">
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label for="url" class="col-sm-3 col-form-label fw-bold">Stream Url*</label>
-          <div class="col-sm-9">
+        <div class="editor-row">
+          <label for="url" class="form-label">Stream Url*</label>
+          <div class="editor-field">
             <input type="text" class="form-control" id="url" formControlName="url" name="url">
 
             @if (isFieldInvalid('url')) {
@@ -206,9 +201,9 @@
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label for="streamKey" class="col-sm-3 col-form-label fw-bold">Stream Key*</label>
-          <div class="col-sm-9">
+        <div class="editor-row">
+          <label for="streamKey" class="form-label">Stream Key*</label>
+          <div class="editor-field">
             <input type="text" class="form-control" id="streamKey" formControlName="streamKey" name="streamKey">
 
             @if (isFieldInvalid('streamKey')) {
@@ -227,9 +222,9 @@
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label for="protocol" class="col-sm-3 col-form-label fw-bold">Protocol*</label>
-          <div class="col-sm-9">
+        <div class="editor-row">
+          <label for="protocol" class="form-label">Protocol*</label>
+          <div class="editor-field">
 
             <div class="btn-group mt-2 mb-2" role="group" aria-label="Streaming Protocol">
               <input type="radio" class="btn-check" name="protocol" id="whip" formControlName="protocol" value="2"
@@ -248,9 +243,9 @@
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label for="latencyMode" class="col-sm-3 col-form-label fw-bold">Latency Mode*</label>
-          <div class="col-sm-9">
+        <div class="editor-row">
+          <label for="latencyMode" class="form-label">Latency Mode*</label>
+          <div class="editor-field">
 
             <div class="btn-group mt-2 mb-2" role="group" aria-label="Streaming Protocol">
               <input type="radio" class="btn-check" name="latencyMode" id="low" formControlName="latencyMode" value="1"
@@ -270,17 +265,17 @@
           </div>
         </div>
 
-        <div class="row mb-3 ">
-          <label for="permanentLive" class="col-sm-3 col-form-label fw-bold">Permanent Live</label>
-          <div class="col-sm-9  pt-1">
-            <input class="form-check-input mt-2" type="checkbox" id="permanentLive" formControlName="permanentLive">
+        <div class="editor-row">
+          <label for="permanentLive" class="form-label">Permanent Live</label>
+          <div class="editor-field">
+            <input class="form-check-input" type="checkbox" id="permanentLive" formControlName="permanentLive">
           </div>
         </div>
 
-        <div class="row mb-3 ">
-          <label for="saveReplay" class="col-sm-3 col-form-label fw-bold">Save for Replay</label>
-          <div class="col-sm-9  pt-1">
-            <input class="form-check-input mt-2" type="checkbox" id="saveReplay" formControlName="saveReplay">
+        <div class="editor-row">
+          <label for="saveReplay" class="form-label">Save for Replay</label>
+          <div class="editor-field">
+            <input class="form-check-input" type="checkbox" id="saveReplay" formControlName="saveReplay">
           </div>
         </div>
 
@@ -294,65 +289,8 @@
         aria-labelledby="nav-guest-tab"
         tabindex="0"
       >
-        <div class="row mb-3">
-
-          <div class="alert alert-primary" role="alert">
-            At this time, our implementation does not yet support inviting guests to a stream. This is a feature we're
-            actively working on, and we welcome feedback or contributions from the community.
-            <span class=""> You can follow the progress or contribute directly on: <a href="https://github.com/shigde"
-                                                                                      class="text-success"><i
-              class="bi bi-github"></i> Shig</a></span>
-          </div>
-
-          <label for="guest1" class="col-sm-3 col-form-label fw-bold">Guest 1</label>
-          <div class="col-sm-9">
-            <input type="text" class="form-control" id="guest1" formControlName="guest1" name="guest1">
-            @if (isFieldInvalid('guest1')) {
-              <div class="invalid">
-              </div>
-            }
-          </div>
-        </div>
-        <div class="row mb-3">
-          <label for="guest2" class="col-sm-3 col-form-label fw-bold">Guest 2</label>
-          <div class="col-sm-9">
-            <input type="text" class="form-control" id="guest3" formControlName="guest2" name="guest2">
-            @if (isFieldInvalid('guest2')) {
-              <div class="invalid">
-              </div>
-            }
-          </div>
-        </div>
-        <div class="row mb-3">
-          <label for="guest3" class="col-sm-3 col-form-label fw-bold">Guest 3</label>
-          <div class="col-sm-9">
-            <input type="text" class="form-control" id="guest3" formControlName="guest3" name="guest1">
-            @if (isFieldInvalid('guest3')) {
-              <div class="invalid">
-              </div>
-            }
-          </div>
-        </div>
-        <div class="row mb-3">
-          <label for="guest4" class="col-sm-3 col-form-label fw-bold">Guest 4</label>
-          <div class="col-sm-9">
-            <input type="text" class="form-control" id="guest4" formControlName="guest4" name="guest4">
-            @if (isFieldInvalid('guest4')) {
-              <div class="invalid">
-              </div>
-            }
-          </div>
-        </div>
-        <div class="row mb-3">
-          <label for="guest5" class="col-sm-3 col-form-label fw-bold">Guest 5</label>
-          <div class="col-sm-9">
-            <input type="text" class="form-control" id="gues5" formControlName="guest5" name="guest5">
-            @if (isFieldInvalid('guest5')) {
-              <div class="invalid">
-              </div>
-            }
-          </div>
-        </div>
+        <app-stream-friends [deferred]="true" [streamUuid]="isEdit ? streamUuid : undefined"
+                            [userUuid]="currentUser?.uuid" (guestsChange)="selectedGuestUuids = $event"></app-stream-friends>
       </div>
     </div>
     <!---    End Nav Tab content -------------------------------------------------------------------------------------->
@@ -360,11 +298,11 @@
     <hr>
 
     <!--    Button row ------------------------------------------------------------------------------------------------>
-    <div class="row mt-4">
-      <div class="col-sm-9 offset-sm-3">
-        <div class="form-button">
-          <button type="button" class="btn btn-secondary me-3" (click)="goToStream()">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save</button>
+    <div class="editor-actions">
+      <div class="editor-action-inner">
+        <div class="editor-buttons">
+          <button type="button" class="btn btn-outline-secondary" (click)="goToStream()">Cancel</button>
+          <button type="submit" class="btn btn-primary">{{ isEdit ? 'Save changes' : 'Create stream' }}</button>
         </div>
       </div>
     </div>

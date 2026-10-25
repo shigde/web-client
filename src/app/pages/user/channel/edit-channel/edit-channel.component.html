@@ -1,10 +1,11 @@
-<div class="container px-4 py-5">
-  <h2 class="pb-2 border-bottom">Edit Channel</h2>
-  <form class="py-5 needs-validation" [formGroup]="channelForm" (ngSubmit)="save(fileInput)">
+<div class="container editor-page">
+  <h2 class="editor-title">Edit Channel</h2>
+  <form class="editor-form bg-body border rounded-2 needs-validation" [formGroup]="channelForm" (ngSubmit)="save(fileInput)">
 
-    <div class="row mb-3">
-      <label for="display-name" class="col-sm-3 col-form-label fw-bold">Display name*</label>
-      <div class="col-sm-9">
+    <h3 class="editor-section-title">Channel profile</h3>
+        <div class="editor-row">
+      <label for="display-name" class="form-label">Display name*</label>
+      <div class="editor-field">
         <input type="text" class="form-control" id="display-name" formControlName="display_name" maxlength="100" aria-describedby="display-name-help">
         <small id="display-name-help" class="text-body-secondary">Choose a name for your channel. Other channels may use the same display name.</small>
         @if (channelForm.get('display_name')?.invalid && channelForm.get('display_name')?.touched) {
@@ -12,9 +13,9 @@
         }
       </div>
     </div>
-    <div class="row mb-3">
-      <label for="name" class="col-sm-3 col-form-label fw-bold">Channel identity</label>
-      <div class="col-sm-9">
+    <div class="editor-row">
+      <label for="name" class="form-label">Channel identity</label>
+      <div class="editor-field">
 
         <div class="input-group has-validation">
           <input type="text" class="form-control domain-name-input" id="name" formControlName="name" name="name">
@@ -43,9 +44,9 @@
 
     </div>
 
-    <div class="row mb-3">
-      <label for="description" class="col-sm-3 col-form-label fw-bold">Description</label>
-      <div class="col-sm-9">
+    <div class="editor-row">
+      <label for="description" class="form-label">Description</label>
+      <div class="editor-field">
         <textarea class="form-control" rows="3" id="description" formControlName="description"
                   name="description"></textarea>
 
@@ -61,9 +62,9 @@
       </div>
     </div>
 
-    <div class="row mb-3">
-      <label for="support" class="col-sm-3 col-form-label fw-bold">Support</label>
-      <div class="col-sm-9">
+    <div class="editor-row">
+      <label for="support" class="form-label">Support</label>
+      <div class="editor-field">
         <textarea class="form-control" rows="2" id="support" formControlName="support" name="support"></textarea>
 
         @if (support?.invalid && (support?.dirty || support?.touched)) {
@@ -78,28 +79,30 @@
       </div>
     </div>
 
-    <div class="row mb-3">
-      <label for="file" class="col-sm-3 col-form-label fw-bold">Banner</label>
-      <div class="col-sm-9">
+    <h3 class="editor-section-title">Appearance</h3>
+        <div class="editor-row">
+      <label for="file" class="form-label">Banner</label>
+      <div class="editor-field">
         <input class="form-control" type="file" id="file" #fileInput placeholder="Default Banner">
       </div>
     </div>
 
 
-    <div class="row mb-3">
-      <label for="file" class="col-sm-3 col-form-label fw-bold">Is Public</label>
-      <div class="col-sm-9 pt-1">
-          <input class="form-check-input mt-2" type="checkbox" formControlName="public" name="public" id="public">
+    <h3 class="editor-section-title">Visibility</h3>
+        <div class="editor-row">
+      <label for="public" class="form-label">Is Public</label>
+      <div class="editor-field">
+          <input class="form-check-input" type="checkbox" formControlName="public" name="public" id="public">
       </div>
     </div>
 
     <hr>
 
-    <div class="row mt-4">
-      <div class="col-sm-10 offset-sm-3">
-        <div class="form-button">
-          <button type="button" class="btn btn-secondary me-3" (click)="goToChannel()">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save</button>
+    <div class="editor-actions">
+      <div class="editor-action-inner">
+        <div class="editor-buttons">
+          <button type="button" class="btn btn-outline-secondary" (click)="goToChannel()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
         </div>
       </div>
     </div>
