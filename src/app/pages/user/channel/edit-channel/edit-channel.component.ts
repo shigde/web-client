@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectorRef, Component} from '@angular/core';
 import {Channel, ChannelService, createAppLogger} from '@shigde/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -21,6 +21,7 @@ export class EditChannelComponent {
   private readonly log = createAppLogger('EditChannelComponent');
 
   channelForm: FormGroup = new FormGroup({
+    display_name: new FormControl('', [Validators.required, Validators.maxLength(100), Validators.pattern(/\S/)]),
     name: new FormControl('', [Validators.minLength(4), Validators.required, Validators.maxLength(50)]),
     description: new FormControl('', [Validators.maxLength(250)]),
     support: new FormControl('', [Validators.maxLength(150)]),
@@ -41,6 +42,7 @@ export class EditChannelComponent {
     private readonly router: Router,
     private readonly alert: AlertService,
     activeRoute: ActivatedRoute,
+    private readonly cdr: ChangeDetectorRef,
   ) {
     this.channelUuid = activeRoute.snapshot.params['channelUuid'];
     this.channelService.fetch(this.channelUuid).pipe(
@@ -52,10 +54,12 @@ export class EditChannelComponent {
       let split = FederativeService.splitDomainNameToJson(this.channel.name);
       this.domain = split.domain;
       this.channelForm.get('name')?.setValue(split.name);
+      this.channelForm.get('display_name')?.setValue(this.channel.display_name || split.name);
       this.channelForm.get('description')?.setValue(this.channel.description);
       this.channelForm.get('support')?.setValue(this.channel.support);
       this.channelForm.get('public')?.setValue(this.channel.public);
       this.channelForm.get('name')?.disable();
+      this.cdr.markForCheck();
     });
   }
 
@@ -86,6 +90,7 @@ export class EditChannelComponent {
       const channel: Channel = {
         ...this.channel,
         name: channelName,
+        display_name: this.channelForm.get('display_name')?.value.trim(),
         description: this.channelForm.get('description')?.value,
         support: this.channelForm.get('support')?.value,
         public: this.channelForm.get('public')?.value,

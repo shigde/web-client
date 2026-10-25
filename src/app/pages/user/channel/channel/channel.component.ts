@@ -1,11 +1,13 @@
-import {ChangeDetectorRef, Component} from '@angular/core';
+import {ChangeDetectorRef, Component, DestroyRef} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Channel, ChannelService, StreamPreview, StreamService} from '@shigde/core';
+import {Channel, ChannelService, StreamPreview, StreamService, SessionService} from '@shigde/core';
 import {catchError, filter, Observable, of, take, tap} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AlertKind} from '../../../../entities/alert';
 import {AlertService} from '../../../../providers/alert.service';
-import {NgOptimizedImage} from '@angular/common';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
+import {DatePipe, NgOptimizedImage} from '@angular/common';
 import {FederativeService} from '../../../../providers/federative.service';
 import {StreamPreviewCardComponent} from '../../../../component/stream-preview-card/stream-preview-card.component';
 
@@ -18,7 +20,7 @@ export interface CompChannel extends Channel {
 @Component({
   selector: 'app-channel',
   imports: [
-    NgOptimizedImage,
+    NgOptimizedImage, DatePipe, NgbNavModule,
     StreamPreviewCardComponent
   ],
   templateUrl: './channel.component.html',
@@ -30,6 +32,8 @@ export class ChannelComponent {
   public streams: StreamPreview[] = [];
   public channel!: CompChannel;
   public banner = '';
+  isOwner = false;
+  activeTab = 'streams';
 
   private readonly channelUuid: string;
 
@@ -39,8 +43,15 @@ export class ChannelComponent {
     private readonly streamService: StreamService,
     private readonly alert: AlertService,
     activeRoute: ActivatedRoute,
-    private readonly cdr: ChangeDetectorRef) {
+    private readonly cdr: ChangeDetectorRef,
+    session: SessionService,
+    destroyRef: DestroyRef) {
     this.channelUuid = activeRoute.snapshot.params['channelUuid'];
+    session.getUser().pipe(takeUntilDestroyed(destroyRef)).subscribe(user => {
+      this.isOwner = !!user && user.channel_uuid === this.channelUuid;
+      if (!this.isOwner) this.activeTab = 'streams';
+      this.cdr.markForCheck();
+    });
 
     this.channelService.fetch(this.channelUuid).pipe(
       take(1),
@@ -51,7 +62,7 @@ export class ChannelComponent {
           ? 'assets/images/default-banner-2.jpg'
           : `${window.location.origin}/static/${res.data.banner_name}`;
         this.banner = banner;
-        return {...res.data, domain, title: name, banner};
+        return {...res.data, domain, title: res.data.display_name || name, banner};
       }),
       catchError(_ => this.handleError<null>('Could not load channel!', null)),
       filter(c => c !== null),
@@ -59,6 +70,11 @@ export class ChannelComponent {
     ).subscribe();
 
     this.getStreams().subscribe();
+  }
+
+  openLobby(stream: StreamPreview): void {
+    if (!this.isOwner) return;
+    this.router.navigate(['/channel', this.channelUuid, 'stream', stream.uuid, 'lobby']);
   }
 
   editChannel() {

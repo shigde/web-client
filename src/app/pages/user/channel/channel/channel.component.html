@@ -8,15 +8,16 @@
       </div>
       <div class="channel-intro">
         <div class="channel-heading">
-          <span class="channel-eyebrow text-body-secondary">Channel</span>
-          <h1>{{ channel.title }}</h1>
-          @if (channel.domain) {
-            <span class="channel-domain text-body-secondary">{{ channel.domain }}</span>
-          }
+          <div class="channel-name-line">
+            <h1>{{ channel.title }}</h1>
+            <small class="channel-domain"><span>{{ channel.name.startsWith('@') ? channel.name : '@' + channel.name }}</span></small>
+          </div>
         </div>
+        @if (isOwner) {
         <button type="button" class="btn btn-outline-secondary channel-edit" (click)="editChannel()">
           <i class="bi bi-pencil" aria-hidden="true"></i><span>Edit channel</span>
         </button>
+        }
         @if (channel.description) {
           <p class="channel-description text-body-secondary">{{ channel.description }}</p>
         }
@@ -27,6 +28,10 @@
     </header>
   }
 
+  <ul ngbNav #channelNav="ngbNav" [(activeId)]="activeTab" class="channel-tabs" aria-label="Channel sections">
+    <li [ngbNavItem]="'streams'">
+      <button ngbNavLink><i class="bi bi-collection-play" aria-hidden="true"></i>Streams</button>
+      <ng-template ngbNavContent>
   <section class="channel-streams" aria-labelledby="channel-streams-title">
     <div class="channel-section-heading">
       <div class="d-flex align-items-center gap-2">
@@ -49,4 +54,40 @@
       </div>
     }
   </section>
+      </ng-template>
+    </li>
+    @if (isOwner) {
+      <li [ngbNavItem]="'dashboard'">
+        <button ngbNavLink><i class="bi bi-speedometer2" aria-hidden="true"></i>Dashboard</button>
+        <ng-template ngbNavContent>
+          <section class="channel-owner-panel" aria-label="Stream dashboard">
+            <h2>Stream overview</h2>
+            <p class="text-body-secondary">{{ streams.length }} streams in your channel</p>
+            @for (stream of streams; track stream.uuid) {
+              <div class="channel-owner-row border-bottom">
+                <div><strong>{{ stream.title }}</strong><div class="text-body-secondary">Scheduled: {{ stream.date | date:'dd.MM.yyyy · HH:mm' }}</div></div>
+                <button type="button" class="btn btn-outline-primary" (click)="openLobby(stream)">Open lobby</button>
+              </div>
+            } @empty { <p class="text-body-secondary">No streams yet.</p> }
+          </section>
+        </ng-template>
+      </li>
+      <li [ngbNavItem]="'lobby'">
+        <button ngbNavLink><i class="bi bi-people" aria-hidden="true"></i>Lobby</button>
+        <ng-template ngbNavContent>
+          <section class="channel-owner-panel" aria-label="Stream lobbies">
+            <h2>Lobby</h2>
+            <p class="text-body-secondary">Choose a stream to open its lobby.</p>
+            @for (stream of streams; track stream.uuid) {
+              <div class="channel-owner-row border-bottom">
+                <strong>{{ stream.title }}</strong>
+                <button type="button" class="btn btn-primary" (click)="openLobby(stream)">Enter lobby</button>
+              </div>
+            } @empty { <p class="text-body-secondary">No streams yet.</p> }
+          </section>
+        </ng-template>
+      </li>
+    }
+  </ul>
+  <div [ngbNavOutlet]="channelNav"></div>
 </div>

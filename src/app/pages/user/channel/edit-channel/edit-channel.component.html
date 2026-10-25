@@ -3,7 +3,17 @@
   <form class="py-5 needs-validation" [formGroup]="channelForm" (ngSubmit)="save(fileInput)">
 
     <div class="row mb-3">
-      <label for="name" class="col-sm-3 col-form-label fw-bold">Name*</label>
+      <label for="display-name" class="col-sm-3 col-form-label fw-bold">Display name*</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" id="display-name" formControlName="display_name" maxlength="100" aria-describedby="display-name-help">
+        <small id="display-name-help" class="text-body-secondary">Choose a name for your channel. Other channels may use the same display name.</small>
+        @if (channelForm.get('display_name')?.invalid && channelForm.get('display_name')?.touched) {
+          <div class="text-danger">Enter a display name of 1–100 characters.</div>
+        }
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label for="name" class="col-sm-3 col-form-label fw-bold">Channel identity</label>
       <div class="col-sm-9">
 
         <div class="input-group has-validation">
