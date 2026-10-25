@@ -80,17 +80,30 @@
               }
             </div>
           </div>
+          @if (stream.description || stream.support) {
+            <div class="stream-description border-top p-3">
+              @if (stream.description) { <p class="mb-2">{{ stream.description }}</p> }
+              @if (stream.support) { <p class="text-body-secondary mb-0">{{ stream.support }}</p> }
+            </div>
+          }
         </div>
       </div>
-      <div class="col-lg-3 mb-4">
-        <div class="card w-100 h-100">
-          <div class="card-body">
-            <p class="card-text">{{ stream.description }}.</p>
-            <p class="card-text"><small>{{ stream.support }}</small></p>
+      <div class="col-lg-3 mb-4 d-flex">
+        <aside class="card stream-chat w-100" aria-label="Chat">
+          <div class="stream-chat-placeholder text-body-secondary">
+            <img class="stream-chat-logo" src="assets/icons/logo.png" width="52" height="52" alt="">
+            <h2>Chat</h2>
+            <p>{{ isLive ? 'Chat is not available yet.' : 'Chat opens when the stream starts.' }}</p>
           </div>
-
-
-        </div>
+          <div class="stream-chat-composer border-top">
+            <i class="bi bi-chat-left-text text-body-secondary" aria-hidden="true"></i>
+            <input type="text" class="form-control" placeholder="Type a message…" aria-label="Chat message" aria-describedby="chat-unavailable" disabled>
+            <button type="button" class="btn btn-outline-secondary" aria-label="Send message" disabled>
+              <i class="bi bi-send" aria-hidden="true"></i>
+            </button>
+            <span id="chat-unavailable" class="visually-hidden">Chat is not available yet. Messages cannot be sent.</span>
+          </div>
+        </aside>
       </div>
 
     </div>

@@ -37,6 +37,9 @@ describe('Stream action bar', () => {
     expect(root.querySelector('app-stream-countdown time')).not.toBeNull();
     expect(root.querySelector('.stream-media-meta')).toBeNull();
     expect(bar.querySelectorAll('.stream-reactions .stream-stat').length).toBe(2);
+    expect(root.querySelector('.stream-chat')?.textContent).toContain('Chat opens when the stream starts.');
+    expect(root.querySelector<HTMLInputElement>('.stream-chat input')?.disabled).toBeTrue();
+    expect(root.querySelector<HTMLButtonElement>('.stream-chat button')?.disabled).toBeTrue();
     expect(root.querySelector('.stream-enter')).toBeNull();
     expect(root.querySelector('.stream-management')).toBeNull();
     expect(root.querySelector('.card-footer .bi-eye-fill')).toBeNull();

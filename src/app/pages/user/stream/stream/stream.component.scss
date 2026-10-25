@@ -80,3 +80,14 @@
 
 .stream-media-frame { position: relative; }
 .stream-start-overlay { position: absolute; bottom: 12px; right: 12px; left: auto; max-width: calc(100% - 24px); }
+
+.stream-chat { min-height: 300px; display: flex; flex-direction: column; }
+.stream-chat-placeholder { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 20px; text-align: center; }
+.stream-chat-logo { opacity: .35; filter: grayscale(1); margin-bottom: 12px; }
+.stream-chat-placeholder h2 { font-size: 1.25rem; font-weight: 600; opacity: .65; margin: 0 0 8px; }
+.stream-chat-placeholder p { font-size: .85rem; max-width: 220px; margin: 0; }
+.stream-chat-composer { display: flex; align-items: center; gap: 8px; padding: 12px; }
+.stream-chat-composer .form-control { min-width: 0; font-size: .8rem; }
+.stream-chat-composer .btn { flex-shrink: 0; padding-inline: 8px; }
+.stream-description { white-space: pre-line; overflow-wrap: anywhere; }
+@media (min-width: 992px) { .stream-chat { min-height: 100%; } }
