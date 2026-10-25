@@ -12,9 +12,10 @@
   column-gap: 24px;
   padding: 24px 28px;
 }
-.channel-eyebrow { display: block; font-size: .75rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
-.channel-heading h1 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 600; margin: 0; overflow-wrap: anywhere; }
-.channel-domain { display: block; margin-top: 4px; font-size: .875rem; overflow-wrap: anywhere; }
+.channel-name-line { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+.channel-heading h1 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; letter-spacing: -.02em; line-height: 1.15; margin: 0; overflow-wrap: anywhere; min-width: 0; }
+.channel-domain { display: block; font-size: .75rem; font-weight: 100; line-height: 1.4; color: light-dark(#8b949e, #7f8995); min-width: 0; max-width: 100%; }
+.channel-domain span { overflow-wrap: anywhere; min-width: 0; }
 .channel-edit { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
 .channel-description, .channel-support { grid-column: 1 / -1; white-space: pre-line; overflow-wrap: anywhere; line-height: 1.6; margin: 16px 0 0; }
 .channel-support { padding-top: 16px; font-size: .875rem; }
@@ -33,3 +34,12 @@
   .channel-description, .channel-support { margin-top: 0; }
   .channel-streams { margin-top: 24px; }
 }
+
+.channel-tabs { display: flex; gap: 8px; padding: 0; margin: 24px 0 0; list-style: none; border-bottom: 1px solid var(--bs-border-color); }
+.channel-tabs .nav-link { display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 8px 12px; border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: transparent; color: var(--bs-secondary-color); font: inherit; }
+.channel-tabs .nav-link.active { color: var(--bs-body-color); border-bottom-color: var(--bs-primary); font-weight: 600; }
+.channel-tabs .nav-link:hover { color: var(--bs-body-color); }
+.channel-tabs .nav-link:focus-visible { outline: 2px solid var(--bs-primary); outline-offset: -2px; }
+.channel-owner-panel { padding-top: 24px; }
+.channel-owner-panel h2 { font-size: 1.25rem; }
+.channel-owner-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 16px 0; overflow-wrap: anywhere; }
