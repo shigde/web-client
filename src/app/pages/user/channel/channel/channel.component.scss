@@ -1,26 +1,35 @@
-#banner-container {
+.channel-header { overflow: hidden; }
+.channel-banner {
   position: relative;
+  height: clamp(140px, 22vw, 260px);
+  overflow: hidden;
+  img { object-fit: cover; }
 }
-
-#banner {
-  padding-right: 0 !important;
-  padding-left: 0 !important;
-
+.channel-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 24px;
+  padding: 24px 28px;
 }
-
-#banner-header {
-
+.channel-eyebrow { display: block; font-size: .75rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
+.channel-heading h1 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 600; margin: 0; overflow-wrap: anywhere; }
+.channel-domain { display: block; margin-top: 4px; font-size: .875rem; overflow-wrap: anywhere; }
+.channel-edit { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.channel-description, .channel-support { grid-column: 1 / -1; white-space: pre-line; overflow-wrap: anywhere; line-height: 1.6; margin: 16px 0 0; }
+.channel-support { padding-top: 16px; font-size: .875rem; }
+.channel-streams { margin-top: 32px; }
+.channel-section-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+.channel-section-heading h2 { font-size: 1.25rem; font-weight: 600; margin: 0; }
+.channel-count { border-radius: var(--bs-border-radius); padding: 2px 8px; font-size: .8rem; font-variant-numeric: tabular-nums; }
+.channel-section-caption { font-size: .875rem; }
+.channel-empty { text-align: center; padding: 48px 24px; }
+.channel-empty > i { display: block; font-size: 2rem; margin-bottom: 12px; }
+.channel-empty h3 { font-size: 1.1rem; margin-bottom: 8px; }
+@media (max-width: 575.98px) {
+  .channel-intro { padding: 20px 16px; column-gap: 12px; row-gap: 16px; }
+  .channel-heading { grid-column: 1 / -1; }
+  .channel-edit { justify-self: start; }
+  .channel-description, .channel-support { margin-top: 0; }
+  .channel-streams { margin-top: 24px; }
 }
-
-#banner-img {
-  margin: 0 !important;
-  padding: 0 !important;
-  object-fit: cover;
-  z-index: -1;
-}
-
-//#banner {
-//  background-image: url("src/assets/images/default-banner-2.jpg");
-//  background-size: cover;
-//  background-repeat: no-repeat;
-//}

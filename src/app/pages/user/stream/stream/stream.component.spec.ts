@@ -1,23 +1,59 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ActivatedRoute, Router} from '@angular/router';
+import {RelayService, SessionService, StreamFriendService, StreamService, UserService} from '@shigde/core';
+import {AlertService} from '../../../../providers/alert.service';
+import {RuntimeConfigService} from '../../../../providers/runtime-config.service';
+import {StreamComponent} from './stream.component';
 
-import { StreamComponent } from './stream.component';
-
-describe('StreamComponent', () => {
-  let component: StreamComponent;
+describe('Stream action bar', () => {
   let fixture: ComponentFixture<StreamComponent>;
+  let component: StreamComponent;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [StreamComponent]
-    })
-    .compileComponents();
-
+      imports: [StreamComponent],
+      providers: [
+        {provide: ActivatedRoute, useValue: {snapshot: {params: {}}}},
+        {provide: Router, useValue: {navigate: jasmine.createSpy('navigate')}},
+        {provide: RuntimeConfigService, useValue: {relayService: 'https://example.test'}},
+        ...[StreamService, RelayService, SessionService, StreamFriendService, UserService, AlertService]
+          .map(provide => ({provide, useValue: {}}))
+      ]
+    }).compileComponents();
     fixture = TestBed.createComponent(StreamComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    component.hasStream = true;
+    component.thumbnail = 'assets/images/default-banner-2.jpg';
+    component.userName = 'Host';
+    component.stream = {title: 'Test Stream', channelUuid: 'channel', likes: 24, dislikes: 2, viewer: 128} as any;
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('shows metadata and statistics below the player for viewers without management controls', () => {
+    fixture.detectChanges();
+    const root: HTMLElement = fixture.nativeElement;
+    const bar = root.querySelector('.stream-info-bar')!;
+    expect(bar.textContent).toContain('Test Stream');
+    expect(bar.textContent).toContain('128');
+    expect(bar.querySelectorAll('.stream-reactions .stream-stat').length).toBe(2);
+    expect(root.querySelector('.stream-enter')).toBeNull();
+    expect(root.querySelector('.stream-management')).toBeNull();
+    expect(root.querySelector('.card-footer .bi-eye-fill')).toBeNull();
+  });
+
+  it('lets guests enter without offering owner actions', () => {
+    component.isGuest = true;
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.stream-enter')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.stream-management')).toBeNull();
+  });
+
+  it('groups edit and delete in the owner menu and retains delete confirmation', () => {
+    component.isOwner = true;
+    fixture.detectChanges();
+    const root: HTMLElement = fixture.nativeElement;
+    expect(root.querySelector('.stream-enter')).not.toBeNull();
+    expect(root.querySelector('.stream-management .dropdown-menu')?.textContent).toContain('Edit');
+    expect(root.querySelector('.stream-management [data-bs-target="#deleteStreamModal"]')).not.toBeNull();
+    expect(root.querySelector('#deleteStreamModal')).not.toBeNull();
   });
 });

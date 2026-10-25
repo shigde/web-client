@@ -1,46 +1,52 @@
-<div id="banner-container" class="container my-2 my-lg-4 position-relative">
-  <div id="banner" class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg">
-    @if (banner !== '') {
-      <img id="banner-img" class="rounded-3" ngSrc="{{banner}}" fill priority alt="banner">
-    }
-
-    <div id="banner-header"
-         class="col-lg-7 p-3 p-lg-5 pt-lg-3 bg-white bg-opacity-75 rounded-top-3 rounded-bottom-start-3 border border-bottom-0 shadow-lg ">
-      <h3 class="display-6 fw-bold lh-1 text-dark text-truncate">{{ channel.title }}</h3>
-      <p class="lead text-dark text-truncate">{{ channel.description }}</p>
-      <small class="text-dark text-truncate">{{ channel.support }}</small>
-    </div>
-  </div>
-  <div class="col m-auto position-absolute top-0 end-0 p-2">
-    <button type="button" class="btn btn-primary btn  me-md-2 border fw-bold" (click)="editChannel()">
-      <i class="bi bi-pen-fill bi-border me-0 me-sm-2"></i>
-      <span class="d-none d-sm-inline-block">Edit</span>
-    </button>
-  </div>
-</div>
-
-<section class="py-5 text-center container">
-
-
-  <div class="album py-5">
-    <div class="container">
-      @if (!hasStreams) {
-        <div class="p-5 text-center bg-body-tertiary rounded-3 border border-dashed">
-          <h4 class="text-body-emphasis">No Streams</h4>
-        </div>
-      } @else {
-
-        <div class="row row-cols-1 row-cols-sm-2 g-3 row-cols-md-3">
-
-          @for (stream of streams; track stream.uuid) {
-
-            <app-stream-preview-card [stream]="stream"></app-stream-preview-card>
-
+<div class="container channel-page my-3 my-lg-4">
+  @if (channel) {
+    <header class="channel-header bg-body border rounded-2">
+      <div class="channel-banner bg-body-tertiary">
+        @if (banner !== '') {
+          <img [ngSrc]="banner" fill priority alt="" sizes="100vw">
+        }
+      </div>
+      <div class="channel-intro">
+        <div class="channel-heading">
+          <span class="channel-eyebrow text-body-secondary">Channel</span>
+          <h1>{{ channel.title }}</h1>
+          @if (channel.domain) {
+            <span class="channel-domain text-body-secondary">{{ channel.domain }}</span>
           }
-
         </div>
-      }
-    </div>
-  </div>
+        <button type="button" class="btn btn-outline-secondary channel-edit" (click)="editChannel()">
+          <i class="bi bi-pencil" aria-hidden="true"></i><span>Edit channel</span>
+        </button>
+        @if (channel.description) {
+          <p class="channel-description text-body-secondary">{{ channel.description }}</p>
+        }
+        @if (channel.support) {
+          <p class="channel-support border-top text-body-secondary">{{ channel.support }}</p>
+        }
+      </div>
+    </header>
+  }
 
-</section>
+  <section class="channel-streams" aria-labelledby="channel-streams-title">
+    <div class="channel-section-heading">
+      <div class="d-flex align-items-center gap-2">
+        <h2 id="channel-streams-title">Streams</h2>
+        <span class="channel-count bg-body-tertiary border text-body-secondary">{{ streams.length }}</span>
+      </div>
+      <span class="text-body-secondary channel-section-caption">All streams from this channel</span>
+    </div>
+    @if (!hasStreams) {
+      <div class="channel-empty bg-body border rounded-2">
+        <i class="bi bi-camera-video text-body-secondary" aria-hidden="true"></i>
+        <h3>No streams yet</h3>
+        <p class="text-body-secondary mb-0">Streams will appear here when they are added to this channel.</p>
+      </div>
+    } @else {
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-3 g-lg-4">
+        @for (stream of streams; track stream.uuid) {
+          <div class="col"><app-stream-preview-card [stream]="stream"></app-stream-preview-card></div>
+        }
+      </div>
+    }
+  </section>
+</div>

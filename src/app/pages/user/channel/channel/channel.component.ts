@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {ChangeDetectorRef, Component} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Channel, ChannelService, StreamPreview, StreamService} from '@shigde/core';
 import {catchError, filter, Observable, of, take, tap} from 'rxjs';
@@ -38,7 +38,8 @@ export class ChannelComponent {
     private readonly channelService: ChannelService,
     private readonly streamService: StreamService,
     private readonly alert: AlertService,
-    activeRoute: ActivatedRoute) {
+    activeRoute: ActivatedRoute,
+    private readonly cdr: ChangeDetectorRef) {
     this.channelUuid = activeRoute.snapshot.params['channelUuid'];
 
     this.channelService.fetch(this.channelUuid).pipe(
@@ -54,7 +55,7 @@ export class ChannelComponent {
       }),
       catchError(_ => this.handleError<null>('Could not load channel!', null)),
       filter(c => c !== null),
-      tap((c) => this.channel = c),
+      tap((c) => { this.channel = c; this.cdr.markForCheck(); }),
     ).subscribe();
 
     this.getStreams().subscribe();
@@ -70,7 +71,7 @@ export class ChannelComponent {
         take(1),
         map((resp) => resp.data),
         tap((streams) => this.hasStreams = streams.length > 0),
-        tap((streams) => this.streams = streams),
+        tap((streams) => { this.streams = streams; this.cdr.markForCheck(); }),
         catchError(_ => this.handleError<StreamPreview[]>('Could not load channel streams!', [])),
       );
   }

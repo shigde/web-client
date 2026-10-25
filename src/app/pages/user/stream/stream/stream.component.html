@@ -29,29 +29,43 @@
             <img class="card-img thumbnail" ngSrc="{{thumbnail}}" fill priority style="position: relative" alt="thumbnail">
           }
 
-          <div class="thumbnail-toolbar position-absolute top-0 start-0 w-100 px-3 py-2">
-            <div class="d-flex justify-content-end gap-2">
-
+          <div class="stream-info-bar border-top">
+            <div class="stream-identity">
+              <h1 class="stream-title">{{ stream.title }}</h1>
+              <a class="stream-channel text-body-secondary" href="channel/{{ stream.channelUuid }}">
+                <app-avatar [name]="userName" [size]="'28'"></app-avatar>
+                <span>{{ userName }}</span>
+              </a>
+            </div>
+            <div class="stream-actions" role="group" aria-label="Stream actions and statistics">
+              <div class="stream-reactions bg-body-tertiary border" role="group" aria-label="Reactions">
+                <span class="stream-stat" title="Likes" aria-label="Likes">
+                  <i class="bi bi-hand-thumbs-up" aria-hidden="true"></i><span>{{ stream.likes }}</span>
+                </span>
+                <span class="stream-stat border-start" title="Dislikes" aria-label="Dislikes">
+                  <i class="bi bi-hand-thumbs-down" aria-hidden="true"></i><span>{{ stream.dislikes }}</span>
+                </span>
+              </div>
+              <span class="stream-stat stream-viewers text-body-secondary" title="Viewers" aria-label="Viewers">
+                <i class="bi bi-eye" aria-hidden="true"></i><span>{{ stream.viewer }}</span>
+              </span>
               @if (isOwner || isGuest) {
-                <button type="button" class="btn btn-primary nav-icon-button icon" (click)="openStream()">
-                  <i class="bi bi-person-video3 me-1"></i>
-                  <span>Enter Stream</span>
+                <button type="button" class="btn btn-primary stream-enter" (click)="openStream()">
+                  <i class="bi bi-person-video3" aria-hidden="true"></i><span>Enter Stream</span>
                 </button>
               }
-
               @if (isOwner) {
-                <button type="button" class="btn btn-secondary nav-icon-button icon" (click)="editStream()">
-                  <i class="bi bi-pen-fill me-1"></i>
-                  <span class="d-none d-sm-inline">Edit</span>
-                </button>
-
-                <button type="button"
-                        class="btn btn-secondary nav-icon-button icon text-danger"
-                        data-bs-toggle="modal"
-                        data-bs-target="#deleteStreamModal">
-                  <i class="bi bi-trash me-1"></i>
-                  <span class="d-none d-sm-inline">Delete</span>
-                </button>
+                <div class="dropdown stream-management">
+                  <button type="button" class="btn btn-outline-secondary stream-more" data-bs-toggle="dropdown"
+                          aria-expanded="false" aria-label="Manage stream" title="Manage stream">
+                    <i class="bi bi-three-dots" aria-hidden="true"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li><button type="button" class="dropdown-item" (click)="editStream()"><i class="bi bi-pen me-2" aria-hidden="true"></i>Edit</button></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><button type="button" class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#deleteStreamModal"><i class="bi bi-trash me-2" aria-hidden="true"></i>Delete</button></li>
+                  </ul>
+                </div>
               }
             </div>
           </div>
@@ -60,21 +74,11 @@
       <div class="col-lg-3 mb-4">
         <div class="card w-100 h-100">
           <div class="card-body">
-            <div class="d-flex gap-3 w-100 mb-3 pb-3 border-bottom align-items-center">
-              <a href="channel/{{ stream.channelUuid }}">
-                <app-avatar [name]="userName" [size]="'40'"></app-avatar>
-              </a>
-              <h5 class="card-title">{{ stream.title }}</h5>
-            </div>
-
             <p class="card-text">{{ stream.description }}.</p>
             <p class="card-text"><small>{{ stream.support }}</small></p>
           </div>
           <div class="card-footer d-flex gap-3 w-100">
             <small class="flex-grow-1">{{ stream.date | date:'HH:mm (dd.MM.yyyy)' }}</small>
-            <small><i class="bi bi-eye-fill"></i> {{ stream.viewer }}</small>
-            <small><i class="bi bi-hand-thumbs-up-fill"></i> {{ stream.likes }}</small>
-            <small><i class="bi bi-hand-thumbs-down-fill"></i> {{ stream.dislikes }}</small>
           </div>
 
         </div>
