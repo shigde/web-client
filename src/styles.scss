@@ -58,3 +58,31 @@ svg#clouds {
 @import 'scss/buttons';
 
 @import 'scss/forms';
+
+// Secondary immutable channel identity below the editable display name.
+.channel-identity-caption {
+  display: block;
+  font-size: .75rem;
+  font-weight: 100;
+  line-height: 1.4;
+  color: light-dark(#8b949e, #7f8995);
+  overflow-wrap: anywhere;
+}
+
+.stream-media-meta {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: var(--bs-border-radius);
+  background: rgba(0, 0, 0, .72);
+  color: #fff;
+  font-size: .75rem;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}

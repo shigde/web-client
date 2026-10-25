@@ -41,7 +41,7 @@ describe('Channel asynchronous loading', () => {
     const fixture = TestBed.createComponent(ChannelComponent);
     fixture.autoDetectChanges();
     await fixture.whenStable();
-    channelResponse.next({data: {name: 'original@example.test', display_name: 'My channel', uuid: 'stable-channel-id', banner_name: 'banner.png', description: 'Description'}});
+    channelResponse.next({data: {user: 'owner@example.test', name: 'original@example.test', display_name: 'My channel', uuid: 'stable-channel-id', banner_name: 'banner.png', description: 'Description'}});
     loading.loadingOff();
     streamsResponse.next({data: [{uuid: 'stream', title: 'Loaded stream'}]});
     loading.loadingOff();
@@ -52,6 +52,7 @@ describe('Channel asynchronous loading', () => {
     expect(fixture.nativeElement.querySelector('.channel-banner img')?.getAttribute('src')).toContain('/static/banner.png');
     expect(fixture.nativeElement.textContent).toContain('Loaded stream');
     expect(fixture.nativeElement.textContent).toContain('original@example.test');
+    expect(fixture.nativeElement.querySelector('.channel-owner')?.textContent).toContain('User: owner@example.test');
     expect(fixture.nativeElement.textContent).not.toContain('stable-channel-id');
     fixture.destroy();
     loader.destroy();

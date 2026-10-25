@@ -14,6 +14,7 @@
       <div class="col-lg-9 mb-4 position-relative">
         <div class="card">
 
+          <div class="stream-media-frame" [class.is-live]="isLive">
           @if (isLive) {
             <div class="moq-player-wrapper">
               <moq-watch-ui>
@@ -29,15 +30,27 @@
             <img class="card-img thumbnail" ngSrc="{{thumbnail}}" fill priority style="position: relative" alt="thumbnail">
           }
 
+            @if (!isLive) {
+              <app-stream-countdown class="stream-start-overlay" [date]="stream.date"></app-stream-countdown>
+            }
+          </div>
+
           <div class="stream-info-bar border-top">
             <div class="stream-identity">
               <h1 class="stream-title">{{ stream.title }}</h1>
               <a class="stream-channel text-body-secondary" href="channel/{{ stream.channelUuid }}">
                 <app-avatar [name]="userName" [size]="'28'"></app-avatar>
-                <span>{{ userName }}</span>
+                <span class="stream-channel-label"><span>{{ stream.channelDisplayName || stream.channelName }}</span>
+                  <small class="channel-identity-caption">Channel: {{ stream.channelName?.startsWith('@') ? stream.channelName.slice(1) : stream.channelName }}</small>
+                </span>
               </a>
             </div>
             <div class="stream-actions" role="group" aria-label="Stream actions and statistics">
+              @if (isLive) {
+                <span class="stream-stat stream-viewers text-body-secondary" title="Viewers" aria-label="Viewers">
+                  <i class="bi bi-eye" aria-hidden="true"></i><span>{{ stream.viewer }}</span>
+                </span>
+              }
               <div class="stream-reactions bg-body-tertiary border" role="group" aria-label="Reactions">
                 <span class="stream-stat" title="Likes" aria-label="Likes">
                   <i class="bi bi-hand-thumbs-up" aria-hidden="true"></i><span>{{ stream.likes }}</span>
@@ -46,9 +59,7 @@
                   <i class="bi bi-hand-thumbs-down" aria-hidden="true"></i><span>{{ stream.dislikes }}</span>
                 </span>
               </div>
-              <span class="stream-stat stream-viewers text-body-secondary" title="Viewers" aria-label="Viewers">
-                <i class="bi bi-eye" aria-hidden="true"></i><span>{{ stream.viewer }}</span>
-              </span>
+
               @if (isOwner || isGuest) {
                 <button type="button" class="btn btn-primary stream-enter" (click)="openStream()">
                   <i class="bi bi-person-video3" aria-hidden="true"></i><span>Enter Stream</span>
@@ -77,9 +88,7 @@
             <p class="card-text">{{ stream.description }}.</p>
             <p class="card-text"><small>{{ stream.support }}</small></p>
           </div>
-          <div class="card-footer d-flex gap-3 w-100">
-            <small class="flex-grow-1">{{ stream.date | date:'HH:mm (dd.MM.yyyy)' }}</small>
-          </div>
+
 
         </div>
       </div>

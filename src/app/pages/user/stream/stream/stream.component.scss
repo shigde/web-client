@@ -75,3 +75,8 @@
 .moq-player-wrapper input[type="range"] {
   max-width: 260px;
 }
+
+.stream-channel-label { display: flex; flex-direction: column; gap: 2px; }
+
+.stream-media-frame { position: relative; }
+.stream-start-overlay { position: absolute; bottom: 12px; right: 12px; left: auto; max-width: calc(100% - 24px); }

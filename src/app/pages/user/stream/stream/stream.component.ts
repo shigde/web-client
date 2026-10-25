@@ -16,13 +16,14 @@ import {AlertService} from '../../../../providers/alert.service';
 import {map} from 'rxjs/operators';
 import {AlertKind} from '../../../../entities/alert';
 import {DatePipe, NgOptimizedImage} from '@angular/common';
+import {StreamCountdownComponent} from '../../../../component/stream-countdown/stream-countdown.component';
 import {AvatarComponent} from '../../../../component/avatar/avatar.component';
 import {RuntimeConfigService} from "../../../../providers/runtime-config.service";
 
 @Component({
   selector: 'app-stream',
   imports: [
-    NgOptimizedImage,
+    NgOptimizedImage, StreamCountdownComponent,
     AvatarComponent,
     DatePipe
   ],

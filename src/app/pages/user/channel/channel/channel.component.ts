@@ -9,6 +9,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
 import {DatePipe, NgOptimizedImage} from '@angular/common';
 import {FederativeService} from '../../../../providers/federative.service';
+import {AvatarComponent} from '../../../../component/avatar/avatar.component';
 import {StreamPreviewCardComponent} from '../../../../component/stream-preview-card/stream-preview-card.component';
 
 export interface CompChannel extends Channel {
@@ -20,7 +21,7 @@ export interface CompChannel extends Channel {
 @Component({
   selector: 'app-channel',
   imports: [
-    NgOptimizedImage, DatePipe, NgbNavModule,
+    NgOptimizedImage, DatePipe, NgbNavModule, AvatarComponent,
     StreamPreviewCardComponent
   ],
   templateUrl: './channel.component.html',

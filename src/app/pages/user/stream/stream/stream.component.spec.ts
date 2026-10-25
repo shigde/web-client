@@ -25,7 +25,7 @@ describe('Stream action bar', () => {
     component.hasStream = true;
     component.thumbnail = 'assets/images/default-banner-2.jpg';
     component.userName = 'Host';
-    component.stream = {title: 'Test Stream', channelUuid: 'channel', likes: 24, dislikes: 2, viewer: 128} as any;
+    component.stream = {title: 'Test Stream', date: new Date(2026, 9, 25, 18, 30), channelUuid: 'channel', channelName: 'channel@example.test', channelDisplayName: 'My Channel', likes: 24, dislikes: 2, viewer: 128} as any;
   });
 
   it('shows metadata and statistics below the player for viewers without management controls', () => {
@@ -33,7 +33,9 @@ describe('Stream action bar', () => {
     const root: HTMLElement = fixture.nativeElement;
     const bar = root.querySelector('.stream-info-bar')!;
     expect(bar.textContent).toContain('Test Stream');
-    expect(bar.textContent).toContain('128');
+    expect(bar.querySelector('.stream-channel')?.textContent).toContain('My Channel');
+    expect(root.querySelector('app-stream-countdown time')).not.toBeNull();
+    expect(root.querySelector('.stream-media-meta')).toBeNull();
     expect(bar.querySelectorAll('.stream-reactions .stream-stat').length).toBe(2);
     expect(root.querySelector('.stream-enter')).toBeNull();
     expect(root.querySelector('.stream-management')).toBeNull();

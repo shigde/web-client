@@ -6,11 +6,15 @@
           <img [ngSrc]="banner" fill priority alt="" sizes="100vw">
         }
       </div>
+      <div class="channel-owner" [attr.aria-label]="'Channel owner: ' + channel.user">
+        <div class="channel-owner-avatar bg-body"><app-avatar [name]="channel.user" [size]="'88'"></app-avatar></div>
+        <span class="channel-domain channel-owner-name">User: {{ channel.user.startsWith('@') ? channel.user.slice(1) : channel.user }}</span>
+      </div>
       <div class="channel-intro">
         <div class="channel-heading">
           <div class="channel-name-line">
             <h1>{{ channel.title }}</h1>
-            <small class="channel-domain"><span>{{ channel.name.startsWith('@') ? channel.name : '@' + channel.name }}</span></small>
+            <small class="channel-domain"><span>Channel: {{ channel.name.startsWith('@') ? channel.name.slice(1) : channel.name }}</span></small>
           </div>
         </div>
         @if (isOwner) {
