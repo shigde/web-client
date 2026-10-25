@@ -53,3 +53,6 @@ svg#clouds {
 
 /* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap';
+
+// Central button appearance must follow Bootstrap's variant definitions.
+@import 'scss/buttons';

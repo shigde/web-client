@@ -1,0 +1,38 @@
+// Shared Shig button appearance. Bootstrap still owns sizing, grouping,
+// variant palettes, disabled behaviour and checked/active semantics.
+.btn {
+  --#{$prefix}btn-font-weight: 600;
+  --#{$prefix}btn-focus-box-shadow: 0 0 0 2px rgba(var(--#{$prefix}btn-focus-shadow-rgb), .5);
+  --#{$prefix}btn-active-shadow: 0 0 0 1px var(--#{$prefix}btn-active-border-color);
+  background-image: none;
+}
+
+// Same crisp edge as the statistics tabs; do not replace the keyboard focus ring.
+.btn:not(.btn-link):not(:disabled):not(.disabled):not(:focus-visible):hover {
+  box-shadow: 0 0 0 1px var(--#{$prefix}btn-hover-border-color);
+}
+
+// Outline remains transparent at rest and softly tinted on hover.
+// Checked/active outline buttons continue using Bootstrap's filled active state.
+@each $name in (primary, secondary, success, danger, warning, info) {
+  $color: map-get($theme-colors, $name);
+  .btn-outline-#{$name} {
+    --#{$prefix}btn-color: var(--#{$prefix}#{$name}-text-emphasis);
+    --#{$prefix}btn-hover-color: var(--#{$prefix}#{$name}-text-emphasis);
+    --#{$prefix}btn-hover-bg: rgba(#{to-rgb($color)}, .12);
+    --#{$prefix}btn-disabled-color: var(--#{$prefix}#{$name}-text-emphasis);
+  }
+}
+
+// Shig's secondary brand colour is white. A theme-aware neutral outline keeps
+// secondary actions visible on both light and dark surfaces.
+.btn-outline-secondary {
+  --#{$prefix}btn-border-color: var(--#{$prefix}secondary-color);
+  --#{$prefix}btn-hover-border-color: var(--#{$prefix}secondary-color);
+  --#{$prefix}btn-hover-bg: var(--#{$prefix}tertiary-bg);
+  --#{$prefix}btn-active-color: var(--#{$prefix}body-color);
+  --#{$prefix}btn-active-bg: var(--#{$prefix}secondary-bg);
+  --#{$prefix}btn-active-border-color: var(--#{$prefix}secondary-color);
+  --#{$prefix}btn-disabled-border-color: var(--#{$prefix}secondary-color);
+  --#{$prefix}btn-focus-shadow-rgb: var(--#{$prefix}secondary-color-rgb);
+}
