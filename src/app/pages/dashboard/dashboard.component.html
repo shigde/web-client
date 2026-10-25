@@ -1,31 +1,19 @@
-<section class="py-5 container">
+<section class="container stream-dashboard my-3 my-lg-4" aria-labelledby="streams-heading">
+  <div class="dashboard-heading">
+    <h1 id="streams-heading"><i class="bi bi-collection-play" aria-hidden="true"></i>Streams</h1>
+    <p class="dashboard-instance-caption">Discover streams from this instance.</p>
+  </div>
   @if (!hasStreams) {
-
-    <div class="no-album py-5">
-      <div class="container">
-        <div class="p-5 text-center bg-body-tertiary rounded-3 border border-dashed">
-          <h4 class="text-body-emphasis">No Streams</h4>
-        </div>
-      </div>
+    <div class="dashboard-empty bg-body border rounded-2">
+      <img src="assets/icons/logo.png" width="64" height="64" alt="" class="dashboard-empty-logo">
+      <h2>No streams yet</h2>
+      <p class="text-body-secondary">There are no streams to show right now.<br>Streams will appear here when they become available.</p>
     </div>
-
   } @else {
-
-    <div class="album py-5">
-      <div class="container">
-        <div class="row row-cols-1 row-cols-sm-2 g-3 row-cols-md-3">
-
-          @for (stream of streams; track stream.uuid) {
-
-            <app-stream-preview-card [stream]="stream"></app-stream-preview-card>
-
-          }
-
-        </div>
-      </div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3 g-lg-4">
+      @for (stream of streams; track stream.uuid) {
+        <div class="col"><app-stream-preview-card [stream]="stream"></app-stream-preview-card></div>
+      }
     </div>
-
   }
-
 </section>
-

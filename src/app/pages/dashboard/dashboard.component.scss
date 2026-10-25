@@ -1,70 +1,9 @@
-/* DashboardComponent's private CSS styles */
-
-h2 {
-  text-align: center;
-}
-
-.shig-menu {
-  padding: 0;
-  margin: auto;
-  max-width: 1000px;
-
-  /* flexbox */
-  display: -webkit-box;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  align-content: flex-start;
-  align-items: flex-start;
-}
-span {
-  background-color: #8dcaff;
-  border-radius: 2px;
-  font-size: 1.2rem;
-  text-decoration: none;
-  display: inline-block;
-  color: #fff;
-  text-align: center;
-  width: 100%;
-  min-width: 20px;
-  margin: .5rem auto;
-  box-sizing: border-box;
-  /* flexbox */
-  order: 0;
-  flex: 0 1 auto;
-  align-self: auto;
-}
-
-a {
-  background-color: #8dcaff;
-  border-radius: 2px;
-  font-size: 1.2rem;
-  text-decoration: none;
-  display: inline-block;
-  color: #fff;
-  text-align: center;
-  width: 100%;
-  min-width: 20px;
-  margin: .5rem auto;
-  box-sizing: border-box;
-
-  /* flexbox */
-  order: 0;
-  flex: 0 1 auto;
-  align-self: auto;
-}
-
-@media (min-width: 600px) {
-  a {
-    width: 18%;
-    box-sizing: content-box;
-  }
-}
-
-a:hover {
-  background-color: black;
-}
+.dashboard-heading { margin-bottom: 24px; }
+.dashboard-heading h1 { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; font-weight: 600; margin: 0 0 6px; }
+.dashboard-instance-caption { font-size: .75rem; font-weight: 400; line-height: 1.4; color: light-dark(#78838f, #929daa); margin: 0; }
+.dashboard-heading h1 i { font-size: 1.25rem; }
+.dashboard-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 280px; padding: 40px 24px; }
+.dashboard-empty-logo { opacity: .5; filter: grayscale(.4); margin-bottom: 20px; }
+.dashboard-empty h2 { font-size: 1.2rem; font-weight: 600; margin: 0 0 10px; }
+.dashboard-empty p { font-size: .9rem; line-height: 1.6; margin: 0; max-width: 380px; }
+@media(max-width:575.98px) { .dashboard-empty { min-height: 240px; padding: 32px 16px; } }
