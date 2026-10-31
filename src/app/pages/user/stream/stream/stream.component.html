@@ -26,11 +26,13 @@
                 </moq-watch>
               </moq-watch-ui>
             </div>
+          } @else if (recording) {
+            <app-recording-player [streamUuid]="streamUuid" [channelUuid]="channelUuid" [relayUrl]="relayUrl"></app-recording-player>
           } @else {
             <img class="card-img thumbnail" ngSrc="{{thumbnail}}" fill priority style="position: relative" alt="thumbnail">
           }
 
-            @if (!isLive) {
+            @if (!isLive && !recording) {
               <app-stream-countdown class="stream-start-overlay" [date]="stream.date"></app-stream-countdown>
             }
           </div>

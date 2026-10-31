@@ -1,6 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {ActivatedRoute, Router} from '@angular/router';
-import {RelayService, SessionService, StreamFriendService, StreamService, UserService} from '@shigde/core';
+import {MediaService, RelayService, SessionService, StreamFriendService, StreamService, UserService} from '@shigde/core';
 import {AlertService} from '../../../../providers/alert.service';
 import {RuntimeConfigService} from '../../../../providers/runtime-config.service';
 import {StreamComponent} from './stream.component';
@@ -16,7 +16,7 @@ describe('Stream action bar', () => {
         {provide: ActivatedRoute, useValue: {snapshot: {params: {}}}},
         {provide: Router, useValue: {navigate: jasmine.createSpy('navigate')}},
         {provide: RuntimeConfigService, useValue: {relayService: 'https://example.test'}},
-        ...[StreamService, RelayService, SessionService, StreamFriendService, UserService, AlertService]
+        ...[MediaService, StreamService, RelayService, SessionService, StreamFriendService, UserService, AlertService]
           .map(provide => ({provide, useValue: {}}))
       ]
     }).compileComponents();
