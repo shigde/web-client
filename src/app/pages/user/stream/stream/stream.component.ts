@@ -3,7 +3,7 @@ import '@moq/watch/ui';
 import {ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {catchError, filter, forkJoin, Observable, of, Subject, switchMap, take, takeUntil, tap} from 'rxjs';
 import {
-  createAppLogger, RelayService,
+  ChannelService, createAppLogger, RecordedVideo, RecordedVideoPreview, RelayService, VideoService,
   SessionService,
   StreamFriendService,
   StreamPreview,
@@ -15,17 +15,20 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {AlertService} from '../../../../providers/alert.service';
 import {map} from 'rxjs/operators';
 import {AlertKind} from '../../../../entities/alert';
-import {DatePipe, NgOptimizedImage} from '@angular/common';
+import {NgOptimizedImage} from '@angular/common';
 import {StreamCountdownComponent} from '../../../../component/stream-countdown/stream-countdown.component';
 import {AvatarComponent} from '../../../../component/avatar/avatar.component';
 import {RuntimeConfigService} from "../../../../providers/runtime-config.service";
+import {HlsPlayerComponent} from '../../../../component/hls-player/hls-player.component';
+import {ReplayActionsComponent} from '../../../../component/replay-actions/replay-actions.component';
+import {ReplayStatusComponent} from '../../../../component/replay-status/replay-status.component';
 
 @Component({
   selector: 'app-stream',
   imports: [
     NgOptimizedImage, StreamCountdownComponent,
     AvatarComponent,
-    DatePipe
+    HlsPlayerComponent, ReplayActionsComponent, ReplayStatusComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './stream.component.html',
@@ -39,13 +42,14 @@ export class StreamComponent {
   isGuest = false;
   hasStream = false;
 
-  stream!: StreamPreview;
+  stream!: StreamPreview | RecordedVideoPreview;
   userName = 'unknown';
   sessionUser!: User | null;
   streamUuid!: string;
   channelUuid!: string;
   thumbnail!: string;
   isLive: boolean = false;
+  ownedReplay?: RecordedVideo;
   get isVideo(): boolean { return this.stream?.type === 'video'; }
   private destroy$ = new Subject<void>();
 
@@ -59,6 +63,8 @@ export class StreamComponent {
     guestService: StreamFriendService,
     private readonly session: SessionService,
     userService: UserService,
+    private readonly videoService: VideoService,
+    channelService: ChannelService,
     activeRoute: ActivatedRoute) {
 
     this.relayUrl = runtime.relayService;
@@ -66,15 +72,24 @@ export class StreamComponent {
     if (activeRoute.snapshot.params['streamUuid']) {
       const streamUuid = activeRoute.snapshot.params['streamUuid'];
       this.streamUuid = streamUuid;
-      streamService.getStreamPreview(streamUuid).pipe(
+      const preview$: Observable<StreamPreview | RecordedVideoPreview> = activeRoute.snapshot.data?.['type'] === 'video'
+        ? videoService.getPreview(streamUuid).pipe(catchError(() =>
+            videoService.get(streamUuid).pipe(switchMap(video =>
+              channelService.fetch(video.channelUuid).pipe(
+                map(response => ({...this.previewFromOwned(video), channelName: response.data.name,
+                  channelDisplayName: response.data.display_name})),
+                catchError(() => of(this.previewFromOwned(video))),
+              )))))
+        : streamService.getStreamPreview(streamUuid).pipe(map(response => response.data));
+      preview$.pipe(
         take(1),
         map(d => {
-          this.thumbnail = d.data.thumbnail == ''
+          this.thumbnail = d.thumbnail == ''
             ? 'assets/images/default-banner-2.jpg'
-            : `${window.location.origin}/static/${d.data.thumbnail}`;
-          return d.data;
+            : `${window.location.origin}/static/${d.thumbnail}`;
+          return d;
         }),
-        catchError(_ => this.handleError<null>('Could not load stream!', null)),
+        catchError(_ => this.handleError<null>('Could not load stream or video!', null)),
         filter(s => s !== null),
         tap((s) => {
           this.hasStream = true;
@@ -100,6 +115,11 @@ export class StreamComponent {
 
           this.isOwner = owner.uuid === current_user_uuid;
           this.isGuest = friends.some(f => f.uuid === current_user_uuid);
+          if (this.isVideo && this.isOwner && !this.ownedReplay) {
+            this.videoService.get(this.streamUuid).pipe(take(1), takeUntil(this.destroy$))
+              .subscribe({next: video => { this.ownedReplay = video; this.cdr.markForCheck(); },
+                error: () => this.alert.alert(AlertKind.DANGER, 'Could not load replay management controls!')});
+          }
 
           this.log.info(`User is owner: ${this.isOwner} or guest: ${this.isGuest}`);
           cdr.detectChanges();
@@ -115,6 +135,25 @@ export class StreamComponent {
 
   }
 
+  private previewFromOwned(video: RecordedVideo): StreamPreview {
+    this.ownedReplay = video;
+    return {uuid: video.uuid, type: 'video', title: video.title, thumbnail: video.thumbnail,
+      description: video.description, support: video.support, durationMs: video.durationMs,
+      date: new Date(video.startedAt || video.createdAt), start_time: null, end_time: null,
+      viewer: 0, likes: 0, dislikes: 0, isLive: false,
+      ownerName: '', ownerUuid: video.ownerUuid, ownerAvatar: '', channelName: '', channelUuid: video.channelUuid};
+  }
+
+  replaySaved(video: RecordedVideo): void {
+    this.ownedReplay = video;
+    this.stream = {...this.stream, title: video.title, description: video.description, support: video.support};
+    this.cdr.markForCheck();
+  }
+
+  replayDeleted(): void {
+    this.router.navigate(['/channel', this.channelUuid]);
+  }
+
   get playbackUrl(): string {
     const url = new URL(`${this.relayUrl}/${this.channelUuid}`);
     const token = this.session.getAuthenticationToken();
@@ -122,6 +161,10 @@ export class StreamComponent {
       url.searchParams.set('jwt', token);
     }
     return url.toString();
+  }
+
+  get videoPlaybackUrl(): string {
+    return `/static/recordings/${encodeURIComponent(this.streamUuid)}/master.m3u8`;
   }
 
   ngOnDestroy() {

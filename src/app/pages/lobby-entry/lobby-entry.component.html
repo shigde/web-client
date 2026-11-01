@@ -6,6 +6,7 @@
             [userUuid]="(userUuid$ | async) ?? undefined"
             [setupPreview]="setupPreview"
             (onError)="handleLobbyErrorEvent($event)"
+            (replayOpen)="openReplay($event)"
             style="position: relative;"></shig-lobby>
 
 <ng-template #setupPreview let-stream let-live="live">

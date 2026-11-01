@@ -32,10 +32,7 @@
     </header>
   }
 
-  <ul ngbNav #channelNav="ngbNav" [(activeId)]="activeTab" class="channel-tabs" aria-label="Channel sections">
-    <li [ngbNavItem]="'streams'">
-      <button ngbNavLink><i class="bi bi-collection-play" aria-hidden="true"></i>Streams</button>
-      <ng-template ngbNavContent>
+  <ng-template #streamsSection>
   <section class="channel-streams" aria-labelledby="channel-streams-title">
     <div class="channel-section-heading">
       <div class="d-flex align-items-center gap-2">
@@ -58,7 +55,68 @@
       </div>
     }
   </section>
+  </ng-template>
+
+  <ng-template #replaysSection>
+    <section class="channel-streams" aria-labelledby="channel-replays-title">
+      <div class="channel-section-heading">
+        <div class="d-flex align-items-center gap-2">
+          <h2 id="channel-replays-title">Replays</h2>
+          <span class="channel-count bg-body-tertiary border text-body-secondary">{{ isOwner ? ownedReplays.length : replays.length }}</span>
+        </div>
+        <span class="text-body-secondary channel-section-caption">Watch past streams from this channel</span>
+      </div>
+      @if (isOwner) {
+        @if (!ownedReplaysLoaded) {
+          <p class="text-body-secondary" role="status">Loading your replays…</p>
+        } @else {
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-3 g-lg-4">
+            @for (video of ownedReplays; track video.uuid) {
+              <div class="col">
+                <app-stream-preview-card [stream]="replayPreview(video)" [replayStatus]="video.status">
+                <div replay-controls class="d-flex align-items-start justify-content-between flex-wrap gap-3 border-top p-3 mt-auto">
+                  <app-replay-status class="flex-grow-1" [status]="video.status" [error]="video.error"></app-replay-status>
+                  <app-replay-actions [video]="video" (saved)="replayChanged()" (deleted)="replayChanged()"></app-replay-actions>
+                </div>
+                </app-stream-preview-card>
+              </div>
+            } @empty { <p class="text-body-secondary">No replays yet.</p> }
+          </div>
+        }
+      } @else if (!replaysLoaded) {
+        <p class="text-body-secondary" role="status">Loading replays…</p>
+      } @else if (replays.length === 0) {
+        <div class="channel-empty bg-body border rounded-2">
+          <i class="bi bi-collection-play text-body-secondary" aria-hidden="true"></i>
+          <h3>No replays yet</h3>
+          <p class="text-body-secondary mb-0">Published replays will appear here.</p>
+        </div>
+      } @else {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-3 g-lg-4">
+          @for (replay of replays; track replay.uuid) {
+            <div class="col"><app-stream-preview-card [stream]="replay"></app-stream-preview-card></div>
+          }
+        </div>
+      }
+    </section>
+  </ng-template>
+
+  <ul ngbNav #channelNav="ngbNav" [(activeId)]="activeTab" class="channel-tabs" aria-label="Channel sections">
+    <li [ngbNavItem]="'overview'">
+      <button ngbNavLink><i class="bi bi-grid" aria-hidden="true"></i>Overview</button>
+      <ng-template ngbNavContent>
+        <ng-container [ngTemplateOutlet]="streamsSection"></ng-container>
+        <hr class="my-4">
+        <ng-container [ngTemplateOutlet]="replaysSection"></ng-container>
       </ng-template>
+    </li>
+    <li [ngbNavItem]="'streams'">
+      <button ngbNavLink><i class="bi bi-broadcast" aria-hidden="true"></i>Streams</button>
+      <ng-template ngbNavContent><ng-container [ngTemplateOutlet]="streamsSection"></ng-container></ng-template>
+    </li>
+    <li [ngbNavItem]="'replays'">
+      <button ngbNavLink><i class="bi bi-collection-play" aria-hidden="true"></i>Replays</button>
+      <ng-template ngbNavContent><ng-container [ngTemplateOutlet]="replaysSection"></ng-container></ng-template>
     </li>
     @if (isOwner) {
       <li [ngbNavItem]="'dashboard'">

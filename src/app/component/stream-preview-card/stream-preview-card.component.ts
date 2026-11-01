@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, DestroyRef, Input, OnChanges} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {RelayService, StreamPreview} from '@shigde/core';
+import {RecordedVideo, RecordedVideoPreview, RelayService, StreamPreview} from '@shigde/core';
 import {Subscription} from 'rxjs';
 import {AvatarComponent} from '../avatar/avatar.component';
 import {DatePipe, NgOptimizedImage} from '@angular/common';
@@ -17,10 +17,12 @@ import {DatePipe, NgOptimizedImage} from '@angular/common';
 })
 export class StreamPreviewCardComponent implements OnChanges {
 
-  @Input() stream!: StreamPreview;
+  @Input() stream!: StreamPreview | RecordedVideoPreview;
+  @Input() replayStatus?: RecordedVideo['status'];
   public thumbnail = '';
   public isLive = false;
   get isVideo(): boolean { return this.stream?.type === 'video'; }
+  get isPlayableReplay(): boolean { return !this.replayStatus || this.replayStatus === 'ready'; }
   get contentUrl(): string { return `${this.isVideo ? 'video' : 'stream'}/${this.stream.uuid}`; }
   get duration(): string {
     const seconds = Math.floor((this.stream.durationMs ?? 0) / 1000);

@@ -1,7 +1,7 @@
 .dashboard-heading { margin-bottom: 24px; }
-.dashboard-heading h1 { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; font-weight: 600; margin: 0 0 6px; }
+.dashboard-heading h1, .dashboard-heading h2 { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; font-weight: 600; margin: 0 0 6px; }
 .dashboard-instance-caption { font-size: .75rem; font-weight: 400; line-height: 1.4; color: light-dark(#78838f, #929daa); margin: 0; }
-.dashboard-heading h1 i { font-size: 1.25rem; }
+.dashboard-heading h1 i, .dashboard-heading h2 i { font-size: 1.25rem; }
 .dashboard-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 280px; padding: 40px 24px; }
 .dashboard-empty-logo { opacity: .5; filter: grayscale(.4); margin-bottom: 20px; }
 .dashboard-empty h2 { font-size: 1.2rem; font-weight: 600; margin: 0 0 10px; }

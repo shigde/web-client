@@ -86,6 +86,11 @@ export class LobbyEntryComponent implements OnInit {
     return true;
   }
 
+  openReplay(uuid: string): void {
+    // Angular navigation runs lobbyLeaveGuard and its existing confirmation dialog.
+    void this.router.navigate(['/video', uuid]);
+  }
+
   @HostListener('window:beforeunload', ['$event'])
   beforeUnload(event: BeforeUnloadEvent): void {
     if (this.lobby?.connectionActive) {

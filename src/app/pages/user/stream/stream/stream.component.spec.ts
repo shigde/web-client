@@ -1,6 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {ActivatedRoute, Router} from '@angular/router';
-import {MediaService, RelayService, SessionService, StreamFriendService, StreamService, UserService} from '@shigde/core';
+import {ChannelService, MediaService, RelayService, SessionService, StreamFriendService, StreamService, UserService, VideoService} from '@shigde/core';
 import {AlertService} from '../../../../providers/alert.service';
 import {RuntimeConfigService} from '../../../../providers/runtime-config.service';
 import {StreamComponent} from './stream.component';
@@ -16,7 +16,7 @@ describe('Stream action bar', () => {
         {provide: ActivatedRoute, useValue: {snapshot: {params: {}}}},
         {provide: Router, useValue: {navigate: jasmine.createSpy('navigate')}},
         {provide: RuntimeConfigService, useValue: {relayService: 'https://example.test'}},
-        ...[MediaService, StreamService, RelayService, SessionService, StreamFriendService, UserService, AlertService]
+        ...[ChannelService, MediaService, StreamService, RelayService, SessionService, StreamFriendService, UserService, VideoService, AlertService]
           .map(provide => ({provide, useValue: {}}))
       ]
     }).compileComponents();
@@ -60,5 +60,22 @@ describe('Stream action bar', () => {
     expect(root.querySelector('.stream-management .dropdown-menu')?.textContent).toContain('Edit');
     expect(root.querySelector('.stream-management [data-bs-target="#deleteStreamModal"]')).not.toBeNull();
     expect(root.querySelector('#deleteStreamModal')).not.toBeNull();
+  });
+
+  it('uses HLS for videos without live, lobby or chat controls', () => {
+    component.stream = {...component.stream, type: 'video'};
+    component.streamUuid = 'recorded-video';
+    component.isOwner = true;
+    component.isGuest = true;
+    fixture.detectChanges();
+    const root: HTMLElement = fixture.nativeElement;
+    expect(component.videoPlaybackUrl).toBe('/static/recordings/recorded-video/master.m3u8');
+    expect(root.querySelector('app-hls-player video')?.hasAttribute('controls')).toBeTrue();
+    expect(root.querySelector('moq-watch')).toBeNull();
+    expect(root.querySelector('.stream-enter')).toBeNull();
+    expect(root.querySelector('.stream-management')).toBeNull();
+    expect(root.querySelector('.stream-chat')).toBeNull();
+    expect(root.querySelector('app-stream-countdown')).toBeNull();
+    expect(root.querySelector('.col-lg-12')).not.toBeNull();
   });
 });

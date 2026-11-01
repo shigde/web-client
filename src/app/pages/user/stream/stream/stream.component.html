@@ -11,11 +11,19 @@
 
   <div id="thumbnail-container" class="container my-2 my-lg-4 position-relative w-100">
     <div class="row">
-      <div class="col-lg-9 mb-4 position-relative">
+      <div class="mb-4 position-relative" [class.col-lg-9]="!isVideo" [class.col-lg-12]="isVideo">
         <div class="card">
 
           <div class="stream-media-frame" [class.is-live]="isLive">
-          @if (isLive) {
+          @if (isVideo) {
+            @if (!ownedReplay || ownedReplay.status === 'ready') {
+            <app-hls-player [src]="videoPlaybackUrl" [poster]="thumbnail"></app-hls-player>
+            } @else {
+              <div class="replay-status-panel">
+                <app-replay-status [status]="ownedReplay.status" [error]="ownedReplay.error" [panel]="true"></app-replay-status>
+              </div>
+            }
+          } @else if (isLive) {
             <div class="moq-player-wrapper">
               <moq-watch-ui>
                 <moq-watch
@@ -37,11 +45,16 @@
 
           <div class="stream-info-bar border-top">
             <div class="stream-identity">
-              <h1 class="stream-title">{{ stream.title }}</h1>
+              <h1 class="stream-title">
+                <span class="stream-title-text" [title]="stream.title">{{ stream.title }}</span>
+                @if (isVideo) {
+                  <app-replay-status [status]="ownedReplay?.status || 'ready'" [iconOnly]="true"></app-replay-status>
+                }
+              </h1>
               <a class="stream-channel text-body-secondary" href="channel/{{ stream.channelUuid }}">
                 <app-avatar [name]="userName" [size]="'28'"></app-avatar>
                 <span class="stream-channel-label"><span>{{ stream.channelDisplayName || stream.channelName }}</span>
-                  <small class="channel-identity-caption">Channel: {{ stream.channelName?.startsWith('@') ? stream.channelName.slice(1) : stream.channelName }}</small>
+                  <small class="channel-identity-caption">Channel: {{ stream.channelName.startsWith('@') ? stream.channelName.slice(1) : stream.channelName }}</small>
                 </span>
               </a>
             </div>
@@ -77,6 +90,9 @@
                     <li><button type="button" class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#deleteStreamModal"><i class="bi bi-trash me-2" aria-hidden="true"></i>Delete</button></li>
                   </ul>
                 </div>
+              }
+              @if (isOwner && isVideo && ownedReplay) {
+                <app-replay-actions [video]="ownedReplay" (saved)="replaySaved($event)" (deleted)="replayDeleted()"></app-replay-actions>
               }
             </div>
           </div>

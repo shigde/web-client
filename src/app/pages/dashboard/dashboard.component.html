@@ -1,9 +1,11 @@
 <section class="container stream-dashboard my-3 my-lg-4" aria-labelledby="streams-heading">
   <div class="dashboard-heading">
-    <h1 id="streams-heading"><i class="bi bi-collection-play" aria-hidden="true"></i>Streams</h1>
+    <h1 id="streams-heading"><i class="bi bi-broadcast" aria-hidden="true"></i>Livestreams</h1>
     <p class="dashboard-instance-caption">Discover streams from this instance.</p>
   </div>
-  @if (!hasStreams) {
+  @if (!streamsLoaded) {
+    <p class="text-body-secondary" role="status">Loading livestreams…</p>
+  } @else if (!hasStreams) {
     <div class="dashboard-empty bg-body border rounded-2">
       <img src="assets/icons/logo.png" width="64" height="64" alt="" class="dashboard-empty-logo">
       <h2>No streams yet</h2>
@@ -13,6 +15,25 @@
     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3 g-lg-4">
       @for (stream of streams; track stream.uuid) {
         <div class="col"><app-stream-preview-card [stream]="stream"></app-stream-preview-card></div>
+      }
+    </div>
+  }
+</section>
+
+<section class="container stream-dashboard my-4" aria-labelledby="past-videos-heading">
+  <hr class="mb-4">
+  <div class="dashboard-heading">
+    <h2 id="past-videos-heading"><i class="bi bi-collection-play" aria-hidden="true"></i>Replays</h2>
+    <p class="dashboard-instance-caption">Watch published recordings of past streams.</p>
+  </div>
+  @if (!videosLoaded) {
+    <p class="text-body-secondary" role="status">Loading replays…</p>
+  } @else if (videos.length === 0) {
+    <p class="text-body-secondary">No published replays yet.</p>
+  } @else {
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3 g-lg-4">
+      @for (video of videos; track video.uuid) {
+        <div class="col"><app-stream-preview-card [stream]="video"></app-stream-preview-card></div>
       }
     </div>
   }

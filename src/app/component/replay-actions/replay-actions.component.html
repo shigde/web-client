@@ -1,0 +1,68 @@
+<div class="replay-actions" [attr.aria-busy]="busy()">
+  <label class="replay-publish form-check form-switch d-inline-flex align-items-center gap-2 mb-0 bg-body-tertiary border rounded"
+         [title]="video.status === 'ready' ? 'Publish or unpublish this replay' : 'Only completed replays can be published'">
+    <span class="publish-label" [class.publish-label-off]="!video.publishedAt">Publish</span>
+    <input type="checkbox" class="form-check-input float-none ms-0 mt-0" role="switch" aria-label="Publish replay"
+           [checked]="!!video.publishedAt" [disabled]="busy() || video.status !== 'ready'" (change)="togglePublished($event)">
+  </label>
+  <div class="dropdown">
+  <button type="button" class="btn bg-body-tertiary border replay-more" data-bs-toggle="dropdown" [disabled]="busy()"
+          aria-expanded="false" aria-label="Manage replay" title="Manage replay">
+    <i class="bi bi-three-dots" aria-hidden="true"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item" (click)="edit(editor)" [disabled]="video.status === 'deleting'">
+      <i class="bi bi-pencil me-2" aria-hidden="true"></i>Edit</button></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><button type="button" class="dropdown-item text-danger" (click)="open(confirmation)" [disabled]="active">
+      <i class="bi bi-trash me-2" aria-hidden="true"></i>Delete permanently</button></li>
+  </ul>
+  </div>
+</div>
+@if (error() && !busy()) { <small class="text-danger" role="alert">{{ error() }}</small> }
+
+<ng-template #editor let-dialog>
+  <div class="modal-header">
+    <h2 class="modal-title fs-5">Edit replay</h2>
+    <button type="button" class="btn-close" aria-label="Close" [disabled]="busy()" (click)="dialog.dismiss()"></button>
+  </div>
+  <form (ngSubmit)="save()">
+    <div class="modal-body">
+      <label class="form-label w-100">Title
+        <input class="form-control mt-1" name="title" [(ngModel)]="title" required [disabled]="busy()">
+      </label>
+      <label class="form-label w-100">Description
+        <textarea class="form-control mt-1" name="description" [(ngModel)]="description" rows="4" [disabled]="busy()"></textarea>
+      </label>
+      <label class="form-label w-100">Support
+        <textarea class="form-control mt-1" name="support" [(ngModel)]="support" rows="2" [disabled]="busy()"></textarea>
+      </label>
+      <label class="d-flex align-items-center gap-2">
+        <input type="checkbox" class="form-check-input m-0" name="published" [(ngModel)]="published"
+               [disabled]="busy() || video.status !== 'ready'">Publish replay
+      </label>
+      <p class="small text-body-secondary mt-2 mb-0">Unpublishing keeps the recording so you can publish it again later.</p>
+      @if (error()) { <p class="text-danger mt-3" role="alert">{{ error() }}</p> }
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" [disabled]="busy()" (click)="dialog.dismiss()">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="busy() || !title.trim()">{{ busy() ? 'Saving…' : 'Save' }}</button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #confirmation let-dialog>
+  <div class="modal-header"><h2 class="modal-title fs-5">Permanently delete replay?</h2></div>
+  <div class="modal-body">
+    <p><strong>{{ video.title }}</strong></p>
+    <p>The replay and all its stored video files will be permanently deleted. This cannot be undone.</p>
+    <p class="text-body-secondary">To keep the recording, cancel and choose Unpublish instead.</p>
+    @if (error()) { <p class="text-danger" role="alert">{{ error() }}</p> }
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" [disabled]="busy()" (click)="dialog.dismiss()">Cancel</button>
+    <button type="button" class="btn btn-danger" [disabled]="busy()" (click)="deletePermanently()">
+      {{ busy() ? 'Deleting…' : 'Delete permanently' }}
+    </button>
+  </div>
+</ng-template>

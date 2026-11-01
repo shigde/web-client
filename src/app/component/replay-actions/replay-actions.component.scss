@@ -1,0 +1,12 @@
+:host { display: block; min-width: 0; }
+.replay-actions { display: flex; align-items: center; gap: 8px; }
+.replay-publish {
+  min-height: 40px;
+  padding: 0 10px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.replay-publish:has(input:disabled) { cursor: default; }
+.publish-label { color: var(--bs-body-color); font-weight: 400; }
+.publish-label-off { color: rgba(var(--bs-body-color-rgb), .25); }
+.replay-more { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; min-width: 40px; }

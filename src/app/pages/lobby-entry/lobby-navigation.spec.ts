@@ -7,17 +7,25 @@ describe('Lobby navigation', () => {
   let component: LobbyEntryComponent;
   let leave: jasmine.Spy;
   let confirm: jasmine.Spy;
+  let navigate: jasmine.Spy;
 
   beforeEach(() => {
+    navigate = jasmine.createSpy('navigate').and.resolveTo(true);
     component = new LobbyEntryComponent(
       {snapshot: {paramMap: convertToParamMap({streamUuid: 'stream', channelUuid: 'channel'})}} as any,
-      {} as any, {} as any,
+      {} as any, {navigate} as any,
       {getAuthenticationToken: () => 'token', getUser: () => of({uuid: 'guest'})} as any,
       {apiPrefix: '/api', relayService: 'https://relay.test/live'} as any,
     );
     leave = jasmine.createSpy('leave').and.resolveTo();
     confirm = jasmine.createSpy('confirm').and.resolveTo(false);
     component.leaveDialog = {confirm} as any;
+  });
+
+  it('opens a replay through the router so the existing leave guard handles confirmation', () => {
+    component.openReplay('recorded-video');
+    expect(navigate).toHaveBeenCalledWith(['/video', 'recorded-video']);
+    expect(leave).not.toHaveBeenCalled();
   });
 
   it('allows leaving setup without confirmation', async () => {

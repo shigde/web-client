@@ -1,12 +1,12 @@
 <div class="card h-100 position-relative">
 
-  <a class="text-decoration-none text-body position-relative d-block" [href]="contentUrl">
-    <!--    <img class="card-img rounded-3 thumbnail" ngSrc="{{thumbnail}}" fill priority style="position: relative" alt="thumbnail">-->
+  <a class="text-decoration-none text-body position-relative d-block stream-preview-media" [href]="contentUrl">
     @if (stream.thumbnail !== '') {
-      <img ngSrc="{{ thumbnail }}" class="card-img-top stream-thumbnail" fill priority style="position: relative"  alt="thumbnail">
+      <img ngSrc="{{ thumbnail }}" class="card-img-top stream-thumbnail" fill priority alt="thumbnail">
     } @else {
       <img src="assets/images/default-banner-2.jpg" class="card-img-top stream-thumbnail" alt="thumbnail">
     }
+    @if (!isVideo || isPlayableReplay) {
     <span class="stream-media-meta">
               @if (isVideo) {
                 <i class="bi bi-play-circle" aria-hidden="true"></i><span>{{ duration }}</span>
@@ -16,12 +16,13 @@
                 <i class="bi bi-calendar-event" aria-hidden="true"></i><time>{{ stream.date | date:'dd.MM. · HH:mm' }}</time>
               }
             </span>
+    }
   </a>
 
 
   <div class="app-card-img-overlay">
     @if (isVideo) {
-      <h5><span class="badge text-bg-secondary">Video</span></h5>
+      <h5><span class="badge text-bg-secondary">Replay</span></h5>
     } @else if (isLive) {
       <h5><span class="badge text-bg-danger">Live</span></h5>
     } @else {
@@ -40,10 +41,11 @@
       <div class="data-row-caption w-100">
         <a class="text-decoration-none text-body" href="channel/{{stream.channelUuid}}">
           <p class="mb-0 one-line-truncate"><small>{{ stream.channelDisplayName || stream.channelName }}</small></p>
-          <small class="channel-identity-caption">Channel: {{ stream.channelName?.startsWith('@') ? stream.channelName.slice(1) : stream.channelName }}</small>
+          <small class="channel-identity-caption">Channel: {{ stream.channelName.startsWith('@') ? stream.channelName.slice(1) : stream.channelName }}</small>
         </a>
       </div>
     </div>
 
   </div>
+  <ng-content select="[replay-controls]"></ng-content>
 </div>

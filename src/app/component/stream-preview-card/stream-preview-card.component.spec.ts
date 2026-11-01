@@ -6,6 +6,22 @@ import {AvatarComponent} from '../avatar/avatar.component';
 import {StreamPreviewCardComponent} from './stream-preview-card.component';
 
 describe('Stream preview channel identity', () => {
+  it('does not offer playback or a zero duration for a failed replay', async () => {
+    await TestBed.configureTestingModule({imports: [StreamPreviewCardComponent], providers: [
+      {provide: RelayService, useValue: {pollHasAnnouncement: jasmine.createSpy('poll')}},
+    ]}).compileComponents();
+    const fixture = TestBed.createComponent(StreamPreviewCardComponent);
+    fixture.componentRef.setInput('stream', {uuid: 'replay', type: 'video', durationMs: 0,
+      channelUuid: 'channel', ownerName: 'Owner', channelName: 'Channel', title: 'Replay', thumbnail: ''});
+    fixture.componentRef.setInput('replayStatus', 'failed');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.stream-media-meta')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.bi-play-circle')).toBeNull();
+    fixture.componentRef.setInput('replayStatus', 'ready');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.bi-play-circle')).not.toBeNull();
+    fixture.destroy();
+  });
   it('shows the channel display name while keeping the owner avatar', async () => {
     await TestBed.configureTestingModule({imports: [StreamPreviewCardComponent], providers: [
       {provide: RelayService, useValue: {pollHasAnnouncement: () => of(false)}},
