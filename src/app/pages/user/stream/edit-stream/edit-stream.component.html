@@ -7,8 +7,7 @@
     }
   </h2>
   @if (isEdit && stream && currentUser?.uuid === stream.ownerUuid) {
-    <shig-recording-controls [streamUuid]="streamUuid" [live]="stream.isLive"
-      [previewUrl]="'/stream/' + streamUuid"></shig-recording-controls>
+    <shig-recording-controls [streamUuid]="streamUuid" [live]="stream.isLive"></shig-recording-controls>
   }
   <form class="editor-form bg-body border rounded-2 needs-validation" [formGroup]="streamForm" (ngSubmit)="save(fileInput)">
 

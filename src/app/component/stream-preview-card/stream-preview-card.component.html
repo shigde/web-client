@@ -1,6 +1,6 @@
 <div class="card h-100 position-relative">
 
-  <a class="text-decoration-none text-body position-relative d-block" href="stream/{{stream.uuid}}">
+  <a class="text-decoration-none text-body position-relative d-block" [href]="contentUrl">
     <!--    <img class="card-img rounded-3 thumbnail" ngSrc="{{thumbnail}}" fill priority style="position: relative" alt="thumbnail">-->
     @if (stream.thumbnail !== '') {
       <img ngSrc="{{ thumbnail }}" class="card-img-top stream-thumbnail" fill priority style="position: relative"  alt="thumbnail">
@@ -8,7 +8,9 @@
       <img src="assets/images/default-banner-2.jpg" class="card-img-top stream-thumbnail" alt="thumbnail">
     }
     <span class="stream-media-meta">
-              @if (isLive) {
+              @if (isVideo) {
+                <i class="bi bi-play-circle" aria-hidden="true"></i><span>{{ duration }}</span>
+              } @else if (isLive) {
                 <i class="bi bi-eye" aria-hidden="true"></i><span>{{ stream.viewer }} viewers</span>
               } @else {
                 <i class="bi bi-calendar-event" aria-hidden="true"></i><time>{{ stream.date | date:'dd.MM. · HH:mm' }}</time>
@@ -18,7 +20,9 @@
 
 
   <div class="app-card-img-overlay">
-    @if (isLive) {
+    @if (isVideo) {
+      <h5><span class="badge text-bg-secondary">Video</span></h5>
+    } @else if (isLive) {
       <h5><span class="badge text-bg-danger">Live</span></h5>
     } @else {
       <h5><span class="badge text-bg-secondary">Offline</span></h5>
@@ -26,7 +30,7 @@
   </div>
 
   <div class="card-footer">
-    <a class="text-decoration-none text-body" href="stream/{{stream.uuid}}">
+    <a class="text-decoration-none text-body" [href]="contentUrl">
       <h6 class="mb-0 two-line-truncate preview-stream-title">{{ stream.title }}</h6>
     </a>
     <div class="d-flex align-items-center gap-2 w-100 mt-2">

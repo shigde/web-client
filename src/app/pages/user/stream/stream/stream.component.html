@@ -26,13 +26,11 @@
                 </moq-watch>
               </moq-watch-ui>
             </div>
-          } @else if (recording) {
-            <app-recording-player [streamUuid]="streamUuid" [channelUuid]="channelUuid" [relayUrl]="relayUrl"></app-recording-player>
           } @else {
             <img class="card-img thumbnail" ngSrc="{{thumbnail}}" fill priority style="position: relative" alt="thumbnail">
           }
 
-            @if (!isLive && !recording) {
+            @if (!isLive && !isVideo) {
               <app-stream-countdown class="stream-start-overlay" [date]="stream.date"></app-stream-countdown>
             }
           </div>
@@ -62,12 +60,12 @@
                 </span>
               </div>
 
-              @if (isOwner || isGuest) {
+              @if (!isVideo && (isOwner || isGuest)) {
                 <button type="button" class="btn btn-primary stream-enter" (click)="openStream()">
                   <i class="bi bi-person-video3" aria-hidden="true"></i><span>Enter Stream</span>
                 </button>
               }
-              @if (isOwner) {
+              @if (isOwner && !isVideo) {
                 <div class="dropdown stream-management">
                   <button type="button" class="btn btn-outline-secondary stream-more" data-bs-toggle="dropdown"
                           aria-expanded="false" aria-label="Manage stream" title="Manage stream">
@@ -90,6 +88,7 @@
           }
         </div>
       </div>
+      @if (!isVideo) {
       <div class="col-lg-3 mb-4 d-flex">
         <aside class="card stream-chat w-100" aria-label="Chat">
           <div class="stream-chat-placeholder text-body-secondary">
@@ -107,6 +106,7 @@
           </div>
         </aside>
       </div>
+      }
 
     </div>
 

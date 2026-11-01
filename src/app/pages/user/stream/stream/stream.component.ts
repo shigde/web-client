@@ -4,7 +4,6 @@ import {ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA} from '@angular/cor
 import {catchError, filter, forkJoin, Observable, of, Subject, switchMap, take, takeUntil, tap} from 'rxjs';
 import {
   createAppLogger, RelayService,
-  MediaService, MediaRecording,
   SessionService,
   StreamFriendService,
   StreamPreview,
@@ -20,15 +19,13 @@ import {DatePipe, NgOptimizedImage} from '@angular/common';
 import {StreamCountdownComponent} from '../../../../component/stream-countdown/stream-countdown.component';
 import {AvatarComponent} from '../../../../component/avatar/avatar.component';
 import {RuntimeConfigService} from "../../../../providers/runtime-config.service";
-import {RecordingPlayerComponent} from '../../../../component/recording-player/recording-player.component';
 
 @Component({
   selector: 'app-stream',
   imports: [
     NgOptimizedImage, StreamCountdownComponent,
     AvatarComponent,
-    DatePipe,
-    RecordingPlayerComponent
+    DatePipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './stream.component.html',
@@ -49,14 +46,13 @@ export class StreamComponent {
   channelUuid!: string;
   thumbnail!: string;
   isLive: boolean = false;
-  recording: MediaRecording | null = null;
+  get isVideo(): boolean { return this.stream?.type === 'video'; }
   private destroy$ = new Subject<void>();
 
   constructor(
     private readonly router: Router,
     private readonly streamService: StreamService,
     private readonly relayService: RelayService,
-    private readonly media: MediaService,
     private readonly alert: AlertService,
     private readonly cdr: ChangeDetectorRef,
     runtime: RuntimeConfigService,
@@ -93,7 +89,7 @@ export class StreamComponent {
               filter((u): u is User => !!u),
               take(1)
             ) : of(null),
-            friends: session.isAuthenticated() ? guestService.getStreamFriendsList(stream.uuid) : of([])
+            friends: session.isAuthenticated() && stream.type !== 'video' ? guestService.getStreamFriendsList(stream.uuid) : of([])
           })
         ),
 
@@ -110,12 +106,7 @@ export class StreamComponent {
         }),
         catchError(_ => this.handleError<null>('Could not load user!', null)),
       ).subscribe(() => {
-        this.startAnnouncementPolling();
-        this.loadRecording();
-        this.media.watchPlaybackRecording(this.streamUuid).pipe(takeUntil(this.destroy$)).subscribe(recording => {
-          this.recording = recording;
-          this.cdr.markForCheck();
-        });
+        if (!this.isVideo) this.startAnnouncementPolling();
       });
     }
   }
@@ -172,7 +163,6 @@ export class StreamComponent {
         next: isLive => {
           this.log.info('Stream is live: ' + isLive);
           this.isLive = isLive;
-          this.loadRecording();
           this.cdr.detectChanges();
         },
         error: err => {
@@ -181,10 +171,4 @@ export class StreamComponent {
       });
   }
 
-  private loadRecording(): void {
-    this.media.getPlaybackRecording(this.streamUuid).pipe(takeUntil(this.destroy$)).subscribe({
-      next: recording => { this.recording = recording; this.cdr.markForCheck(); },
-      error: () => { this.recording = null; this.cdr.markForCheck(); },
-    });
-  }
 }

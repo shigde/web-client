@@ -33,6 +33,7 @@ const routes: Routes = [
   {path: 'channel/:channelUuid/edit', component: EditChannelComponent, canActivate: [UserAccessGuard]},
   {path: 'stream/new', component: EditStreamComponent, canActivate: [UserAccessGuard]},
   {path: 'stream/:streamUuid', component: StreamComponent, canActivate: [UserAccessGuard]},
+  {path: 'video/:streamUuid', component: StreamComponent, canActivate: [UserAccessGuard]},
   {path: 'stream/:streamUuid/edit', component: EditStreamComponent, canActivate: [UserAccessGuard]},
   {path: 'channel/:channelUuid/stream/:streamUuid/lobby', component: LobbyEntryComponent, canActivate: [UserAccessGuard], canDeactivate: [lobbyLeaveGuard]},
   {path: 'login', component: LoginComponent},
