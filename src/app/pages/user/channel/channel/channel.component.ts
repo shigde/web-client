@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, DestroyRef} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Channel, ChannelService, RecordedVideo, RecordedVideoPreview, StreamPreview, StreamService, SessionService, VideoService} from '@shigde/core';
+import {Channel, ChannelService, LocalStoreService, RecordedVideo, RecordedVideoPreview, StreamPreview, StreamService, SessionService, VideoService} from '@shigde/core';
 import {catchError, filter, Observable, of, take, tap} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AlertKind} from '../../../../entities/alert';
@@ -41,14 +41,17 @@ export class ChannelComponent {
   public banner = '';
   isOwner = false;
   activeTab = 'overview';
+  recordReplaysByDefault = false;
 
   private readonly channelUuid: string;
+  private ownerUuid?: string;
 
   constructor(
     private readonly router: Router,
     private readonly channelService: ChannelService,
     private readonly streamService: StreamService,
     private readonly videoService: VideoService,
+    private readonly localStore: LocalStoreService,
     private readonly alert: AlertService,
     activeRoute: ActivatedRoute,
     private readonly cdr: ChangeDetectorRef,
@@ -57,9 +60,11 @@ export class ChannelComponent {
     this.channelUuid = activeRoute.snapshot.params['channelUuid'];
     session.getUser().pipe(takeUntilDestroyed(destroyRef)).subscribe(user => {
       this.isOwner = !!user && user.channel_uuid === this.channelUuid;
+      this.ownerUuid = this.isOwner ? user?.uuid : undefined;
+      this.recordReplaysByDefault = !!this.ownerUuid && this.localStore.loadReplayDefault(this.ownerUuid);
       if (this.isOwner) this.loadOwnedReplays();
       else this.ownedReplays = [];
-      if (!this.isOwner && ['dashboard', 'lobby'].includes(this.activeTab)) this.activeTab = 'overview';
+      if (!this.isOwner && this.activeTab === 'dashboard') this.activeTab = 'overview';
       this.cdr.markForCheck();
     });
 
@@ -81,6 +86,12 @@ export class ChannelComponent {
 
     this.getStreams().subscribe();
     this.loadPublicReplays();
+  }
+
+  setReplayDefault(enabled: boolean): void {
+    if (!this.ownerUuid) return;
+    this.localStore.saveReplayDefault(this.ownerUuid, enabled);
+    this.recordReplaysByDefault = enabled;
   }
 
   private loadPublicReplays(): void {

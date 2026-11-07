@@ -41,6 +41,12 @@ export class HlsPlayerComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   onMediaError(): void {
     if (this.ready && this.video.nativeElement.error) {
+      const mediaError = this.video.nativeElement.error;
+      console.error('[HLS player] Video element error', {
+        code: mediaError?.code,
+        message: mediaError?.message,
+        ...this.playbackDiagnostics(),
+      });
       this.error.set('This video could not be played. Please try again later.');
     }
   }
@@ -58,8 +64,25 @@ export class HlsPlayerComponent implements AfterViewInit, OnChanges, OnDestroy {
       if (Hls.isSupported()) {
         const hls = this.hls = new Hls();
         hls.on(Hls.Events.ERROR, (_, data) => {
-          if (data.fatal && revision === this.revision) {
+          if (!this.ready || revision !== this.revision) return;
+          const diagnostics = {
+            type: data.type,
+            details: data.details,
+            fatal: data.fatal,
+            reason: data.reason,
+            error: data.error,
+            segmentUrl: data.frag?.url,
+            segmentNumber: data.frag?.sn,
+            segmentStart: data.frag?.start,
+            segmentDuration: data.frag?.duration,
+            response: data.response,
+            ...this.playbackDiagnostics(),
+          };
+          if (data.fatal) {
+            console.error('[HLS player] Fatal HLS error', diagnostics);
             this.error.set('This video could not be played. Please try again later.');
+          } else {
+            console.warn('[HLS player] HLS warning', diagnostics);
           }
         });
         hls.loadSource(this.src);
@@ -69,11 +92,28 @@ export class HlsPlayerComponent implements AfterViewInit, OnChanges, OnDestroy {
       } else {
         this.error.set('This browser does not support HLS video playback.');
       }
-    } catch {
+    } catch (error) {
       if (this.ready && revision === this.revision) {
+        console.error('[HLS player] Player loading failed', error, this.playbackDiagnostics());
         this.error.set('The video player could not be loaded. Please reload the page.');
       }
     }
+  }
+
+  private playbackDiagnostics() {
+    const video = this.video.nativeElement;
+    return {
+      source: this.src,
+      currentTime: video.currentTime,
+      buffered: Array.from({length: video.buffered.length}, (_, index) => ({
+        start: video.buffered.start(index),
+        end: video.buffered.end(index),
+      })),
+      readyState: video.readyState,
+      networkState: video.networkState,
+      paused: video.paused,
+      seeking: video.seeking,
+    };
   }
 
   private reset(): void {

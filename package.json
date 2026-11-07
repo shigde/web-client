@@ -55,7 +55,7 @@
   },
   "dependencies": {
     "@moq/watch": "^0.2.11",
-    "@shigde/core": "1.4.0",
+    "@shigde/core": "file:.yalc/@shigde/core",
     "hls.js": "^1.7.4"
   }
 }

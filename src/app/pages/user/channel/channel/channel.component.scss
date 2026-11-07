@@ -41,7 +41,46 @@
 .channel-tabs .nav-link:hover { color: var(--bs-body-color); }
 .channel-tabs .nav-link:focus-visible { outline: 2px solid var(--bs-primary); outline-offset: -2px; }
 .channel-owner-panel { padding-top: 24px; }
-.channel-owner-panel h2 { font-size: 1.25rem; }
+.channel-dashboard-streams {
+  --dashboard-heading-color: #00778a;
+  margin-top: 16px;
+  li + li { border-top: 1px solid var(--bs-border-color); }
+  li:last-child { padding-bottom: 0; }
+}
+.channel-replay-settings {
+  --dashboard-heading-color: #8337cc;
+}
+.channel-dashboard-streams, .channel-replay-settings {
+  padding: 14px;
+  border-radius: var(--bs-border-radius);
+  background: var(--bs-tertiary-bg);
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0 0 12px;
+    color: var(--dashboard-heading-color);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  .bi {
+    display: grid;
+    place-items: center;
+    flex: 0 0 30px;
+    height: 30px;
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--dashboard-heading-color) 13%, transparent);
+    font-size: 16px;
+  }
+}
+:host-context([data-bs-theme="dark"]) {
+  .channel-dashboard-streams { --dashboard-heading-color: #35d3f2; }
+  .channel-replay-settings { --dashboard-heading-color: #ba79ff; }
+}
 .channel-owner-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 16px 0; overflow-wrap: anywhere; }
 
 .channel-owner { position: relative; z-index: 1; margin: -46px 28px 0; display: flex; align-items: flex-start; gap: 6px; }
