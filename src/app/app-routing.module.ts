@@ -5,16 +5,14 @@ import {RouterModule, Routes} from '@angular/router';
 import {DashboardComponent} from './pages/dashboard/dashboard.component';
 import {DashboardComponent as AdminDashboardComponent} from './pages/admin/dashboard/dashboard.component';
 import {UserAccessGuard} from './guards/user-access-guard.service';
-import {LoginComponent} from './pages/auth/login/login.component';
 import {LobbyEntryComponent} from './pages/lobby-entry/lobby-entry.component';
 import {lobbyLeaveGuard} from './guards/lobby-leave.guard';
 import {AdminAccessGuard} from './guards/admin-access-guard.service';
 
-import {SignupComponent} from './pages/auth/signup/signup.component';
-import {ActivateAccountComponent} from './pages/auth/activate-account/activate-account.component';
-import {ForgotPasswordComponent} from './pages/auth/forgot-password/forgot-password.component';
-import {ForgotPasswordMailComponent} from './pages/auth/forgot-password-mail/forgot-password-mail.component';
-import {UpdatePasswordComponent} from './pages/auth/update-password/update-password.component';
+import {
+  ActivateAccountComponent, DeviceCameraComponent, ForgotPasswordComponent,
+  ForgotPasswordMailComponent, LoginComponent, SignupComponent,
+} from './pages/auth';
 import {SettingsComponent} from './pages/user/settings/settings.component';
 import {ChannelComponent} from './pages/user/channel/channel/channel.component';
 import {EditChannelComponent} from './pages/user/channel/edit-channel/edit-channel.component';
@@ -37,6 +35,7 @@ const routes: Routes = [
   {path: 'stream/:streamUuid/edit', component: EditStreamComponent, canActivate: [UserAccessGuard]},
   {path: 'channel/:channelUuid/stream/:streamUuid/lobby', component: LobbyEntryComponent, canActivate: [UserAccessGuard], canDeactivate: [lobbyLeaveGuard]},
   {path: 'login', component: LoginComponent},
+  {path: 'camera', component: DeviceCameraComponent},
   {path: 'forgotPasswordMail', component: ForgotPasswordMailComponent},
   {path: 'forgotPassword/:token', component: ForgotPasswordComponent},
   {path: 'signup', component: SignupComponent},

@@ -131,6 +131,10 @@
                        [checked]="recordReplaysByDefault" (change)="setReplayDefault(replayDefault.checked)">
               </label>
             </section>
+            <section class="channel-dashboard-devices" aria-labelledby="channel-dashboard-devices-heading">
+              <h3 id="channel-dashboard-devices-heading"><i class="bi bi-camera-video" aria-hidden="true"></i>Devices</h3>
+              <shig-device-management></shig-device-management>
+            </section>
             <section class="channel-dashboard-streams" aria-labelledby="channel-dashboard-streams-heading">
               <h3 id="channel-dashboard-streams-heading"><i class="bi bi-broadcast" aria-hidden="true"></i>Stream overview</h3>
               <p class="text-body-secondary mb-0">{{ streams.length }} streams in your channel</p>

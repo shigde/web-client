@@ -50,7 +50,11 @@
 .channel-replay-settings {
   --dashboard-heading-color: #8337cc;
 }
-.channel-dashboard-streams, .channel-replay-settings {
+.channel-dashboard-devices {
+  --dashboard-heading-color: var(--bs-success-text-emphasis);
+  margin-top: 16px;
+}
+.channel-dashboard-streams, .channel-replay-settings, .channel-dashboard-devices {
   padding: 14px;
   border-radius: var(--bs-border-radius);
   background: var(--bs-tertiary-bg);

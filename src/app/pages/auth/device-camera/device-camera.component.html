@@ -1,0 +1,21 @@
+<section class="modal modal-sheet position-static d-block bg-body-secondary p-4 py-md-5"
+         aria-labelledby="device-camera-heading">
+  <div class="modal-dialog w-100">
+    <div class="modal-content w-100 rounded-3 shadow">
+      <div class="modal-header p-4 border-bottom-0">
+        <h1 id="device-camera-heading" class="fw-bold mb-0 fs-2">Shig Camera</h1>
+      </div>
+      <div class="modal-body px-4 pb-4 pt-0">
+        <p role="status">{{ status }}</p>
+        @if (error) { <p class="text-danger" role="alert">{{ error }}</p> }
+        @if (inviteToken) {
+          <button type="button" class="btn btn-primary" [disabled]="busy" (click)="authorize()">Authorize device</button>
+        }
+        @if (session) {
+          <p class="text-body-secondary">Camera streaming is not available yet.</p>
+          <button type="button" class="btn btn-outline-secondary" [disabled]="busy" (click)="disconnect()">End session</button>
+        }
+      </div>
+    </div>
+  </div>
+</section>

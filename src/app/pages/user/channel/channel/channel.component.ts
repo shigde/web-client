@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, DestroyRef} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Channel, ChannelService, LocalStoreService, RecordedVideo, RecordedVideoPreview, StreamPreview, StreamService, SessionService, VideoService} from '@shigde/core';
+import {Channel, ChannelService, DeviceManagementComponent, LocalStoreService, RecordedVideo, RecordedVideoPreview, StreamPreview, StreamService, SessionService, VideoService} from '@shigde/core';
 import {catchError, filter, Observable, of, take, tap} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AlertKind} from '../../../../entities/alert';
@@ -24,7 +24,7 @@ export interface CompChannel extends Channel {
   selector: 'app-channel',
   imports: [
     NgOptimizedImage, DatePipe, NgTemplateOutlet, NgbNavModule, AvatarComponent,
-    StreamPreviewCardComponent, ReplayActionsComponent, ReplayStatusComponent
+    StreamPreviewCardComponent, ReplayActionsComponent, ReplayStatusComponent, DeviceManagementComponent
   ],
   templateUrl: './channel.component.html',
   styleUrl: './channel.component.scss'
