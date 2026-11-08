@@ -1,9 +1,9 @@
 
 <main class="flex-grow-1">
-  <app-alert></app-alert>
-  <app-header></app-header>
-  <!-- Resources -->
+  @if (!devicePage) {
+    <app-alert></app-alert>
+    <app-header></app-header>
+    <shig-loading-indicator></shig-loading-indicator>
+  }
   <router-outlet></router-outlet>
-  <shig-loading-indicator></shig-loading-indicator>
-
 </main>

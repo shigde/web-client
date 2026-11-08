@@ -35,7 +35,7 @@ const routes: Routes = [
   {path: 'stream/:streamUuid/edit', component: EditStreamComponent, canActivate: [UserAccessGuard]},
   {path: 'channel/:channelUuid/stream/:streamUuid/lobby', component: LobbyEntryComponent, canActivate: [UserAccessGuard], canDeactivate: [lobbyLeaveGuard]},
   {path: 'login', component: LoginComponent},
-  {path: 'camera', component: DeviceCameraComponent},
+  {path: 'camera', component: DeviceCameraComponent, data: {deviceSession: true}},
   {path: 'forgotPasswordMail', component: ForgotPasswordMailComponent},
   {path: 'forgotPassword/:token', component: ForgotPasswordComponent},
   {path: 'signup', component: SignupComponent},

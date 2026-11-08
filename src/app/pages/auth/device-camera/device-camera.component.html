@@ -1,21 +1,33 @@
-<section class="modal modal-sheet position-static d-block bg-body-secondary p-4 py-md-5"
+<section class="min-vh-100 d-flex align-items-start justify-content-center bg-body-secondary px-3 py-5"
          aria-labelledby="device-camera-heading">
-  <div class="modal-dialog w-100">
-    <div class="modal-content w-100 rounded-3 shadow">
-      <div class="modal-header p-4 border-bottom-0">
-        <h1 id="device-camera-heading" class="fw-bold mb-0 fs-2">Shig Camera</h1>
-      </div>
-      <div class="modal-body px-4 pb-4 pt-0">
-        <p role="status">{{ status }}</p>
-        @if (error) { <p class="text-danger" role="alert">{{ error }}</p> }
-        @if (inviteToken) {
-          <button type="button" class="btn btn-primary" [disabled]="busy" (click)="authorize()">Authorize device</button>
+  <div class="card shadow w-100" style="max-width: 32rem">
+    <div class="card-body p-4">
+      <h1 id="device-camera-heading" class="fw-bold mb-0 fs-2">Shig Camera</h1>
+      <p class="d-flex align-items-center gap-2 mt-3 mb-0" role="status">
+        @if (busy || (media && !connected)) {
+          <span class="spinner-border spinner-border-sm flex-shrink-0" aria-hidden="true"></span>
         }
-        @if (session) {
-          <p class="text-body-secondary">Camera streaming is not available yet.</p>
-          <button type="button" class="btn btn-outline-secondary" [disabled]="busy" (click)="disconnect()">End session</button>
-        }
-      </div>
+        <span>{{ status }}</span>
+      </p>
+      @if (error) { <p class="text-danger mt-2 mb-0" role="alert">{{ error }}</p> }
+      @if (media) {
+        <video class="w-100 rounded mt-3" [srcObject]="media" autoplay playsinline [muted]="true"
+               aria-label="Local camera preview"></video>
+      }
+      @if (retryAvailable || session) {
+        <div class="d-flex flex-wrap gap-2 mt-3">
+          @if (retryAvailable && !busy) {
+            <button type="button" class="btn btn-primary" (click)="connect()">Try again</button>
+          }
+          @if (connected) {
+            <button type="button" class="btn btn-outline-secondary" [attr.aria-pressed]="microphoneMuted"
+                    (click)="toggleMicrophone()">{{ microphoneMuted ? 'Unmute microphone' : 'Mute microphone' }}</button>
+          }
+          @if (session) {
+            <button type="button" class="btn btn-outline-secondary" [disabled]="busy" (click)="disconnect()">End session</button>
+          }
+        </div>
+      }
     </div>
   </div>
 </section>
