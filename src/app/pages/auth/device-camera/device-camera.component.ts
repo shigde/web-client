@@ -4,7 +4,9 @@ import {ChangeDetectorRef, Component, DestroyRef, HostListener, inject, OnDestro
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ActivatedRoute} from '@angular/router';
 import {DeviceConnection, DeviceService, DeviceSession} from '@shigde/core';
-import {finalize, lastValueFrom} from 'rxjs';
+import {lastValueFrom, timeout} from 'rxjs';
+
+type CameraFacing = 'environment' | 'user';
 
 @Component({
   selector: 'app-device-camera',
@@ -20,7 +22,10 @@ export class DeviceCameraComponent implements OnInit, OnDestroy {
   protected media: MediaStream | null = null;
   protected connected = false;
   protected microphoneMuted = false;
+  protected cameraFacing: CameraFacing = 'environment';
+  protected switchingCamera = false;
   protected retryAvailable = false;
+  protected closed = false;
 
   private connection?: DeviceConnection;
   private joinTimeout?: ReturnType<typeof setTimeout>;
@@ -63,12 +68,16 @@ export class DeviceCameraComponent implements OnInit, OnDestroy {
       if (!session) return;
       this.status = 'Requesting camera and microphone access…';
       this.cdr.markForCheck();
-      const media = await navigator.mediaDevices.getUserMedia({video: true, audio: true});
+      const media = await navigator.mediaDevices.getUserMedia({
+        video: {facingMode: {ideal: 'environment'}},
+        audio: true,
+      });
       if (this.session !== session) {
         media.getTracks().forEach(track => track.stop());
         return;
       }
       this.media = media;
+      this.cameraFacing = media.getVideoTracks()[0]?.getSettings().facingMode === 'user' ? 'user' : 'environment';
       this.status = 'Connecting to the lobby…';
       this.cdr.markForCheck();
       const connection = new DeviceConnection(() => {
@@ -80,7 +89,7 @@ export class DeviceCameraComponent implements OnInit, OnDestroy {
       }, () => {
         if (this.connection !== connection) return;
         this.endSessionOnExit();
-        this.status = 'Camera disconnected. Ask the host for a new invitation.';
+        this.status = 'The connection to the lobby ended. You can close this page.';
         this.cdr.markForCheck();
       });
       this.connection = connection;
@@ -118,30 +127,91 @@ export class DeviceCameraComponent implements OnInit, OnDestroy {
     }
   }
 
+  protected async switchCamera(facing: CameraFacing): Promise<void> {
+    const {connection, media} = this;
+    const previousTrack = media?.getVideoTracks()[0];
+    if (!connection || !media || !previousTrack || !this.connected || this.switchingCamera) return;
+    if (facing === this.cameraFacing && previousTrack.readyState === 'live') return;
+
+    this.switchingCamera = true;
+    this.error = '';
+    const previousDevice = previousTrack.getSettings().deviceId;
+    // Some phones can only open one camera at a time. Keep the microphone running.
+    previousTrack.stop();
+    try {
+      await this.replaceCamera(connection, media, {facingMode: {exact: facing}}, facing);
+    } catch {
+      if (this.connection !== connection) return;
+      try {
+        const constraints = previousDevice ? {deviceId: {exact: previousDevice}} : {facingMode: {ideal: this.cameraFacing}};
+        await this.replaceCamera(connection, media, constraints, this.cameraFacing);
+        if (this.connection === connection) this.error = 'Could not switch cameras. The previous camera was restored.';
+      } catch {
+        if (this.connection === connection) this.error = 'Could not open the camera. Select a camera to try again.';
+      }
+    } finally {
+      this.switchingCamera = false;
+      if (!this.destroyRef.destroyed) this.cdr.markForCheck();
+    }
+  }
+
+  private async replaceCamera(
+    connection: DeviceConnection, media: MediaStream, constraints: MediaTrackConstraints, facing: CameraFacing,
+  ): Promise<void> {
+    const camera = await navigator.mediaDevices.getUserMedia({video: constraints, audio: false});
+    let adopted = false;
+    try {
+      if (this.connection !== connection) return;
+      const video = camera.getVideoTracks()[0];
+      if (!video) throw new Error('No camera track was returned.');
+      const replacement = new MediaStream([video, ...media.getAudioTracks()]);
+      await connection.replaceStream(replacement);
+      if (this.connection !== connection) return;
+      this.media = replacement;
+      const actualFacing = video.getSettings().facingMode;
+      this.cameraFacing = actualFacing === 'user' || actualFacing === 'environment' ? actualFacing : facing;
+      adopted = true;
+    } finally {
+      if (!adopted) camera.getTracks().forEach(track => track.stop());
+    }
+  }
+
   toggleMicrophone(): void {
     const track = this.media?.getAudioTracks()[0];
     if (!track || !this.connection || !this.connected) return;
-    this.microphoneMuted = !this.microphoneMuted;
-    this.connection.mute(track, this.microphoneMuted);
+    this.error = '';
+    try {
+      this.connection.mute(track, track.enabled);
+    } catch {
+      this.error = 'The microphone changed locally, but the lobby could not be notified.';
+    } finally {
+      this.microphoneMuted = !track.enabled;
+      this.cdr.markForCheck();
+    }
   }
 
-  disconnect(): void {
-    if (!this.session || this.busy) return;
+  async disconnect(): Promise<void> {
+    const session = this.session;
+    if (!session || this.busy) return;
     this.busy = true;
     this.error = '';
     this.retryAvailable = false;
     this.stopCamera();
     this.status = 'Ending device session…';
-    this.devices.disconnect(this.session.token).pipe(
-      takeUntilDestroyed(this.destroyRef),
-      finalize(() => this.busy = false),
-    ).subscribe({
-      next: () => this.clearSession(),
-      error: () => {
-        this.status = 'Camera stopped.';
-        this.error = 'Could not end the session. Please try again.';
-      },
-    });
+    try {
+      await lastValueFrom(this.devices.disconnect(session.token).pipe(
+        timeout(5000),
+        takeUntilDestroyed(this.destroyRef),
+      ));
+    } catch (error) {
+      if (!this.exited && !(error instanceof HttpErrorResponse && error.status === 401)) {
+        this.devices.disconnectOnPageExit(session.token);
+        this.error = 'The server did not confirm the end of the session.';
+      }
+    } finally {
+      if (!this.exited) this.clearSession();
+      if (!this.destroyRef.destroyed) this.cdr.markForCheck();
+    }
   }
 
   ngOnDestroy(): void {
@@ -158,20 +228,24 @@ export class DeviceCameraComponent implements OnInit, OnDestroy {
   }
 
   private clearSession(): void {
+    this.exited = true;
     this.stopCamera();
+    this.inviteToken = undefined;
     this.session = undefined;
+    this.busy = false;
     this.retryAvailable = false;
-    this.status = 'Device session ended.';
+    this.closed = true;
+    this.status = 'Your camera and microphone are off. You can close this page.';
   }
 
   private stopCamera(): void {
     clearTimeout(this.joinTimeout);
     const connection = this.connection;
     this.connection = undefined;
-    connection?.close();
     this.media?.getTracks().forEach(track => track.stop());
     this.media = null;
     this.connected = false;
     this.microphoneMuted = false;
+    void connection?.close().catch(error => console.warn('Could not close camera connection', error));
   }
 }

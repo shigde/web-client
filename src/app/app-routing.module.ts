@@ -10,7 +10,7 @@ import {lobbyLeaveGuard} from './guards/lobby-leave.guard';
 import {AdminAccessGuard} from './guards/admin-access-guard.service';
 
 import {
-  ActivateAccountComponent, DeviceCameraComponent, ForgotPasswordComponent,
+  ActivateAccountComponent, DeviceCameraClosedComponent, DeviceCameraComponent, ForgotPasswordComponent,
   ForgotPasswordMailComponent, LoginComponent, SignupComponent,
 } from './pages/auth';
 import {SettingsComponent} from './pages/user/settings/settings.component';
@@ -36,6 +36,7 @@ const routes: Routes = [
   {path: 'channel/:channelUuid/stream/:streamUuid/lobby', component: LobbyEntryComponent, canActivate: [UserAccessGuard], canDeactivate: [lobbyLeaveGuard]},
   {path: 'login', component: LoginComponent},
   {path: 'camera', component: DeviceCameraComponent, data: {deviceSession: true}},
+  {path: 'camera/closed', component: DeviceCameraClosedComponent, data: {deviceSession: true}},
   {path: 'forgotPasswordMail', component: ForgotPasswordMailComponent},
   {path: 'forgotPassword/:token', component: ForgotPasswordComponent},
   {path: 'signup', component: SignupComponent},
