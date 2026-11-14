@@ -1,5 +1,6 @@
 import {MessagesComponent} from './pages/messages/messages.component';
 import {UsersComponent as AdminUsersComponent} from './pages/admin/users/users.component';
+import {StreamingSettingsComponent as AdminStreamingSettingsComponent} from './pages/admin/settings/streaming-settings.component';
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {DashboardComponent} from './pages/dashboard/dashboard.component';
@@ -8,6 +9,7 @@ import {UserAccessGuard} from './guards/user-access-guard.service';
 import {LobbyEntryComponent} from './pages/lobby-entry/lobby-entry.component';
 import {lobbyLeaveGuard} from './guards/lobby-leave.guard';
 import {AdminAccessGuard} from './guards/admin-access-guard.service';
+import {streamingPermissionGuard} from './guards/streaming-permission-guard.service';
 
 import {
   ActivateAccountComponent, DeviceCameraClosedComponent, DeviceCameraComponent, ForgotPasswordComponent,
@@ -24,16 +26,17 @@ const routes: Routes = [
   {path: 'dashboard', component: DashboardComponent},
   {path: 'admin/dashboard', redirectTo: 'admin/monitoring', pathMatch: 'full'},
   {path: 'admin/users', component: AdminUsersComponent, canActivate: [AdminAccessGuard]},
+  {path: 'admin/settings/streaming', component: AdminStreamingSettingsComponent, canActivate: [AdminAccessGuard]},
   {path: 'admin/monitoring', component: AdminDashboardComponent, canActivate: [AdminAccessGuard]},
   {path: 'messages', component: MessagesComponent, canActivate: [UserAccessGuard]},
   {path: 'settings', component: SettingsComponent, canActivate: [UserAccessGuard]},
   {path: 'channel/:channelUuid', component: ChannelComponent},
   {path: 'channel/:channelUuid/edit', component: EditChannelComponent, canActivate: [UserAccessGuard]},
-  {path: 'stream/new', component: EditStreamComponent, canActivate: [UserAccessGuard]},
+  {path: 'stream/new', component: EditStreamComponent, canActivate: [UserAccessGuard, streamingPermissionGuard]},
   {path: 'stream/:streamUuid', component: StreamComponent},
   {path: 'video/:streamUuid', component: StreamComponent, data: {type: 'video'}},
   {path: 'stream/:streamUuid/edit', component: EditStreamComponent, canActivate: [UserAccessGuard]},
-  {path: 'channel/:channelUuid/stream/:streamUuid/lobby', component: LobbyEntryComponent, canActivate: [UserAccessGuard], canDeactivate: [lobbyLeaveGuard]},
+  {path: 'channel/:channelUuid/stream/:streamUuid/lobby', component: LobbyEntryComponent, canActivate: [UserAccessGuard, streamingPermissionGuard], canDeactivate: [lobbyLeaveGuard]},
   {path: 'login', component: LoginComponent},
   {path: 'camera', component: DeviceCameraComponent, data: {deviceSession: true}},
   {path: 'camera/closed', component: DeviceCameraClosedComponent, data: {deviceSession: true}},

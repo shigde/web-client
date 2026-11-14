@@ -1,0 +1,26 @@
+<main class="container px-4 py-5">
+  <p class="text-body-secondary mb-1">Admin · Settings</p>
+  <h2 class="border-bottom pb-3">Streaming permissions</h2>
+  <p>Choose the default publishing rule for every user channel. Admin accounts can always publish. Individual channel approvals and blocks are managed in Users.</p>
+  @if (error) { <div class="alert alert-danger" role="alert">{{ error }}</div> }
+  @if (message) { <div class="alert alert-success" role="status">{{ message }}</div> }
+  @if (loading) { <p role="status">Loading settings…</p> }
+  @else {
+    <fieldset class="vstack gap-3" [disabled]="saving">
+      <legend class="fs-5">Default for user channels</legend>
+      <label class="card p-3">
+        <span><input class="form-check-input me-2" type="radio" name="mode" value="request" [(ngModel)]="mode"><strong>Approval required (recommended)</strong></span>
+        <span class="text-body-secondary ms-4">Users must request permission before they can start a live stream. Existing published recordings remain published.</span>
+      </label>
+      <label class="card p-3">
+        <span><input class="form-check-input me-2" type="radio" name="mode" value="open" [(ngModel)]="mode"><strong>Open</strong></span>
+        <span class="text-body-secondary ms-4">All user channels may publish immediately. A channel explicitly blocked by an admin remains blocked.</span>
+      </label>
+      <label class="card p-3 border-danger">
+        <span><input class="form-check-input me-2" type="radio" name="mode" value="locked" [(ngModel)]="mode"><strong>Hard lock and reset</strong></span>
+        <span class="text-body-secondary ms-4">Stops all non-admin live streams, unpublishes their public streams and recordings, and clears individual approvals. Users must request again when you switch back to approval required.</span>
+      </label>
+      <div><button type="button" class="btn btn-primary" [disabled]="saving" (click)="save()">{{ saving ? 'Saving…' : 'Save policy' }}</button></div>
+    </fieldset>
+  }
+</main>

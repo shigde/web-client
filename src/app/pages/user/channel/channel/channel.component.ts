@@ -1,6 +1,6 @@
-import {ChangeDetectorRef, Component, DestroyRef} from '@angular/core';
+import {ChangeDetectorRef, Component, DestroyRef, inject} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Channel, ChannelService, DeviceManagementComponent, LocalStoreService, RecordedVideo, RecordedVideoPreview, StreamPreview, StreamService, SessionService, VideoService} from '@shigde/core';
+import {Channel, ChannelService, DeviceManagementComponent, LocalStoreService, RecordedVideo, RecordedVideoPreview, StreamPreview, StreamService, SessionService, UserService, VideoService} from '@shigde/core';
 import {catchError, filter, Observable, of, take, tap} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AlertKind} from '../../../../entities/alert';
@@ -30,6 +30,7 @@ export interface CompChannel extends Channel {
   styleUrl: './channel.component.scss'
 })
 export class ChannelComponent {
+  private readonly userService = inject(UserService, {optional: true});
 
   public hasStreams = false;
   public streams: StreamPreview[] = [];
@@ -42,6 +43,10 @@ export class ChannelComponent {
   isOwner = false;
   activeTab = 'overview';
   recordReplaysByDefault = false;
+  streamingPolicy: {mode: 'request' | 'open' | 'locked'; channelStatus: string; canStream: boolean} | null = null;
+  streamingRequestPending = false;
+  streamingPermissionNotice = false;
+  private streamingPolicyWatching = false;
 
   private readonly channelUuid: string;
   private ownerUuid?: string;
@@ -58,6 +63,8 @@ export class ChannelComponent {
     session: SessionService,
     private readonly destroyRef: DestroyRef) {
     this.channelUuid = activeRoute.snapshot.params['channelUuid'];
+    this.streamingPermissionNotice = activeRoute.snapshot.queryParamMap.get('streamingPermissionRequired') === 'true';
+    if (this.streamingPermissionNotice) this.activeTab = 'dashboard';
     session.getUser().pipe(takeUntilDestroyed(destroyRef)).subscribe(user => {
       this.isOwner = !!user && user.channel_uuid === this.channelUuid;
       this.ownerUuid = this.isOwner ? user?.uuid : undefined;
@@ -65,6 +72,7 @@ export class ChannelComponent {
       if (this.isOwner) this.loadOwnedReplays();
       else this.ownedReplays = [];
       if (!this.isOwner && this.activeTab === 'dashboard') this.activeTab = 'overview';
+      if (this.isOwner) this.loadStreamingPolicy();
       this.cdr.markForCheck();
     });
 
@@ -86,6 +94,25 @@ export class ChannelComponent {
 
     this.getStreams().subscribe();
     this.loadPublicReplays();
+  }
+
+  private loadStreamingPolicy(): void {
+    if (!this.userService || this.streamingPolicyWatching) return;
+    this.streamingPolicyWatching = true;
+    this.userService.watchMyStreamingPolicy().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(state => {
+      if (state.data) this.streamingPolicy = state.data;
+      else if (state.error) this.streamingPolicy = null;
+      this.cdr.markForCheck();
+    });
+  }
+
+  requestStreaming(): void {
+    if (this.streamingRequestPending || !this.userService) return;
+    this.streamingRequestPending = true;
+    this.userService.requestStreaming().pipe(take(1), takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => { this.streamingRequestPending = false; this.userService?.refreshMyStreamingPolicy(); },
+      error: () => { this.streamingRequestPending = false; this.alert.alert(AlertKind.DANGER, 'Could not submit streaming request'); }
+    });
   }
 
   setReplayDefault(enabled: boolean): void {

@@ -2,7 +2,7 @@
   <span class="text-body-secondary">{{ unread }} unread · {{ total }} total</span>
   <div class="d-flex gap-2">
     <button type="button" class="btn btn-sm btn-light text-dark border-secondary" [disabled]="busy" (click)="refresh()">Refresh</button>
-    <button type="button" class="btn btn-sm btn-light text-dark border-secondary" [disabled]="busy || !unread" (click)="readAll()">Mark all read</button>
+    <button type="button" class="btn btn-sm btn-light text-dark border-secondary" [disabled]="busy || !(kind === 'notifications' ? total : unread)" (click)="readAll()">{{ kind === 'notifications' ? 'Clear notifications' : 'Mark all read' }}</button>
   </div>
 </div>
 @if (error) { <p class="alert alert-danger" role="alert">{{ error }}</p> }
@@ -17,9 +17,9 @@
         </div>
         <p class="my-2" style="white-space: pre-wrap; overflow-wrap: anywhere">{{ item.body }}</p>
         <div class="d-flex gap-2 flex-wrap">
-          @if (item.action_path) { <button type="button" class="btn btn-sm btn-primary" [disabled]="busy" (click)="read(item, true)">Open stream</button> }
+          @if (item.action_path) { <button type="button" class="btn btn-sm btn-primary" [disabled]="busy" (click)="read(item, true)">{{ kind === 'notifications' ? 'Open' : 'Open stream' }}</button> }
           @else { <span class="small text-body-secondary">Stream no longer available.</span> }
-          @if (!item.read_at) { <button type="button" class="btn btn-sm btn-light text-dark border-secondary" [disabled]="busy" (click)="read(item)">Mark read</button> }
+          @if (!item.read_at) { <button type="button" class="btn btn-sm btn-light text-dark border-secondary" [disabled]="busy" (click)="read(item)">{{ kind === 'notifications' ? 'Dismiss' : 'Mark read' }}</button> }
         </div>
       </li>
     } @empty { @if (!error) { <li class="list-group-item text-body-secondary">No {{ kind }} yet.</li> } }
