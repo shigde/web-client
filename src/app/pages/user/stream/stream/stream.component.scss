@@ -18,8 +18,8 @@
 .stream-channel { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; max-width: 100%; }
 .stream-channel span { overflow-wrap: anywhere; min-width: 0; }
 .stream-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px; margin-left: auto; }
-.stream-reactions { display: inline-flex; align-items: center; border-radius: var(--bs-border-radius); }
 .stream-stat { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px; padding: 0 10px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.stream-like { min-width: 64px; font-variant-numeric: tabular-nums; }
 .stream-actions .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; white-space: nowrap; }
 .stream-more { min-width: 40px; }
 @media (max-width: 575.98px) {

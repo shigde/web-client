@@ -21,7 +21,7 @@ import {StreamComponent} from './pages/user/stream/stream/stream.component';
 
 const routes: Routes = [
   {path: '', redirectTo: '/dashboard', pathMatch: 'full'},
-  {path: 'dashboard', component: DashboardComponent, canActivate: [UserAccessGuard]},
+  {path: 'dashboard', component: DashboardComponent},
   {path: 'admin/dashboard', redirectTo: 'admin/monitoring', pathMatch: 'full'},
   {path: 'admin/users', component: AdminUsersComponent, canActivate: [AdminAccessGuard]},
   {path: 'admin/monitoring', component: AdminDashboardComponent, canActivate: [AdminAccessGuard]},
@@ -30,8 +30,8 @@ const routes: Routes = [
   {path: 'channel/:channelUuid', component: ChannelComponent},
   {path: 'channel/:channelUuid/edit', component: EditChannelComponent, canActivate: [UserAccessGuard]},
   {path: 'stream/new', component: EditStreamComponent, canActivate: [UserAccessGuard]},
-  {path: 'stream/:streamUuid', component: StreamComponent, canActivate: [UserAccessGuard]},
-  {path: 'video/:streamUuid', component: StreamComponent, data: {type: 'video'}, canActivate: [UserAccessGuard]},
+  {path: 'stream/:streamUuid', component: StreamComponent},
+  {path: 'video/:streamUuid', component: StreamComponent, data: {type: 'video'}},
   {path: 'stream/:streamUuid/edit', component: EditStreamComponent, canActivate: [UserAccessGuard]},
   {path: 'channel/:channelUuid/stream/:streamUuid/lobby', component: LobbyEntryComponent, canActivate: [UserAccessGuard], canDeactivate: [lobbyLeaveGuard]},
   {path: 'login', component: LoginComponent},

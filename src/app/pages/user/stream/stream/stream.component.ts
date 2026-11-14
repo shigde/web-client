@@ -2,9 +2,10 @@ import '@moq/watch/element';
 import '@moq/watch/ui';
 import {ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {catchError, filter, forkJoin, Observable, of, Subject, switchMap, take, takeUntil, tap} from 'rxjs';
+import {Subscription} from 'rxjs';
 import {
   ChannelService, createAppLogger, RecordedVideo, RecordedVideoPreview, RelayService, VideoService,
-  SessionService,
+  SessionService, PollingService, ReactionService, ReactionStats, ViewerService,
   StreamFriendService,
   StreamPreview,
   StreamService,
@@ -50,8 +51,11 @@ export class StreamComponent {
   thumbnail!: string;
   isLive: boolean = false;
   ownedReplay?: RecordedVideo;
+  likedByMe = false;
+  likeBusy = false;
   get isVideo(): boolean { return this.stream?.type === 'video'; }
   private destroy$ = new Subject<void>();
+  private viewerPolling?: Subscription;
 
   constructor(
     private readonly router: Router,
@@ -64,6 +68,9 @@ export class StreamComponent {
     private readonly session: SessionService,
     userService: UserService,
     private readonly videoService: VideoService,
+    private readonly reactionService: ReactionService,
+    private readonly polling: PollingService,
+    private readonly viewerService: ViewerService,
     channelService: ChannelService,
     activeRoute: ActivatedRoute) {
 
@@ -126,6 +133,7 @@ export class StreamComponent {
         }),
         catchError(_ => this.handleError<null>('Could not load user!', null)),
       ).subscribe(() => {
+        this.startContentStatsPolling();
         if (!this.isVideo) this.startAnnouncementPolling();
       });
     }
@@ -140,7 +148,7 @@ export class StreamComponent {
     return {uuid: video.uuid, type: 'video', title: video.title, thumbnail: video.thumbnail,
       description: video.description, support: video.support, durationMs: video.durationMs,
       date: new Date(video.startedAt || video.createdAt), start_time: null, end_time: null,
-      viewer: 0, likes: 0, dislikes: 0, isLive: false,
+      viewer: video.viewCount ?? 0, likes: video.likeCount ?? 0, dislikes: 0, isLive: false,
       ownerName: '', ownerUuid: video.ownerUuid, ownerAvatar: '', channelName: '', channelUuid: video.channelUuid};
   }
 
@@ -148,6 +156,76 @@ export class StreamComponent {
     this.ownedReplay = video;
     this.stream = {...this.stream, title: video.title, description: video.description, support: video.support};
     this.cdr.markForCheck();
+  }
+
+  recordReplayView(): void {
+    if (!this.isVideo) return;
+    this.videoService.recordViewStart(this.streamUuid).pipe(take(1)).subscribe({
+      next: viewCount => {
+        this.stream = {...this.stream, viewer: viewCount};
+        this.cdr.markForCheck();
+      },
+      error: error => this.log.warn('Could not record replay playback start', error),
+    });
+  }
+
+  get canLike(): boolean { return this.session.isAuthenticated(); }
+
+  toggleLike(): void {
+    if (!this.canLike || this.likeBusy || !this.stream) return;
+    this.likeBusy = true;
+    this.reactionService.setLike(this.isVideo ? 'video' : 'stream', this.streamUuid, !this.likedByMe)
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe({
+        next: stats => {
+          this.stream = {...this.stream, likes: stats.likes};
+          this.likedByMe = stats.likedByMe;
+          this.likeBusy = false;
+          this.cdr.markForCheck();
+        },
+        error: error => {
+          this.likeBusy = false;
+          this.log.warn('Could not update like', error);
+          this.cdr.markForCheck();
+        },
+      });
+  }
+
+  private startContentStatsPolling(): void {
+    if (!this.canLike) return;
+    const kind = this.isVideo ? 'video' : 'stream';
+    this.polling.watch<ReactionStats>({
+      key: `content-stats:${kind}:${this.streamUuid}`,
+      intervalMs: 15000,
+      requiresSession: true,
+      batch: {resource: 'content-stats', contentType: kind, uuid: this.streamUuid},
+      load: () => of({likes: this.stream.likes, likedByMe: this.likedByMe}),
+    }).pipe(takeUntil(this.destroy$)).subscribe(state => {
+      if (!state.data) return;
+      this.stream = {...this.stream, likes: state.data.likes};
+      this.likedByMe = state.data.likedByMe;
+      this.cdr.markForCheck();
+    });
+  }
+
+  private startViewerPolling(): void {
+    if (this.viewerPolling || !this.stream) return;
+    this.viewerPolling = this.polling.watch<{viewers: number}>({
+      key: `live-viewers:${this.streamUuid}`,
+      intervalMs: 15000,
+      requiresSession: true,
+      batch: {resource: 'live-viewers', streamUuid: this.streamUuid},
+      load: () => of({viewers: this.stream.viewer}),
+    }).pipe(takeUntil(this.destroy$), map(state => state.data?.viewers ?? 0)).subscribe(viewers => {
+      this.stream = {...this.stream, viewer: viewers};
+      this.cdr.markForCheck();
+    });
+  }
+
+  private stopViewerPolling(): void {
+    this.viewerPolling?.unsubscribe();
+    this.viewerPolling = undefined;
+    if (this.stream) this.stream = {...this.stream, viewer: 0};
   }
 
   replayDeleted(): void {
@@ -168,6 +246,7 @@ export class StreamComponent {
   }
 
   ngOnDestroy() {
+    this.stopViewerPolling();
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -196,6 +275,15 @@ export class StreamComponent {
   }
 
   private startAnnouncementPolling(): void {
+    if (!this.session.isAuthenticated()) {
+      this.viewerPolling = this.viewerService.watchPublicStream(this.streamUuid)
+        .pipe(takeUntil(this.destroy$)).subscribe(status => {
+          this.isLive = status.isLive;
+          this.stream = {...this.stream, viewer: status.viewers};
+          this.cdr.detectChanges();
+        });
+      return;
+    }
     this.relayService
       .pollHasAnnouncement(this.channelUuid, this.streamUuid, 5000)
       .pipe(
@@ -206,6 +294,8 @@ export class StreamComponent {
         next: isLive => {
           this.log.info('Stream is live: ' + isLive);
           this.isLive = isLive;
+          if (isLive) this.startViewerPolling();
+          else this.stopViewerPolling();
           this.cdr.detectChanges();
         },
         error: err => {

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, signal, SimpleChanges, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, signal, SimpleChanges, ViewChild} from '@angular/core';
 import type Hls from 'hls.js';
 
 @Component({
@@ -6,7 +6,7 @@ import type Hls from 'hls.js';
   standalone: true,
   template: `
     <video #video controls playsinline preload="metadata" [poster]="poster"
-           aria-label="Recorded video" (error)="onMediaError()"></video>
+           aria-label="Recorded video" (play)="playStarted.emit()" (error)="onMediaError()"></video>
     @if (error()) { <p class="player-error" role="alert">{{ error() }}</p> }
   `,
   styles: `
@@ -18,6 +18,7 @@ import type Hls from 'hls.js';
 export class HlsPlayerComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input({required: true}) src = '';
   @Input() poster = '';
+  @Output() readonly playStarted = new EventEmitter<void>();
   @ViewChild('video', {static: true}) private video!: ElementRef<HTMLVideoElement>;
   readonly error = signal('');
   private hls?: Hls;
