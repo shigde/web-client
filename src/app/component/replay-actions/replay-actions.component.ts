@@ -21,6 +21,7 @@ export class ReplayActionsComponent implements OnDestroy {
   description = '';
   support = '';
   published = false;
+  isPublic = false;
   private dialog?: NgbModalRef;
 
   constructor(private videos: VideoService, private modal: NgbModal) {}
@@ -44,6 +45,7 @@ export class ReplayActionsComponent implements OnDestroy {
     this.description = this.video.description;
     this.support = this.video.support;
     this.published = !!this.video.publishedAt;
+    this.isPublic = this.video.isPublic;
     this.open(template);
   }
 
@@ -55,12 +57,12 @@ export class ReplayActionsComponent implements OnDestroy {
   save(): void {
     if (this.busy() || !this.title.trim()) return;
     this.update({title: this.title.trim(), description: this.description, support: this.support,
-      published: this.published, ...(this.published ? {isPublic: true} : {})}, true);
+      published: this.published, isPublic: this.isPublic}, true);
   }
 
   setPublished(published: boolean): void {
     if (this.video.status !== 'ready') return;
-    this.update({published, ...(published ? {isPublic: true} : {})});
+    this.update({published});
   }
 
   private update(changes: Parameters<VideoService['update']>[1], close = false): void {

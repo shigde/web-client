@@ -96,7 +96,13 @@ export class StreamComponent {
             : `${window.location.origin}/static/${d.thumbnail}`;
           return d;
         }),
-        catchError(_ => this.handleError<null>('Could not load stream or video!', null)),
+        catchError(error => {
+          if (activeRoute.snapshot.data?.['type'] === 'video' && !session.isAuthenticated() && error?.status === 401) {
+            void router.navigate(['/login'], {queryParams: {returnUrl: router.url}});
+            return of(null);
+          }
+          return this.handleError<null>('Could not load stream or video!', null);
+        }),
         filter(s => s !== null),
         tap((s) => {
           this.hasStream = true;

@@ -10,6 +10,7 @@ import {LobbyEntryComponent} from './pages/lobby-entry/lobby-entry.component';
 import {lobbyLeaveGuard} from './guards/lobby-leave.guard';
 import {AdminAccessGuard} from './guards/admin-access-guard.service';
 import {streamingPermissionGuard} from './guards/streaming-permission-guard.service';
+import {publicDashboardGuard} from './guards/public-dashboard-guard.service';
 
 import {
   ActivateAccountComponent, DeviceCameraClosedComponent, DeviceCameraComponent, ForgotPasswordComponent,
@@ -23,7 +24,7 @@ import {StreamComponent} from './pages/user/stream/stream/stream.component';
 
 const routes: Routes = [
   {path: '', redirectTo: '/dashboard', pathMatch: 'full'},
-  {path: 'dashboard', component: DashboardComponent},
+  {path: 'dashboard', component: DashboardComponent, canActivate: [publicDashboardGuard]},
   {path: 'admin/dashboard', redirectTo: 'admin/monitoring', pathMatch: 'full'},
   {path: 'admin/users', component: AdminUsersComponent, canActivate: [AdminAccessGuard]},
   {path: 'admin/settings/streaming', component: AdminStreamingSettingsComponent, canActivate: [AdminAccessGuard]},

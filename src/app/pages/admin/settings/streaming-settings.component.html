@@ -1,26 +1,41 @@
 <main class="container px-4 py-5">
-  <p class="text-body-secondary mb-1">Admin · Settings</p>
-  <h2 class="border-bottom pb-3">Streaming permissions</h2>
-  <p>Choose the default publishing rule for every user channel. Admin accounts can always publish. Individual channel approvals and blocks are managed in Users.</p>
+  <p class="text-body-secondary mb-1">Admin</p>
+  <h2 class="border-bottom pb-3">Server settings</h2>
+  <p class="text-body-secondary">These are global settings for this server.</p>
   @if (error) { <div class="alert alert-danger" role="alert">{{ error }}</div> }
   @if (message) { <div class="alert alert-success" role="status">{{ message }}</div> }
   @if (loading) { <p role="status">Loading settings…</p> }
   @else {
-    <fieldset class="vstack gap-3" [disabled]="saving">
-      <legend class="fs-5">Default for user channels</legend>
-      <label class="card p-3">
-        <span><input class="form-check-input me-2" type="radio" name="mode" value="request" [(ngModel)]="mode"><strong>Approval required (recommended)</strong></span>
-        <span class="text-body-secondary ms-4">Users must request permission before they can start a live stream. Existing published recordings remain published.</span>
-      </label>
-      <label class="card p-3">
-        <span><input class="form-check-input me-2" type="radio" name="mode" value="open" [(ngModel)]="mode"><strong>Open</strong></span>
-        <span class="text-body-secondary ms-4">All user channels may publish immediately. A channel explicitly blocked by an admin remains blocked.</span>
-      </label>
-      <label class="card p-3 border-danger">
-        <span><input class="form-check-input me-2" type="radio" name="mode" value="locked" [(ngModel)]="mode"><strong>Hard lock and reset</strong></span>
-        <span class="text-body-secondary ms-4">Stops all non-admin live streams, unpublishes their public streams and recordings, and clears individual approvals. Users must request again when you switch back to approval required.</span>
-      </label>
-      <div><button type="button" class="btn btn-primary" [disabled]="saving" (click)="save()">{{ saving ? 'Saving…' : 'Save policy' }}</button></div>
-    </fieldset>
+    <section class="card p-4 mb-4" aria-labelledby="public-content-heading">
+      <h3 id="public-content-heading" class="fs-4 fw-semibold lh-sm mb-2">Public content</h3>
+      <p class="text-body-secondary mt-0 mb-3">When public access is disabled, all existing streams and replays become private. Published replays stay published and remain visible to logged-in users. There is no public dashboard, so visitors must log in. Turning public access back on leaves existing content private. New streams default to public.</p>
+      <div class="form-switch border rounded p-3 d-flex align-items-center justify-content-between gap-3 mb-3">
+        <div>
+          <label class="form-check-label fw-semibold" for="public-content-switch">Allow public content</label>
+          <p class="small text-body-secondary mb-0">Let anonymous visitors view public streams and replays.</p>
+        </div>
+        <input id="public-content-switch" class="form-check-input m-0 flex-shrink-0" type="checkbox" role="switch" [(ngModel)]="publicContentEnabled" [disabled]="saving">
+      </div>
+      <div class="d-flex justify-content-end"><button type="button" class="btn btn-primary" [disabled]="saving" (click)="savePublicContent()">{{ saving ? 'Saving…' : 'Save public access' }}</button></div>
+    </section>
+    <section class="card p-4 mb-4" aria-labelledby="channel-policy-heading">
+      <fieldset class="border-0 p-0 m-0" [disabled]="saving">
+        <legend id="channel-policy-heading" class="fs-4 fw-semibold lh-sm mb-2 p-0">Streaming permissions</legend>
+        <p class="text-body-secondary mt-0 mb-3">This is the server-wide default for user channels. Individual channel settings are managed in <a routerLink="/admin/users">Users</a>.</p>
+        <label class="card p-3 mb-3">
+          <span><input class="form-check-input me-2" type="radio" name="mode" value="request" [(ngModel)]="mode"><span class="fw-semibold">Approval required (recommended)</span></span>
+          <span class="text-body-secondary ms-4">Users must request permission before they can start a live stream. When this setting changes, the new permission rule applies to future live streams. Already published content remains available without additional approval.</span>
+        </label>
+        <label class="card p-3 mb-3">
+          <span><input class="form-check-input me-2" type="radio" name="mode" value="open" [(ngModel)]="mode"><span class="fw-semibold">All user channels are allowed to stream</span></span>
+          <span class="text-body-secondary ms-4">No permission request is needed. Channels blocked by an admin remain blocked.</span>
+        </label>
+        <label class="card p-3 border-danger mb-3">
+          <span><input class="form-check-input me-2" type="radio" name="mode" value="locked" [(ngModel)]="mode"><span class="fw-semibold">No user channels allowed to stream</span></span>
+          <span class="text-body-secondary ms-4">No user channels are allowed to stream. This resets all individual streaming permissions, stops any live streams, and unpublishes public streams and recordings. When you switch back to approval required, users must request permission again.</span>
+        </label>
+        <div class="d-flex justify-content-end"><button type="button" class="btn btn-primary" [disabled]="saving" (click)="save()">{{ saving ? 'Saving…' : 'Save policy' }}</button></div>
+      </fieldset>
+    </section>
   }
 </main>

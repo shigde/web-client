@@ -154,6 +154,7 @@
           <label for="public" class="form-label">Is Public</label>
           <div class="editor-field">
             <input class="form-check-input" type="checkbox" id="public" formControlName="isPublic">
+            @if (!publicContentEnabled) { <div class="form-text">Public content is disabled by the server administrator.</div> }
           </div>
         </div>
       </div>
