@@ -4,7 +4,7 @@ import {ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA} from '@angular/cor
 import {catchError, filter, forkJoin, Observable, of, Subject, switchMap, take, takeUntil, tap} from 'rxjs';
 import {Subscription} from 'rxjs';
 import {
-  ChannelService, createAppLogger, RecordedVideo, RecordedVideoPreview, RelayService, VideoService,
+  ChannelService, createAppLogger, RecordedVideo, RecordedVideoPreview, VideoService,
   SessionService, PollingService, ReactionService, ReactionStats, ViewerService,
   StreamFriendService,
   StreamPreview,
@@ -60,7 +60,6 @@ export class StreamComponent {
   constructor(
     private readonly router: Router,
     private readonly streamService: StreamService,
-    private readonly relayService: RelayService,
     private readonly alert: AlertService,
     private readonly cdr: ChangeDetectorRef,
     runtime: RuntimeConfigService,
@@ -117,7 +116,9 @@ export class StreamComponent {
               filter((u): u is User => !!u),
               take(1)
             ) : of(null),
-            friends: session.isAuthenticated() && stream.type !== 'video' ? guestService.getStreamFriendsList(stream.uuid) : of([])
+            friends: session.isAuthenticated() && stream.type !== 'video'
+              ? guestService.getStreamFriendsList(stream.uuid).pipe(catchError(() => of([])))
+              : of([])
           })
         ),
 
@@ -216,14 +217,20 @@ export class StreamComponent {
 
   private startViewerPolling(): void {
     if (this.viewerPolling || !this.stream) return;
-    this.viewerPolling = this.polling.watch<{viewers: number}>({
+    this.viewerPolling = this.polling.watch<{viewers: number; isLive: boolean}>({
       key: `live-viewers:${this.streamUuid}`,
-      intervalMs: 15000,
+      intervalMs: 5000,
       requiresSession: true,
       batch: {resource: 'live-viewers', streamUuid: this.streamUuid},
-      load: () => of({viewers: this.stream.viewer}),
-    }).pipe(takeUntil(this.destroy$), map(state => state.data?.viewers ?? 0)).subscribe(viewers => {
-      this.stream = {...this.stream, viewer: viewers};
+      load: () => of({viewers: this.stream.viewer, isLive: this.isLive}),
+    }).pipe(takeUntil(this.destroy$)).subscribe(state => {
+      if (state.error) {
+        this.log.error('Live viewer polling failed', state.error);
+        return;
+      }
+      if (state.data === null) return;
+      this.isLive = state.data.isLive;
+      this.stream = {...this.stream, viewer: state.data.viewers};
       this.cdr.markForCheck();
     });
   }
@@ -290,24 +297,7 @@ export class StreamComponent {
         });
       return;
     }
-    this.relayService
-      .pollHasAnnouncement(this.channelUuid, this.streamUuid, 5000)
-      .pipe(
-        takeUntil(this.destroy$),
-        filter(isLive => isLive !== this.isLive)
-      )
-      .subscribe({
-        next: isLive => {
-          this.log.info('Stream is live: ' + isLive);
-          this.isLive = isLive;
-          if (isLive) this.startViewerPolling();
-          else this.stopViewerPolling();
-          this.cdr.detectChanges();
-        },
-        error: err => {
-          this.log.error('Polling error', err);
-        }
-      });
+    this.startViewerPolling();
   }
 
 }
