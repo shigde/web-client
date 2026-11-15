@@ -29,7 +29,10 @@
   @if (!videosLoaded) {
     <p class="text-body-secondary" role="status">Loading replays…</p>
   } @else if (videos.length === 0) {
-    <p class="text-body-secondary">No published replays yet.</p>
+    <div class="dashboard-empty dashboard-empty-replays bg-body border rounded-2">
+      <h3>No published replays yet</h3>
+      <p class="text-body-secondary">Published replays will appear here when they become available.</p>
+    </div>
   } @else {
     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3 g-lg-4">
       @for (video of videos; track video.uuid) {

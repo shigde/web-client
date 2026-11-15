@@ -1,20 +1,21 @@
 import {MessagesComponent} from './pages/messages/messages.component';
 import {UsersComponent as AdminUsersComponent} from './pages/admin/users/users.component';
+import {StreamingSettingsComponent as AdminStreamingSettingsComponent} from './pages/admin/settings/streaming-settings.component';
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {DashboardComponent} from './pages/dashboard/dashboard.component';
 import {DashboardComponent as AdminDashboardComponent} from './pages/admin/dashboard/dashboard.component';
 import {UserAccessGuard} from './guards/user-access-guard.service';
-import {LoginComponent} from './pages/auth/login/login.component';
 import {LobbyEntryComponent} from './pages/lobby-entry/lobby-entry.component';
 import {lobbyLeaveGuard} from './guards/lobby-leave.guard';
 import {AdminAccessGuard} from './guards/admin-access-guard.service';
+import {streamingPermissionGuard} from './guards/streaming-permission-guard.service';
+import {publicDashboardGuard} from './guards/public-dashboard-guard.service';
 
-import {SignupComponent} from './pages/auth/signup/signup.component';
-import {ActivateAccountComponent} from './pages/auth/activate-account/activate-account.component';
-import {ForgotPasswordComponent} from './pages/auth/forgot-password/forgot-password.component';
-import {ForgotPasswordMailComponent} from './pages/auth/forgot-password-mail/forgot-password-mail.component';
-import {UpdatePasswordComponent} from './pages/auth/update-password/update-password.component';
+import {
+  ActivateAccountComponent, DeviceCameraClosedComponent, DeviceCameraComponent, ForgotPasswordComponent,
+  ForgotPasswordMailComponent, LoginComponent, SignupComponent,
+} from './pages/auth';
 import {SettingsComponent} from './pages/user/settings/settings.component';
 import {ChannelComponent} from './pages/user/channel/channel/channel.component';
 import {EditChannelComponent} from './pages/user/channel/edit-channel/edit-channel.component';
@@ -23,20 +24,23 @@ import {StreamComponent} from './pages/user/stream/stream/stream.component';
 
 const routes: Routes = [
   {path: '', redirectTo: '/dashboard', pathMatch: 'full'},
-  {path: 'dashboard', component: DashboardComponent, canActivate: [UserAccessGuard]},
+  {path: 'dashboard', component: DashboardComponent, canActivate: [publicDashboardGuard]},
   {path: 'admin/dashboard', redirectTo: 'admin/monitoring', pathMatch: 'full'},
   {path: 'admin/users', component: AdminUsersComponent, canActivate: [AdminAccessGuard]},
+  {path: 'admin/settings/streaming', component: AdminStreamingSettingsComponent, canActivate: [AdminAccessGuard]},
   {path: 'admin/monitoring', component: AdminDashboardComponent, canActivate: [AdminAccessGuard]},
   {path: 'messages', component: MessagesComponent, canActivate: [UserAccessGuard]},
   {path: 'settings', component: SettingsComponent, canActivate: [UserAccessGuard]},
   {path: 'channel/:channelUuid', component: ChannelComponent},
   {path: 'channel/:channelUuid/edit', component: EditChannelComponent, canActivate: [UserAccessGuard]},
-  {path: 'stream/new', component: EditStreamComponent, canActivate: [UserAccessGuard]},
-  {path: 'stream/:streamUuid', component: StreamComponent, canActivate: [UserAccessGuard]},
-  {path: 'video/:streamUuid', component: StreamComponent, data: {type: 'video'}, canActivate: [UserAccessGuard]},
+  {path: 'stream/new', component: EditStreamComponent, canActivate: [UserAccessGuard, streamingPermissionGuard]},
+  {path: 'stream/:streamUuid', component: StreamComponent},
+  {path: 'video/:streamUuid', component: StreamComponent, data: {type: 'video'}},
   {path: 'stream/:streamUuid/edit', component: EditStreamComponent, canActivate: [UserAccessGuard]},
-  {path: 'channel/:channelUuid/stream/:streamUuid/lobby', component: LobbyEntryComponent, canActivate: [UserAccessGuard], canDeactivate: [lobbyLeaveGuard]},
+  {path: 'channel/:channelUuid/stream/:streamUuid/lobby', component: LobbyEntryComponent, canActivate: [UserAccessGuard, streamingPermissionGuard], canDeactivate: [lobbyLeaveGuard]},
   {path: 'login', component: LoginComponent},
+  {path: 'camera', component: DeviceCameraComponent, data: {deviceSession: true}},
+  {path: 'camera/closed', component: DeviceCameraClosedComponent, data: {deviceSession: true}},
   {path: 'forgotPasswordMail', component: ForgotPasswordMailComponent},
   {path: 'forgotPassword/:token', component: ForgotPasswordComponent},
   {path: 'signup', component: SignupComponent},

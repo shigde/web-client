@@ -10,6 +10,7 @@
     <span class="stream-media-meta">
               @if (isVideo) {
                 <i class="bi bi-play-circle" aria-hidden="true"></i><span>{{ duration }}</span>
+                <i class="bi bi-eye" aria-hidden="true"></i><span>{{ stream.viewer }} views</span>
               } @else if (isLive) {
                 <i class="bi bi-eye" aria-hidden="true"></i><span>{{ stream.viewer }} viewers</span>
               } @else {

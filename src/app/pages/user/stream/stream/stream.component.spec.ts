@@ -1,6 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ChannelService, MediaService, RelayService, SessionService, StreamFriendService, StreamService, UserService, VideoService} from '@shigde/core';
+import {ChannelService, MediaService, PollingService, ReactionService, RelayService, SessionService, StreamFriendService, StreamService, UserService, VideoService, ViewerService} from '@shigde/core';
 import {AlertService} from '../../../../providers/alert.service';
 import {RuntimeConfigService} from '../../../../providers/runtime-config.service';
 import {StreamComponent} from './stream.component';
@@ -16,8 +16,9 @@ describe('Stream action bar', () => {
         {provide: ActivatedRoute, useValue: {snapshot: {params: {}}}},
         {provide: Router, useValue: {navigate: jasmine.createSpy('navigate')}},
         {provide: RuntimeConfigService, useValue: {relayService: 'https://example.test'}},
-        ...[ChannelService, MediaService, StreamService, RelayService, SessionService, StreamFriendService, UserService, VideoService, AlertService]
-          .map(provide => ({provide, useValue: {}}))
+        ...[ChannelService, MediaService, PollingService, ReactionService, StreamService, RelayService, StreamFriendService, UserService, VideoService, ViewerService, AlertService]
+          .map(provide => ({provide, useValue: {}})),
+        {provide: SessionService, useValue: {isAuthenticated: () => false}},
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(StreamComponent);
@@ -36,7 +37,8 @@ describe('Stream action bar', () => {
     expect(bar.querySelector('.stream-channel')?.textContent).toContain('My Channel');
     expect(root.querySelector('app-stream-countdown time')).not.toBeNull();
     expect(root.querySelector('.stream-media-meta')).toBeNull();
-    expect(bar.querySelectorAll('.stream-reactions .stream-stat').length).toBe(2);
+    expect(bar.querySelectorAll('.stream-like-count').length).toBe(1);
+    expect(bar.textContent).not.toContain('Dislikes');
     expect(root.querySelector('.stream-chat')?.textContent).toContain('Chat opens when the stream starts.');
     expect(root.querySelector<HTMLInputElement>('.stream-chat input')?.disabled).toBeTrue();
     expect(root.querySelector<HTMLButtonElement>('.stream-chat button')?.disabled).toBeTrue();

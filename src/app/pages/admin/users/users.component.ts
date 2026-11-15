@@ -24,6 +24,8 @@ export class UsersComponent {
   currentUuid = '';
   pending: AdminUser | null = null;
   pendingRole: AdminUser | null = null;
+  streamingMode: 'request' | 'open' | 'locked' | null = null;
+  streamingPolicyLoaded = false;
   readonly Role = Role;
   readonly pageSize = 50;
   private readonly service = inject(UserService);
@@ -32,6 +34,10 @@ export class UsersComponent {
 
   constructor() {
     inject(SessionService).getUser().pipe(takeUntilDestroyed()).subscribe(user => this.currentUuid = user?.uuid ?? '');
+    this.service.getStreamingPolicy().pipe(takeUntilDestroyed(), catchError(() => of(null))).subscribe(policy => {
+      this.streamingMode = policy?.mode ?? null;
+      this.streamingPolicyLoaded = true;
+    });
     this.reload.pipe(
       startWith(undefined),
       switchMap(() => {
@@ -103,6 +109,29 @@ export class UsersComponent {
         this.error = 'Role could not be changed. Refresh the list and check your admin access.';
         this.saving = false;
       }
+    });
+  }
+
+  setStreaming(user: AdminUser, status: 'inherited' | 'allowed' | 'blocked'): void {
+    if (!user.channel_uuid || this.saving || !this.streamingMode || (this.streamingMode === 'locked' && status === 'allowed')) return;
+    const warning = status === 'blocked'
+      ? `Block ${user.name}'s channel? This stops its live stream and unpublishes all of its public streams and recordings. The account itself remains active.`
+      : status === 'inherited' && user.streaming_status
+        ? `Remove the individual ${user.streaming_status} setting for ${user.name}? The channel will follow the server's current default policy.`
+        : '';
+    if (warning && !confirm(warning)) return;
+    this.saving = true; this.error = ''; this.message = '';
+    this.service.setChannelStreaming(user.channel_uuid, status).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        this.users = this.users.map(row => row.uuid === user.uuid ? {...row, streaming_status: status === 'inherited' ? null : status} : row);
+        this.message = status === 'allowed'
+          ? `${user.name}: streaming permission granted.`
+          : status === 'blocked'
+            ? `${user.name}: channel blocked from streaming.`
+            : `${user.name}: individual streaming setting removed; server default applies.`;
+        this.saving = false;
+      },
+      error: () => { this.error = 'Channel streaming permission could not be changed.'; this.saving = false; }
     });
   }
 }

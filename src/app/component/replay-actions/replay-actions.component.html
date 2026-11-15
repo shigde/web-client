@@ -41,7 +41,11 @@
         <input type="checkbox" class="form-check-input m-0" name="published" [(ngModel)]="published"
                [disabled]="busy() || video.status !== 'ready'">Publish replay
       </label>
-      <p class="small text-body-secondary mt-2 mb-0">Unpublishing keeps the recording so you can publish it again later.</p>
+      <label class="d-flex align-items-center gap-2 mt-3">
+        <input type="checkbox" class="form-check-input m-0" name="isPublic" [(ngModel)]="isPublic"
+               [disabled]="busy()">Public (anyone can watch)
+      </label>
+      <p class="small text-body-secondary mt-2 mb-0">Unpublished replays are only visible to you. Published private replays require a login; published public replays can also be watched anonymously.</p>
       @if (error()) { <p class="text-danger mt-3" role="alert">{{ error() }}</p> }
     </div>
     <div class="modal-footer">

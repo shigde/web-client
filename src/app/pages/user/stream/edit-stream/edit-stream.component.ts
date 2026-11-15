@@ -13,7 +13,7 @@ import {
   Validators
 } from '@angular/forms';
 import {
-  ApiResponse, SessionService, ShigModule,
+  ApiResponse, SessionService, ShigModule, UserService,
   SettingsService,
   Stream,
   StreamLatency, StreamLicence,
@@ -49,6 +49,7 @@ export class EditStreamComponent {
   public stream!: Stream;
   selectedGuestUuids: string[] | undefined;
   public currentUser: User | null = null;
+  public publicContentEnabled = true;
 
   public streamUuid!: string;
   public time = {hour: 13, minute: 30};
@@ -63,7 +64,7 @@ export class EditStreamComponent {
     day: new FormControl(new Date(), [Validators.required]),
     isRepeating: new FormControl(false),
     repeat: new FormControl(`${Weekday.MONDAY}`),
-    isPublic: new FormControl(false),
+    isPublic: new FormControl(true),
     streamKey: new FormControl('', [Validators.required]),
     isShig: new FormControl(true),
     url: new FormControl('', [Validators.required]),
@@ -83,11 +84,28 @@ export class EditStreamComponent {
     private readonly streamService: StreamService,
     private readonly settingsService: SettingsService,
     private readonly session: SessionService,
+    private readonly userService: UserService,
     private readonly alert: AlertService,
     activeRoute: ActivatedRoute) {
 
     this.session.getUser().pipe(take(1)).subscribe(user => {
       this.currentUser = user;
+    });
+    this.userService.getMyStreamingPolicy().pipe(take(1)).subscribe({
+      next: policy => {
+        this.publicContentEnabled = policy.publicContentEnabled;
+        const visibility = this.streamForm.get('isPublic');
+        if (!policy.publicContentEnabled || !policy.canStream) {
+          this.streamForm.get('isPublic')?.setValue(false);
+          visibility?.disable();
+        } else {
+          visibility?.enable();
+          if (!this.isEdit) visibility?.setValue(true);
+        }
+      },
+      error: () => {
+        // The server enforces the global setting if the current value is stale.
+      }
     });
 
     if (activeRoute.snapshot.params['streamUuid']) {
@@ -219,6 +237,10 @@ export class EditStreamComponent {
   goToStream() {
     if (this.streamUuid) {
       this.router.navigate(['/stream/' + this.streamUuid]);
+    } else if (this.currentUser?.channel_uuid) {
+      this.router.navigate(['/channel/' + this.currentUser.channel_uuid]);
+    } else {
+      this.router.navigate(['/dashboard']);
     }
   }
 

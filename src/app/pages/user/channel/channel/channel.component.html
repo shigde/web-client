@@ -123,6 +123,32 @@
         <button ngbNavLink><i class="bi bi-speedometer2" aria-hidden="true"></i>Dashboard</button>
         <ng-template ngbNavContent>
           <section class="channel-owner-panel" aria-label="Stream dashboard">
+            @if (streamingPermissionNotice && streamingPolicy && !streamingPolicy.canStream) {
+              <div class="alert alert-warning" role="status">You need streaming permission to create a stream or enter your own lobby. Check the status below and request approval if available.</div>
+            }
+            @if (streamingPolicy; as policy) {
+              <section class="channel-replay-settings" aria-labelledby="channel-streaming-policy-heading">
+                <h3 id="channel-streaming-policy-heading"><i class="bi bi-shield-lock" aria-hidden="true"></i>Streaming permission</h3>
+                @if (policy.canStream) {
+                  @if (policy.channelStatus === 'allowed') {
+                    <p class="text-success mb-0">Your channel has an individual streaming permission.</p>
+                  } @else if (policy.channelStatus === 'admin') {
+                    <p class="text-success mb-0">Administrator accounts can always publish streams.</p>
+                  } @else {
+                    <p class="text-success mb-0">Streaming is allowed by the server default.</p>
+                  }
+                } @else if (policy.channelStatus === 'blocked') {
+                  <p class="text-body-secondary mb-0">This channel is blocked from streaming by the server administrator.</p>
+                } @else if (policy.mode === 'locked') {
+                  <p class="text-body-secondary mb-0">Streaming is currently disabled for this channel by the server administrator.</p>
+                } @else if (policy.channelStatus === 'requested') {
+                  <p class="text-body-secondary mb-0">Your request is waiting for administrator approval.</p>
+                } @else {
+                  <p class="text-body-secondary">The server requires administrator approval before your channel can publish streams.</p>
+                  <button class="btn btn-outline-primary" type="button" [disabled]="streamingRequestPending" (click)="requestStreaming()">{{ streamingRequestPending ? 'Request sent' : 'Request permission' }}</button>
+                }
+              </section>
+            }
             <section class="channel-replay-settings" aria-labelledby="channel-replay-settings-heading">
               <h3 id="channel-replay-settings-heading"><i class="bi bi-sliders" aria-hidden="true"></i>Replay Settings</h3>
               <label class="form-check form-switch d-flex align-items-center justify-content-between gap-3 ps-0 mb-0">
@@ -130,6 +156,10 @@
                 <input #replayDefault class="form-check-input ms-0 mt-0 flex-shrink-0" type="checkbox" role="switch"
                        [checked]="recordReplaysByDefault" (change)="setReplayDefault(replayDefault.checked)">
               </label>
+            </section>
+            <section class="channel-dashboard-devices" aria-labelledby="channel-dashboard-devices-heading">
+              <h3 id="channel-dashboard-devices-heading"><i class="bi bi-camera-video" aria-hidden="true"></i>Devices</h3>
+              <shig-device-management></shig-device-management>
             </section>
             <section class="channel-dashboard-streams" aria-labelledby="channel-dashboard-streams-heading">
               <h3 id="channel-dashboard-streams-heading"><i class="bi bi-broadcast" aria-hidden="true"></i>Stream overview</h3>

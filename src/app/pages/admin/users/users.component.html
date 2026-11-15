@@ -1,7 +1,7 @@
 <div class="container px-4 py-5">
   <p class="text-body-secondary mb-1">Admin</p>
   <h2 class="border-bottom pb-3">Users</h2>
-  <p>Manage accounts, registration dates and channels. Inactive accounts cannot sign in or make authenticated requests.</p>
+  <p>Manage accounts, registration dates and channels. Block user disables the account; Block channel disables streaming and unpublishes that channel’s public content while leaving the account active. Individual streaming permissions are shown separately below.</p>
   <form class="d-flex flex-wrap gap-2 my-4" (ngSubmit)="find()">
     <label for="user-search" class="visually-hidden">Search by account, email or channel</label>
     <input id="user-search" name="search" class="form-control w-auto flex-grow-1" type="search" maxlength="200" placeholder="Search by account, email or channel" [(ngModel)]="search" [disabled]="saving">
@@ -11,7 +11,7 @@
   @if (message) { <div class="alert alert-success" role="status">{{ message }}</div> }
   @if (pending; as user) {
     <div class="alert alert-warning" role="region" aria-label="Confirm account status change">
-      <p><strong>{{ user.active ? 'Block' : 'Activate' }} {{ user.name }}?</strong>
+      <p><strong>{{ user.active ? 'Block user' : 'Activate user' }} {{ user.name }}?</strong>
         {{ user.active ? 'Authenticated access will be denied, including requests using an existing login.' : 'This allows the account to sign in, including accounts awaiting email verification.' }}</p>
       <button type="button" class="btn me-2" [class.btn-danger]="user.active" [class.btn-success]="!user.active" [disabled]="saving" (click)="confirm()">{{ saving ? 'Saving…' : 'Confirm' }}</button>
       <button type="button" class="btn btn-light text-dark border-secondary" [disabled]="saving" (click)="pending = null">Cancel</button>
@@ -43,10 +43,43 @@
               <td><span class="badge" [class.text-bg-success]="user.active" [class.text-bg-secondary]="!user.active">{{ user.active ? 'Active' : 'Inactive' }}</span></td>
               <td>
                 @if (user.uuid === currentUuid) { <span class="small text-body-secondary">Your account</span> }
-                @else { <button type="button" class="btn btn-sm" [class.btn-outline-danger]="user.active" [class.btn-outline-success]="!user.active" [disabled]="saving || pending !== null || pendingRole !== null" (click)="pending = user; message = ''">{{ user.active ? 'Block' : 'Activate' }}</button>
+                @else { <button type="button" class="btn btn-sm" [class.btn-outline-danger]="user.active" [class.btn-outline-success]="!user.active" [disabled]="saving || pending !== null || pendingRole !== null" (click)="pending = user; message = ''">{{ user.active ? 'Block user' : 'Activate user' }}</button>
                   @if (user.role === Role.ADMIN || user.role === Role.USER) {
                     <button type="button" class="btn btn-sm btn-outline-primary ms-2" [disabled]="saving || pending !== null || pendingRole !== null" (click)="pendingRole = user; message = ''">{{ user.role === Role.ADMIN ? 'Make User' : 'Make Admin' }}</button>
                   }
+                }
+                @if (user.channel_uuid && user.role !== Role.ADMIN) {
+                  @if (user.streaming_status === 'blocked') {
+                    <button type="button" class="btn btn-sm btn-outline-secondary ms-2" [disabled]="saving" (click)="setStreaming(user, 'inherited')">Unblock channel</button>
+                  } @else {
+                    <button type="button" class="btn btn-sm btn-outline-danger ms-2" [disabled]="saving" (click)="setStreaming(user, 'blocked')">Block channel</button>
+                  }
+                  <div class="mt-2">
+                    @if (!streamingPolicyLoaded) {
+                      <span class="small text-body-secondary">Loading server streaming policy…</span>
+                    } @else if (!streamingMode) {
+                      <span class="small text-body-secondary">Streaming policy unavailable</span>
+                    } @else if (streamingMode === 'locked') {
+                      <span class="small text-body-secondary">Streaming: Not allowed (server locked)</span>
+                    } @else if (user.streaming_status === 'blocked') {
+                      <div class="small text-body-secondary mb-1">Channel: Blocked</div>
+                    } @else if (streamingMode === 'open') {
+                      <div class="small text-body-secondary mb-1">Streaming permission: Allowed by server default</div>
+                    } @else {
+                      <div class="small text-body-secondary mb-1">Streaming permission: {{ user.streaming_status === 'requested' ? 'Requested' : user.streaming_status === 'allowed' ? 'Granted' : 'Not granted' }}</div>
+                      @if (user.streaming_status === 'requested') { <span class="badge text-bg-warning me-2">Request pending</span> }
+                      <div class="btn-group btn-group-sm" role="group" [attr.aria-label]="'Streaming permission for ' + user.name">
+                        @if (user.streaming_status !== 'allowed') {
+                          <button type="button" class="btn btn-outline-success" [disabled]="saving" (click)="setStreaming(user, 'allowed')">Grant permission</button>
+                        } @else {
+                          <button type="button" class="btn btn-outline-secondary" [disabled]="saving" (click)="setStreaming(user, 'inherited')">Remove permission</button>
+                        }
+                        @if (user.streaming_status === 'requested') {
+                          <button type="button" class="btn btn-outline-secondary" [disabled]="saving" (click)="setStreaming(user, 'inherited')">Deny request</button>
+                        }
+                      </div>
+                    }
+                  </div>
                 }
               </td>
             </tr>

@@ -17,7 +17,7 @@
           <div class="stream-media-frame" [class.is-live]="isLive">
           @if (isVideo) {
             @if (!ownedReplay || ownedReplay.status === 'ready') {
-            <app-hls-player [src]="videoPlaybackUrl" [poster]="thumbnail"></app-hls-player>
+            <app-hls-player [src]="videoPlaybackUrl" [poster]="thumbnail" (playStarted)="recordReplayView()"></app-hls-player>
             } @else {
               <div class="replay-status-panel">
                 <app-replay-status [status]="ownedReplay.status" [error]="ownedReplay.error" [panel]="true"></app-replay-status>
@@ -59,19 +59,23 @@
               </a>
             </div>
             <div class="stream-actions" role="group" aria-label="Stream actions and statistics">
-              @if (isLive) {
-                <span class="stream-stat stream-viewers text-body-secondary" title="Viewers" aria-label="Viewers">
+              @if (isLive || isVideo) {
+                <span class="stream-stat stream-viewers text-body-secondary" [title]="isVideo ? 'Views' : 'Viewers'" [attr.aria-label]="isVideo ? 'Views' : 'Viewers'">
                   <i class="bi bi-eye" aria-hidden="true"></i><span>{{ stream.viewer }}</span>
                 </span>
               }
-              <div class="stream-reactions bg-body-tertiary border" role="group" aria-label="Reactions">
-                <span class="stream-stat" title="Likes" aria-label="Likes">
+              @if (canLike) {
+                <button type="button" class="btn btn-light border stream-like" [class.active]="likedByMe"
+                        [disabled]="likeBusy" [attr.aria-pressed]="likedByMe" (click)="toggleLike()"
+                        [attr.aria-label]="likedByMe ? 'Remove like' : 'Like'" [title]="likedByMe ? 'Remove like' : 'Like'">
+                  <i class="bi" [class.bi-hand-thumbs-up-fill]="likedByMe" [class.bi-hand-thumbs-up]="!likedByMe" aria-hidden="true"></i>
+                  <span>{{ stream.likes }}</span>
+                </button>
+              } @else {
+                <span class="stream-stat stream-like-count text-body-secondary" title="Likes" aria-label="Likes">
                   <i class="bi bi-hand-thumbs-up" aria-hidden="true"></i><span>{{ stream.likes }}</span>
                 </span>
-                <span class="stream-stat border-start" title="Dislikes" aria-label="Dislikes">
-                  <i class="bi bi-hand-thumbs-down" aria-hidden="true"></i><span>{{ stream.dislikes }}</span>
-                </span>
-              </div>
+              }
 
               @if (!isVideo && (isOwner || isGuest)) {
                 <button type="button" class="btn btn-primary stream-enter" (click)="openStream()">

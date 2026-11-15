@@ -1,8 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {RecordedVideoPreview, StreamPreview, StreamService, VideoService} from '@shigde/core';
 import {catchError, map, Observable, of, take, tap} from 'rxjs';
-import {AlertKind} from '../../entities/alert';
-import {AlertService} from '../../providers/alert.service';
 
 
 @Component({
@@ -20,7 +18,6 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private readonly streamService: StreamService,
-    private readonly alert: AlertService,
     private readonly videoService: VideoService,
   ) {
   }
@@ -29,10 +26,7 @@ export class DashboardComponent implements OnInit {
     this.getStreams().subscribe(() => this.streamsLoaded = true);
     this.videoService.getPreviewList().pipe(
       take(1),
-      catchError(() => {
-        this.alert.alert(AlertKind.DANGER, 'Could not load replays!');
-        return of([]);
-      }),
+      catchError(() => of([])),
     ).subscribe(videos => {
       this.videos = videos;
       this.videosLoaded = true;
@@ -51,7 +45,6 @@ export class DashboardComponent implements OnInit {
   }
 
   private handleError(): Observable<StreamPreview[]> {
-    this.alert.alert(AlertKind.DANGER, 'Could not load public streams!');
     return of([]);
   }
 }
