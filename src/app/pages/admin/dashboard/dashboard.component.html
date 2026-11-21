@@ -2,27 +2,171 @@
   <a routerLink="/dashboard">← Overview</a>
   <p class="text-body-secondary mt-4 mb-1">Admin</p>
   <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center border-bottom pb-3 mb-4">
-    <h2 class="mb-0">Monitoring</h2>
-    <button type="button" class="btn btn-outline-primary" [disabled]="loading" (click)="refresh()">{{ loading ? 'Loading…' : 'Refresh' }}</button>
+    <div>
+      <h1 class="mb-1">Monitoring</h1>
+      <p class="text-body-secondary mb-0">Live server metrics · updated every 5 seconds</p>
+    </div>
+    <span class="live-status"><span class="live-dot"></span>Live</span>
   </div>
-  <p class="text-body-secondary">Live server metrics · Refreshes every 15 seconds</p>
+  <p class="text-body-secondary dashboard-intro">Current server health and resource trends for up to the last ten minutes. Charts use a fixed time scale and update automatically.</p>
   @if (error) {
     <div class="alert alert-danger" role="alert">Metrics could not be loaded. Check your connection and admin access. Displayed values are from the last successful refresh.</div>
   }
   @if (snapshot; as data) {
+    <section class="metrics-section" aria-labelledby="sfu-heading">
+      <div class="metrics-section-header">
+        <h2 id="sfu-heading" class="metrics-section-title">SFU</h2>
+        <p class="metrics-section-description">Active lobbies and connected participants</p>
+      </div>
     <div class="row g-3 mb-4" aria-live="polite">
       <div class="col-md-4"><div class="card h-100"><div class="card-body"><h3 class="h6">Active lobbies</h3><p class="display-6 mb-0">{{ data.active_lobbies }}</p></div></div></div>
       <div class="col-md-4"><div class="card h-100"><div class="card-body"><h3 class="h6">Connected participants</h3><p class="display-6 mb-0">{{ data.active_peers }}</p></div></div></div>
       <div class="col-md-4"><div class="card h-100"><div class="card-body"><h3 class="h6">Server version</h3><p class="fs-3 mb-0">{{ data.version }}</p></div></div></div>
     </div>
-    <h3 class="h5">Participants per lobby</h3>
+    <h3 class="metrics-subsection-title">Participants per lobby</h3>
     @if (data.lobbies.length) {
       <div class="table-responsive"><table class="table">
         <thead><tr><th scope="col">Lobby</th><th scope="col">Participants</th></tr></thead>
         <tbody>@for (lobby of data.lobbies; track lobby.lobby_id) {<tr><td>{{ lobby.lobby_id }}</td><td>{{ lobby.peers }}</td></tr>}</tbody>
       </table></div>
     } @else { <p class="text-body-secondary">No active lobby participants.</p> }
-    <p class="small text-body-secondary">Last successful refresh: {{ updatedAt | date:'medium' }}</p>
+    </section>
+    <section class="metrics-section" aria-labelledby="system-heading">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+      <div>
+        <h2 id="system-heading" class="metrics-section-title">System metrics</h2>
+        <p class="metrics-section-description">CPU, memory, network and disk usage. Latest sample: {{ data.system.sampled_at_unix_ms | date:'mediumTime' }}</p>
+      </div>
+      <span class="badge text-bg-light border">Auto-updates every 5 seconds</span>
+    </div>
+    <div class="row g-3 mb-4" aria-live="polite">
+      <div class="col-sm-6 col-xl-3"><div class="card metric-card h-100"><div class="card-body"><h4 class="metric-label">CPU usage</h4><p class="metric-value">{{ data.system.cpu_usage_percent | number:'1.0-1' }}<span>%</span></p><div class="progress" role="progressbar" [attr.aria-valuenow]="data.system.cpu_usage_percent" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar" [style.width.%]="data.system.cpu_usage_percent"></div></div></div></div></div>
+      <div class="col-sm-6 col-xl-3"><div class="card metric-card h-100"><div class="card-body"><h4 class="metric-label">Memory used</h4><p class="metric-value">{{ formatBytes(data.system.memory_used_bytes) }}</p><p class="metric-detail">of {{ formatBytes(data.system.memory_total_bytes) }}</p><div class="progress" role="progressbar" [attr.aria-valuenow]="memoryPercent(data.system.memory_used_bytes, data.system.memory_total_bytes)" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar" [style.width.%]="memoryPercent(data.system.memory_used_bytes, data.system.memory_total_bytes)"></div></div></div></div></div>
+      <div class="col-sm-6 col-xl-3"><div class="card metric-card h-100"><div class="card-body"><h4 class="metric-label">Network in</h4><p class="metric-value">{{ formatRate(data.system.network_received_bytes_per_second) }}</p><p class="metric-detail">Current receive rate</p></div></div></div>
+      <div class="col-sm-6 col-xl-3"><div class="card metric-card h-100"><div class="card-body"><h4 class="metric-label">Network out</h4><p class="metric-value">{{ formatRate(data.system.network_transmitted_bytes_per_second) }}</p><p class="metric-detail">Current send rate</p></div></div></div>
+      <div class="col-sm-6 col-xl-3"><div class="card metric-card h-100"><div class="card-body"><h4 class="metric-label">Disk read</h4><p class="metric-value">{{ formatRate(data.system.disk_read_bytes_per_second) }}</p><p class="metric-detail">Current read rate</p></div></div></div>
+      <div class="col-sm-6 col-xl-3"><div class="card metric-card h-100"><div class="card-body"><h4 class="metric-label">Disk write</h4><p class="metric-value">{{ formatRate(data.system.disk_written_bytes_per_second) }}</p><p class="metric-detail">Current write rate</p></div></div></div>
+      <div class="col-sm-6 col-xl-3"><div class="card metric-card h-100"><div class="card-body"><h4 class="metric-label">Root disk used</h4><p class="metric-value">{{ formatBytes(data.system.root_disk_used_bytes) }}</p><p class="metric-detail">of {{ formatBytes(data.system.root_disk_total_bytes) }}</p></div></div></div>
+    </div>
+    <div class="row g-3 mb-4">
+      <div class="col-lg-6"><section class="card chart-card h-100"><div class="card-body"><div class="d-flex justify-content-between align-items-start"><div><h4 class="h6 mb-1">CPU usage</h4><p class="small text-body-secondary mb-0">{{ chartScaleLabel('cpu_usage_percent') }}</p></div><strong>{{ data.system.cpu_usage_percent | number:'1.0-1' }}%</strong></div>@if (data.system.history.length >= 2) {<svg class="metric-chart" viewBox="0 0 600 160" preserveAspectRatio="none" role="img" aria-label="CPU usage over the last ten minutes"><line class="chart-grid" x1="0" y1="8" x2="600" y2="8"/><line class="chart-grid" x1="0" y1="80" x2="600" y2="80"/><line class="chart-grid" x1="0" y1="152" x2="600" y2="152"/><polyline class="chart-line chart-blue" [attr.points]="chartPoints('cpu_usage_percent')"/></svg><div class="chart-axis"><span>Oldest sample</span><span>Latest</span></div>} @else {<p class="chart-empty">Collecting samples…</p>}</div></section></div>
+      <div class="col-lg-6"><section class="card chart-card h-100"><div class="card-body"><div class="d-flex justify-content-between align-items-start"><div><h4 class="h6 mb-1">Memory usage</h4><p class="small text-body-secondary mb-0">{{ chartScaleLabel('memory_percent') }}</p></div><strong>{{ memoryPercent(data.system.memory_used_bytes, data.system.memory_total_bytes) | number:'1.0-1' }}%</strong></div>@if (data.system.history.length >= 2) {<svg class="metric-chart" viewBox="0 0 600 160" preserveAspectRatio="none" role="img" aria-label="Memory usage over the last ten minutes"><line class="chart-grid" x1="0" y1="8" x2="600" y2="8"/><line class="chart-grid" x1="0" y1="80" x2="600" y2="80"/><line class="chart-grid" x1="0" y1="152" x2="600" y2="152"/><polyline class="chart-line chart-purple" [attr.points]="chartPoints('memory_percent')"/></svg><div class="chart-axis"><span>Oldest sample</span><span>Latest</span></div>} @else {<p class="chart-empty">Collecting samples…</p>}</div></section></div>
+      <div class="col-lg-6"><section class="card chart-card h-100"><div class="card-body"><div class="d-flex justify-content-between align-items-start"><div><h4 class="h6 mb-1">Network throughput</h4><p class="small text-body-secondary mb-0">{{ chartScaleLabel('network_received_bytes_per_second') }}</p></div><div class="chart-legend"><span><i class="legend-dot chart-blue"></i>In</span><span><i class="legend-dot chart-orange"></i>Out</span></div></div>@if (data.system.history.length >= 2) {<svg class="metric-chart" viewBox="0 0 600 160" preserveAspectRatio="none" role="img" aria-label="Network throughput over the last ten minutes"><line class="chart-grid" x1="0" y1="8" x2="600" y2="8"/><line class="chart-grid" x1="0" y1="80" x2="600" y2="80"/><line class="chart-grid" x1="0" y1="152" x2="600" y2="152"/><polyline class="chart-line chart-blue" [attr.points]="chartPoints('network_received_bytes_per_second')"/><polyline class="chart-line chart-orange" [attr.points]="chartPoints('network_transmitted_bytes_per_second')"/></svg><div class="chart-axis"><span>Oldest sample</span><span>Latest</span></div>} @else {<p class="chart-empty">Collecting samples…</p>}</div></section></div>
+      <div class="col-lg-6"><section class="card chart-card h-100"><div class="card-body"><div class="d-flex justify-content-between align-items-start"><div><h4 class="h6 mb-1">Disk throughput</h4><p class="small text-body-secondary mb-0">{{ chartScaleLabel('disk_read_bytes_per_second') }}</p></div><div class="chart-legend"><span><i class="legend-dot chart-blue"></i>Read</span><span><i class="legend-dot chart-orange"></i>Write</span></div></div>@if (data.system.history.length >= 2) {<svg class="metric-chart" viewBox="0 0 600 160" preserveAspectRatio="none" role="img" aria-label="Disk throughput over the last ten minutes"><line class="chart-grid" x1="0" y1="8" x2="600" y2="8"/><line class="chart-grid" x1="0" y1="80" x2="600" y2="80"/><line class="chart-grid" x1="0" y1="152" x2="600" y2="152"/><polyline class="chart-line chart-blue" [attr.points]="chartPoints('disk_read_bytes_per_second')"/><polyline class="chart-line chart-orange" [attr.points]="chartPoints('disk_written_bytes_per_second')"/></svg><div class="chart-axis"><span>Oldest sample</span><span>Latest</span></div>} @else {<p class="chart-empty">Collecting samples…</p>}</div></section></div>
+    </div>
+    </section>
+    @if (data.recorder; as recorder) {
+    <section class="metrics-section" aria-labelledby="recorder-heading">
+      <div class="metrics-section-header">
+        <h2 id="recorder-heading" class="metrics-section-title">Recorder metrics</h2>
+        <p class="metrics-section-description">HLS segment writes, throughput and write latency</p>
+      </div>
+      <div class="row g-3 mb-4" aria-live="polite">
+        <div class="col-sm-6 col-xl-3"><div class="card metric-card h-100"><div class="card-body"><h3 class="metric-label">Active recordings</h3><p class="metric-value">{{ recorder.active_recordings }}</p></div></div></div>
+        <div class="col-sm-6 col-xl-3"><div class="card metric-card h-100"><div class="card-body"><h3 class="metric-label">Media written</h3><p class="metric-value">{{ formatBytes(recorder.bytes_written_total) }}</p><p class="metric-detail">Since server start</p></div></div></div>
+        <div class="col-sm-6 col-xl-3"><div class="card metric-card h-100"><div class="card-body"><h3 class="metric-label">Segments written</h3><p class="metric-value">{{ recorder.segments_written_total }}</p></div></div></div>
+        <div class="col-sm-6 col-xl-3"><div class="card metric-card h-100"><div class="card-body"><h3 class="metric-label">Failed recordings</h3><p class="metric-value">{{ recorder.recording_failures_total + recorder.prepare_failures_total }}</p><p class="metric-detail">{{ recorder.segment_write_failures_total }} segment write errors</p></div></div></div>
+      </div>
+      <div class="row g-3 mb-4">
+        @for (chart of recorderCharts; track chart.metric) {
+          <div class="col-sm-6 col-xl-3">
+            <section class="card chart-card relay-chart-card h-100">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start gap-2">
+                  <div><h3 class="h6 mb-1">{{ chart.title }}</h3><p class="small text-body-secondary mb-0">{{ recorderScaleLabel(chart.metric) }}</p></div>
+                  <strong class="text-nowrap">{{ recorderRateLabel(chart.metric) }}</strong>
+                </div>
+                @if (recorderHistory.length >= 2) {
+                  <svg class="metric-chart relay-metric-chart" viewBox="0 0 600 160" preserveAspectRatio="none" role="img" [attr.aria-label]="chart.title + ' over the last ten minutes'">
+                    <line class="chart-grid" x1="0" y1="8" x2="600" y2="8"/>
+                    <line class="chart-grid" x1="0" y1="80" x2="600" y2="80"/>
+                    <line class="chart-grid" x1="0" y1="152" x2="600" y2="152"/>
+                    <polyline class="chart-line chart-blue" [attr.points]="recorderChartPoints(chart.metric)"/>
+                  </svg>
+                  <div class="chart-axis"><span>−10 min</span><span>Now</span></div>
+                } @else {
+                  <p class="chart-empty relay-chart-empty">Collecting samples…</p>
+                }
+              </div>
+            </section>
+          </div>
+        }
+      </div>
+    </section>
+    } @else {
+      <section class="metrics-section" aria-labelledby="recorder-heading">
+        <div class="metrics-section-header">
+          <h2 id="recorder-heading" class="metrics-section-title">Recorder metrics</h2>
+          <p class="metrics-section-description">Not available from this server version.</p>
+        </div>
+      </section>
+    }
+    <section class="metrics-section" aria-labelledby="relay-heading">
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+      <div>
+        <h2 id="relay-heading" class="metrics-section-title">Relay metrics</h2>
+        <p class="metrics-section-description">MoQ relay activity and cumulative traffic counters</p>
+      </div>
+    </div>
+    @let relay = relayTotals(data.relay.traffic, data.relay.sessions);
+    <div class="row g-3 mb-4" aria-live="polite">
+      <div class="col-sm-6 col-xl"><div class="card metric-card h-100"><div class="card-body"><h4 class="metric-label">Active sessions</h4><p class="metric-value">{{ relay.activeSessions }}</p></div></div></div>
+      <div class="col-sm-6 col-xl"><div class="card metric-card h-100"><div class="card-body"><h4 class="metric-label">Active viewers</h4><p class="metric-value">{{ relay.activeViewers }}</p></div></div></div>
+      <div class="col-sm-6 col-xl"><div class="card metric-card h-100"><div class="card-body"><h4 class="metric-label">Subscriptions</h4><p class="metric-value">{{ relay.activeSubscriptions }}</p></div></div></div>
+      <div class="col-sm-6 col-xl"><div class="card metric-card h-100"><div class="card-body"><h4 class="metric-label">Transferred</h4><p class="metric-value">{{ formatBytes(relay.transferredBytes) }}</p><p class="metric-detail">Since relay start</p></div></div></div>
+      <div class="col-sm-6 col-xl"><div class="card metric-card h-100"><div class="card-body"><h4 class="metric-label">Stale data</h4><p class="metric-value">{{ formatBytes(relay.staleBytes) }}</p><p class="metric-detail">Bytes skipped as stale</p></div></div></div>
+    </div>
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+      <p class="metrics-section-description">Events per second, calculated from the cumulative counters</p>
+      <span class="small text-body-secondary">Ten-minute window</span>
+    </div>
+    <div class="row g-3 mb-4">
+      @for (chart of relayCharts; track chart.metric) {
+        <div class="col-sm-6 col-xl-3">
+          <section class="card chart-card relay-chart-card h-100">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <h5 class="h6 mb-0">{{ chart.title }}</h5>
+                <strong>{{ relayRate(chart.metric) | number:'1.0-1' }}/s</strong>
+              </div>
+              @if (relayHistory.length >= 2) {
+                <svg class="metric-chart relay-metric-chart" viewBox="0 0 600 160" preserveAspectRatio="none" role="img" [attr.aria-label]="chart.title + ' per second over the last ten minutes'">
+                  <line class="chart-grid" x1="0" y1="8" x2="600" y2="8"/>
+                  <line class="chart-grid" x1="0" y1="80" x2="600" y2="80"/>
+                  <line class="chart-grid" x1="0" y1="152" x2="600" y2="152"/>
+                  <polyline class="chart-line chart-blue" [attr.points]="relayChartPoints(chart.metric)"/>
+                </svg>
+                <div class="chart-axis"><span>−10 min</span><span>Now</span></div>
+              } @else {
+                <p class="chart-empty relay-chart-empty">Collecting samples…</p>
+              }
+            </div>
+          </section>
+        </div>
+      }
+    </div>
+    <div class="row g-3 mb-4">
+      <div class="col-lg-8"><section class="card chart-card h-100"><div class="card-body"><h4 class="h6 mb-1">Traffic by tier and role</h4><p class="small text-body-secondary">Cumulative counters since relay start</p>
+        @if (data.relay.traffic.length) {
+          <div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th scope="col">Tier</th><th scope="col">Role</th><th scope="col">Announces</th><th scope="col">Viewers</th><th scope="col">Subscriptions</th><th scope="col">Fetches</th><th scope="col">Bytes</th><th scope="col">Frames</th><th scope="col">Groups</th><th scope="col">Datagrams</th><th scope="col">Stale bytes</th><th scope="col">Stale frames</th><th scope="col">Stale groups</th><th scope="col">Stale datagrams</th></tr></thead><tbody>
+            @for (item of data.relay.traffic; track item.tier + ':' + item.role) {
+              <tr><td>{{ item.tier }}</td><td>{{ item.role }}</td><td>{{ item.announces_started }} / {{ item.announces_ended }}</td><td>{{ item.active_viewers }}</td><td>{{ item.active_subscriptions }}</td><td>{{ item.fetches }}</td><td>{{ formatBytes(item.bytes) }}</td><td>{{ item.frames }}</td><td>{{ item.groups }}</td><td>{{ item.datagrams }}</td><td>{{ formatBytes(item.stale_bytes) }}</td><td>{{ item.stale_frames }}</td><td>{{ item.stale_groups }}</td><td>{{ item.stale_datagrams }}</td></tr>
+            }
+          </tbody></table></div>
+        } @else { <p class="text-body-secondary mb-0">No relay traffic recorded yet.</p> }
+      </div></section></div>
+      <div class="col-lg-4"><section class="card chart-card h-100"><div class="card-body"><h4 class="h6 mb-3">Sessions by tier</h4>
+        @if (data.relay.sessions.length) {
+          <div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th scope="col">Tier</th><th scope="col">Active</th><th scope="col">Opened</th><th scope="col">Closed</th></tr></thead><tbody>
+            @for (session of data.relay.sessions; track session.tier) {
+              <tr><td>{{ session.tier }}</td><td>{{ session.active }}</td><td>{{ session.opened }}</td><td>{{ session.closed }}</td></tr>
+            }
+          </tbody></table></div>
+        } @else { <p class="text-body-secondary mb-0">No relay sessions yet.</p> }
+      </div></section></div>
+    </div>
+    </section>
+    <p class="small text-body-secondary">Last updated: {{ updatedAt | date:'medium' }}</p>
   }
-  <div class="alert alert-secondary mt-4">These metrics show the current state of this server. Historical trends, error rates and fix comparisons are not collected yet.</div>
+  <div class="alert alert-secondary mt-4">System readings reflect what the operating system inside this VM can see. The chart keeps at most ten minutes of samples in memory and clears when the server restarts.</div>
 </div>
