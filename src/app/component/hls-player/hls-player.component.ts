@@ -1,5 +1,8 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, signal, SimpleChanges, ViewChild} from '@angular/core';
 import type Hls from 'hls.js';
+import {HttpClient} from '@angular/common/http';
+import {SessionService} from '@shigde/core';
+import {firstValueFrom} from 'rxjs';
 
 @Component({
   selector: 'app-hls-player',
@@ -24,6 +27,8 @@ export class HlsPlayerComponent implements AfterViewInit, OnChanges, OnDestroy {
   private hls?: Hls;
   private ready = false;
   private revision = 0;
+
+  constructor(private readonly http: HttpClient, private readonly session: SessionService) {}
 
   ngAfterViewInit(): void {
     this.ready = true;
@@ -58,12 +63,31 @@ export class HlsPlayerComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.error.set('');
     if (!this.src) return;
     try {
+      const source = new URL(this.src, window.location.origin);
+      const replay = source.origin === window.location.origin
+        ? /^\/static\/recordings\/([0-9a-f-]+)\//i.exec(source.pathname)
+        : null;
+      // Establish a path-scoped HttpOnly cookie for native HLS, whose requests
+      // bypass Angular's bearer-token interceptor (as do hls.js requests).
+      if (replay && this.session.isAuthenticated()) {
+        await firstValueFrom(this.http.post(`/api/videos/${replay[1]}/playback-session`, {}));
+        if (!this.ready || revision !== this.revision) return;
+      }
       // Keep the HLS playback engine out of the live-player loading path.
       const {default: Hls} = await import('hls.js');
       if (!this.ready || revision !== this.revision) return;
       const video = this.video.nativeElement;
       if (Hls.isSupported()) {
-        const hls = this.hls = new Hls();
+        const hls = this.hls = new Hls({
+          xhrSetup: (xhr, url) => {
+            const target = new URL(url, window.location.origin);
+            if (replay && target.origin === source.origin &&
+                target.pathname.startsWith(`/static/recordings/${replay[1]}/`)) {
+              const token = this.session.getAuthenticationToken();
+              if (token) xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+            }
+          },
+        });
         hls.on(Hls.Events.ERROR, (_, data) => {
           if (!this.ready || revision !== this.revision) return;
           const diagnostics = {
